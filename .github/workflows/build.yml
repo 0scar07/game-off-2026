@@ -25,16 +25,17 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Versión fija: ubuntu-latest cambia a Ubuntu 26 en octubre de 2026.
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       HAS_ITCH: ${{ secrets.BUTLER_API_KEY != '' && vars.ITCH_USER != '' && vars.ITCH_GAME != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Restaurar Godot de la caché
         id: cache-godot
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/godot
@@ -78,7 +79,10 @@ jobs:
           done
 
       - name: Importar el proyecto
-        run: godot --headless --path . --import
+        # .gdignore: que Godot no importe lo que exporta dentro de build/.
+        run: |
+          mkdir -p build && touch build/.gdignore
+          godot --headless --path . --import
 
       - name: Test automático
         run: godot --headless --path . res://tests/smoke_test.tscn
@@ -118,9 +122,10 @@ jobs:
           export GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD="$password"
           godot --headless --path . --export-release "Android" build/android/GameOff2026.apk
           test -f build/android/GameOff2026.apk
+          rm -f build/android/*.idsig
 
       - name: Guardar las versiones (pestaña Actions → Artifacts)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: builds
           path: build/
