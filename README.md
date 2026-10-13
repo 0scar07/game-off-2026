@@ -42,6 +42,25 @@ Juice.floating_text("+10", position)    # texto que sube
 
 La escena necesita una `Camera2D` para que funcionen el temblor y el empujón. Juice usa el `offset` de la cámara, así que no lo cambies tú.
 
+## Exportación automática (GitHub Actions)
+
+Con cada push a `main`, [`.github/workflows/build.yml`](.github/workflows/build.yml):
+
+1. pasa la prueba automática;
+2. exporta la **web**, **Windows** y **Android (APK)**;
+3. guarda las tres en la ejecución (pestaña **Actions → la ejecución → Artifacts**);
+4. si está configurado, las sube a **itch.io** con butler.
+
+Para subirlas a itch, en GitHub ve a **Settings → Secrets and variables → Actions** y añade:
+
+| Tipo | Nombre | Valor |
+|---|---|---|
+| Secret | `BUTLER_API_KEY` | tu clave de API de itch ([itch.io/user/settings/api-keys](https://itch.io/user/settings/api-keys)) |
+| Variable | `ITCH_USER` | tu usuario de itch |
+| Variable | `ITCH_GAME` | la parte final de la URL del juego (`usuario.itch.io/<esto>`) |
+
+**Firma del APK (opcional):** sin keystore propio, cada versión se firma con una clave temporal y para instalar una nueva en el móvil hay que desinstalar antes la anterior. Para evitarlo, añade los secrets `ANDROID_KEYSTORE_BASE64` (el `.keystore` en base64) y `ANDROID_KEYSTORE_PASSWORD`. El alias de la clave debe ser `gameoff`.
+
 ## Prueba automática
 
 ```bash
