@@ -67,7 +67,7 @@ jobs:
           echo "$HOME/godot" >> "$GITHUB_PATH"
           # Rutas del SDK de Android y de Java del runner, para exportar el APK.
           mkdir -p ~/.config/godot
-          for file in editor_settings-4.tres editor_settings-4.7.tres; do
+          for file in editor_settings-4.7.tres; do
             cat > ~/.config/godot/$file <<EOF
           [gd_resource type="EditorSettings" format=3]
 
@@ -86,9 +86,7 @@ jobs:
       - name: Exportar web
         run: |
           mkdir -p build/web
-          ls -la ~/.local/share/godot/export_templates/*/ ~/.config/godot/
-          cat ~/.config/godot/editor_settings-4.7.tres
-          godot --headless --verbose --path . --export-release "Web" build/web/index.html
+          godot --headless --path . --export-release "Web" build/web/index.html
           test -f build/web/index.html
 
       - name: Exportar Windows
