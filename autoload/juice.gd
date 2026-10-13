@@ -64,6 +64,8 @@ func squash(node: CanvasItem, stretch := Vector2(1.35, 0.7), duration := 0.35) -
 
 
 ## `node` es un Node2D o un Control.
+## Ojo: no lo uses en un nodo con colisión (Area2D, cuerpos...), porque la colisión
+## también empezaría con tamaño 0. Aplícalo a su dibujo (Sprite2D, Polygon2D...).
 func pop_in(node: CanvasItem, duration := 0.35, delay := 0.0) -> void:
 	if not is_instance_valid(node):
 		return
