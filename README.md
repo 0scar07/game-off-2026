@@ -2,6 +2,8 @@
 
 Plantilla base en **Godot 4.7** para el [Game Off 2026](https://itch.io/jam/game-off-2026), lista para web, Android y escritorio.
 
+📖 **[GUIA.md](GUIA.md)**: cómo usar la plantilla, aprender Godot, el día del tema, el plan de noviembre, assets con licencia, la página de itch y la entrega.
+
 ## Qué incluye
 
 - **Menú principal, opciones y pausa**, navegables con ratón, teclado, mando y pantalla táctil.
