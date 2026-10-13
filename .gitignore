@@ -1,0 +1,9 @@
+# Caché de Godot (se regenera al abrir el proyecto)
+.godot/
+/android/
+
+# Exportaciones
+build/
+*.apk
+*.aab
+*.keystore
