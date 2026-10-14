@@ -143,7 +143,7 @@ jobs:
           chmod +x ~/butler/butler
           version="$(date -u +%Y.%m.%d)-${GITHUB_SHA::7}"
           # Si itch aún está procesando la versión anterior de un canal, se avisa y se sigue.
-          for channel in web:html5 windows:windows android:android; do
+          for channel in web:html5 windows:win64 android:android; do
             folder="build/${channel%%:*}"
             ~/butler/butler push "$folder" "$ITCH_TARGET:${channel##*:}" --userversion "$version"               || echo "::warning::No se pudo subir ${channel##*:} a itch (¿sigue procesando la versión anterior?). Se subirá en el próximo push."
           done
