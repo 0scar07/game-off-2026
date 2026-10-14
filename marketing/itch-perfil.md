@@ -1,6 +1,7 @@
 # Perfil de itch.io
 
 Banner: `itch-banner.png` (960×280).
+Fondo: `itch-background.png` (512×512, en mosaico: *Repeat*).
 
 ## Colores del tema (Edit theme)
 
