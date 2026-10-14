@@ -2,6 +2,7 @@
 
 Banner: `itch-banner.png` (960×280).
 Fondo: `itch-background.png` (512×512, en mosaico: *Repeat*).
+Foto de perfil: `itch-avatar.png` (512×512).
 
 ## Colores del tema (Edit theme)
 
