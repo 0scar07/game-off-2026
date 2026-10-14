@@ -144,3 +144,6 @@ jobs:
           ~/butler/butler push build/web "$ITCH_TARGET:html5" --userversion "$version"
           ~/butler/butler push build/windows "$ITCH_TARGET:windows" --userversion "$version"
           ~/butler/butler push build/android "$ITCH_TARGET:android" --userversion "$version"
+          # Estado de cada canal en itch (los archivos grandes tardan unos minutos en procesarse).
+          sleep 60
+          ~/butler/butler status "$ITCH_TARGET"
