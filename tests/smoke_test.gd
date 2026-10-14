@@ -89,10 +89,12 @@ func _run() -> void:
 	var game := tree.current_scene
 	var orbs := game.get_node("Orbs")
 	_check(orbs.get_child_count() == 5, "hay 5 orbes al empezar")
+	# (Al moverse antes puede haber recogido alguno: se compara con la puntuación actual.)
+	var score_before: int = game.score
 	player.global_position = orbs.get_child(0).global_position
 	await _physics_frames(3)
 	await _frames(2)
-	_check(game.score == 1, "tocar un orbe suma un punto")
+	_check(game.score > score_before, "tocar un orbe suma puntos")
 	_check(orbs.get_child_count() == 5, "aparece un orbe nuevo al recoger otro")
 
 	# Hitstop: congela y luego vuelve a la velocidad normal.
