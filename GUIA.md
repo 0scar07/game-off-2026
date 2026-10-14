@@ -230,6 +230,8 @@ En la web se guarda en el navegador y funciona igual.
 
 - **Colores de botones y paneles**: abre `assets/theme.tres`. Cada estilo (`button_normal`, `button_hover`...) tiene su color.
 - **Fuente**: descarga una de [Google Fonts](https://fonts.google.com) (licencia OFL, libre), cópiala a `assets/fonts/`, y en `theme.tres` arrástrala a **Default Font**.
+- **Pantalla de carga**: sustituye `assets/splash.png` por tu logo o por la portada del juego, a 1280×720. El color de fondo está en **Proyecto → Configuración → Aplicación → Boot Splash**.
+- **Icono del juego**: sustituye `icon.svg`. Es el que sale en la pestaña del navegador y en Android.
 - **Para pixel art**:
   1. En **Proyecto → Configuración → Pantalla → Ventana**, pon la resolución a **640×360** o **320×180**.
   2. En **Stretch**, deja Mode `canvas_items` y Aspect `expand`.

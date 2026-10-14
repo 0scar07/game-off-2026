@@ -15,6 +15,10 @@ config/description="Plantilla base para el Game Off 2026."
 run/main_scene="res://scenes/menus/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
+boot_splash/bg_color=Color(0.113725, 0.105882, 0.180392, 1)
+boot_splash/image="res://assets/splash.png"
+boot_splash/fullsize=false
+boot_splash/use_filter=true
 
 [audio]
 
