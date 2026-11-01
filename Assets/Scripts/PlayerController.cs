@@ -31,7 +31,7 @@ namespace Fase
         public float killHeight = -12f;
 
         [Header("Dibujo")]
-        [Tooltip("Modelo o sprite que se gira al cambiar de dirección.")]
+        [Tooltip("Modelo que se gira hacia donde camina.")]
         public Transform visual;
         public Animator animator;
 
@@ -42,9 +42,8 @@ namespace Fase
         Vector3 checkpoint;
         float coyoteLeft, bufferLeft;
         bool grounded;
-
-        static readonly int SpeedId = Animator.StringToHash("Speed");
-        static readonly int GroundedId = Animator.StringToHash("Grounded");
+        float facing = 1f;
+        string currentState = "";
 
         void Awake()
         {
@@ -62,10 +61,28 @@ namespace Fase
             if (JumpPressed()) bufferLeft = jumpBuffer;
             else bufferLeft -= Time.deltaTime;
 
-            if (animator != null)
+            Animate();
+        }
+
+        /// <summary>
+        /// Elige la animación (idle, walk, jump, fall) y gira el modelo hacia donde camina.
+        /// Los estados del Animator se llaman igual que las animaciones del modelo de Kenney.
+        /// </summary>
+        void Animate()
+        {
+            Vector2 v = body.linearVelocity;
+            if (visual != null && Mathf.Abs(v.x) > 0.3f) facing = Mathf.Sign(v.x);
+            if (visual != null)
+                visual.localRotation = Quaternion.Slerp(visual.localRotation,
+                    Quaternion.Euler(0f, facing * 90f, 0f), Time.deltaTime * 14f);
+
+            if (animator == null || animator.runtimeAnimatorController == null) return;
+            string state = !grounded ? (v.y > 0.5f ? "jump" : "fall")
+                : Mathf.Abs(v.x) > 0.5f ? "walk" : "idle";
+            if (state != currentState)
             {
-                animator.SetFloat(SpeedId, Mathf.Abs(body.linearVelocity.x));
-                animator.SetBool(GroundedId, grounded);
+                animator.CrossFadeInFixedTime(state, 0.1f);
+                currentState = state;
             }
         }
 
@@ -91,13 +108,6 @@ namespace Fase
                 v.y += Physics2D.gravity.y * (fallMultiplier - 1f) * body.gravityScale * Time.fixedDeltaTime;
             v.y = Mathf.Max(v.y, -maxFallSpeed);
             body.linearVelocity = v;
-
-            if (visual != null && Mathf.Abs(input) > 0.01f)
-            {
-                Vector3 s = visual.localScale;
-                s.x = Mathf.Abs(s.x) * Mathf.Sign(input);
-                visual.localScale = s;
-            }
 
             if (IsCrushed() || transform.position.y < killHeight) Die();
         }

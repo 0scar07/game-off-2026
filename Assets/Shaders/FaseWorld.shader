@@ -109,8 +109,8 @@ Shader "Fase/World"
 
                 // Borde brillante junto a la línea.
                 float2 uv = GetNormalizedScreenSpaceUV(input.positionCS);
-                half edge = saturate(1.0 - abs(uv.x - _ShiftScreenX) * _ScreenParams.x / 40.0);
-                color += edge * half3(1.0, 0.85, 0.6) * 0.35;
+                half edge = pow(saturate(1.0 - abs(uv.x - _ShiftScreenX) * _ScreenParams.x / 30.0), 3.0);
+                color += edge * (night ? half3(0.45, 0.55, 1.0) : half3(1.0, 0.9, 0.7)) * 0.45;
 
                 return half4(MixFog(color, input.fog), 1);
             }
