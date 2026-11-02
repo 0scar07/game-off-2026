@@ -146,6 +146,8 @@ public static class TestLevelBuilder
         animator.runtimeAnimatorController = HeroAnimator();
         controller.animator = animator;
 
+        BuildMobileUi();
+
         // Cámara lateral en perspectiva (2.5D).
         var cameraObject = new GameObject("Camara") { tag = "MainCamera" };
         cameraObject.transform.position = new Vector3(-8f, 3f, -18f);
@@ -168,6 +170,64 @@ public static class TestLevelBuilder
         }
         AssetDatabase.SaveAssets();
         Debug.Log("Nivel de prueba creado en " + ScenePath + ". Dale a Play.");
+    }
+
+    // ───────────────────────── Interfaz táctil ─────────────────────────
+
+    /// <summary>
+    /// Botones de moverse (abajo a la izquierda) y saltar (abajo a la derecha). Solo se ven en
+    /// móviles (MobileControls). La línea se mueve arrastrándola con otro dedo.
+    /// </summary>
+    static void BuildMobileUi()
+    {
+        var events = new GameObject("EventSystem");
+        events.AddComponent<UnityEngine.EventSystems.EventSystem>();
+        events.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+
+        var canvasObject = new GameObject("ControlesMovil");
+        var canvas = canvasObject.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        var scaler = canvasObject.AddComponent<UnityEngine.UI.CanvasScaler>();
+        scaler.uiScaleMode = UnityEngine.UI.CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+        scaler.matchWidthOrHeight = 1f;
+        canvasObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+        canvasObject.AddComponent<MobileControls>();
+
+        var knob = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/Knob.psd");
+        var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        TouchButton(canvasObject.transform, "Izquierda", MobileButton.Kind.Left, new Vector2(0f, 0f), new Vector2(190f, 190f), "◄", knob, font);
+        TouchButton(canvasObject.transform, "Derecha", MobileButton.Kind.Right, new Vector2(0f, 0f), new Vector2(440f, 190f), "►", knob, font);
+        TouchButton(canvasObject.transform, "Saltar", MobileButton.Kind.Jump, new Vector2(1f, 0f), new Vector2(-220f, 220f), "▲", knob, font, 260f);
+    }
+
+    static void TouchButton(Transform parent, string name, MobileButton.Kind kind, Vector2 anchor, Vector2 position,
+        string label, Sprite sprite, Font font, float size = 210f)
+    {
+        var button = new GameObject(name, typeof(RectTransform));
+        button.transform.SetParent(parent, false);
+        var rect = (RectTransform)button.transform;
+        rect.anchorMin = rect.anchorMax = anchor;
+        rect.anchoredPosition = position;
+        rect.sizeDelta = new Vector2(size, size);
+        var image = button.AddComponent<UnityEngine.UI.Image>();
+        image.sprite = sprite;
+        image.color = new Color(1f, 1f, 1f, 0.28f);
+        button.AddComponent<MobileButton>().kind = kind;
+
+        var text = new GameObject("Texto", typeof(RectTransform));
+        text.transform.SetParent(button.transform, false);
+        var textRect = (RectTransform)text.transform;
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = textRect.offsetMax = Vector2.zero;
+        var t = text.AddComponent<UnityEngine.UI.Text>();
+        t.text = label;
+        t.font = font;
+        t.fontSize = (int)(size * 0.38f);
+        t.alignment = TextAnchor.MiddleCenter;
+        t.color = new Color(1f, 1f, 1f, 0.9f);
+        t.raycastTarget = false;
     }
 
     // ───────────────────────── Colisiones ─────────────────────────

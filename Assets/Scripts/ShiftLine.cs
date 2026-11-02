@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace Fase
@@ -34,7 +33,7 @@ namespace Fase
         [Tooltip("Límites de la línea en este nivel.")]
         public float minX = -20f, maxX = 20f;
         [Tooltip("Distancia (en unidades) a la que se puede agarrar la línea con el dedo o el ratón.")]
-        public float grabDistance = 1.2f;
+        public float grabDistance = 1.8f;
         [Tooltip("Posición inicial.")]
         public float x;
 
@@ -43,7 +42,9 @@ namespace Fase
         static readonly int DayOnLeftId = Shader.PropertyToID("_DayOnLeft");
 
         Camera cam;
-        bool dragging;
+        int dragTouch = -1;
+        bool draggingMouse;
+        float grabOffset;
 
         void Awake()
         {
@@ -82,25 +83,58 @@ namespace Fase
             return cam.WorldToViewportPoint(new Vector3(x, cam.transform.position.y, 0f)).x;
         }
 
-        /// <summary>Arrastrar la línea. En el móvil vale cualquier dedo que empiece cerca de ella.</summary>
+        /// <summary>
+        /// Arrastrar la línea. En el móvil vale cualquier dedo que empiece cerca de ella, aunque
+        /// otro dedo esté pulsando los botones de moverse o saltar.
+        /// </summary>
         void HandleDrag()
         {
-            var pointer = Pointer.current;
-            if (pointer == null || cam == null) return;
+            if (cam == null) return;
 
-            Vector2 screen = pointer.position.ReadValue();
-            float worldX = cam.ScreenToWorldPoint(new Vector3(screen.x, screen.y, -cam.transform.position.z)).x;
+            var touchscreen = Touchscreen.current;
+            if (touchscreen != null)
+            {
+                bool anyTouch = false;
+                foreach (var touch in touchscreen.touches)
+                {
+                    if (!touch.press.isPressed) continue;
+                    anyTouch = true;
+                    int id = touch.touchId.ReadValue();
+                    Vector2 position = touch.position.ReadValue();
+                    if (dragTouch < 0 && touch.press.wasPressedThisFrame && TryGrab(position)) dragTouch = id;
+                    if (id == dragTouch) x = ToWorldX(position) - grabOffset;
+                }
+                if (dragTouch >= 0 && !TouchHeld(touchscreen, dragTouch)) dragTouch = -1;
+                if (anyTouch) return;
+            }
 
-            if (pointer.press.wasPressedThisFrame && Mathf.Abs(worldX - x) <= grabDistance && !OverUi())
-                dragging = true;
-            if (!pointer.press.isPressed)
-                dragging = false;
-            if (dragging)
-                x = worldX;
+            var mouse = Mouse.current;
+            if (mouse == null) return;
+            Vector2 screen = mouse.position.ReadValue();
+            if (mouse.leftButton.wasPressedThisFrame && TryGrab(screen)) draggingMouse = true;
+            if (!mouse.leftButton.isPressed) draggingMouse = false;
+            if (draggingMouse) x = ToWorldX(screen) - grabOffset;
         }
 
-        /// <summary>Si se toca un botón de la interfaz (saltar, pausa...), no se agarra la línea.</summary>
-        static bool OverUi() => EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        bool TryGrab(Vector2 screen)
+        {
+            if (MobileButton.Contains(screen)) return false;
+            float worldX = ToWorldX(screen);
+            if (Mathf.Abs(worldX - x) > grabDistance) return false;
+            grabOffset = worldX - x;
+            return true;
+        }
+
+        static bool TouchHeld(Touchscreen touchscreen, int id)
+        {
+            foreach (var touch in touchscreen.touches)
+                if (touch.press.isPressed && touch.touchId.ReadValue() == id) return true;
+            return false;
+        }
+
+        /// <summary>X en el plano del juego (z = 0) bajo un punto de la pantalla.</summary>
+        float ToWorldX(Vector2 screen) =>
+            cam.ScreenToWorldPoint(new Vector3(screen.x, screen.y, -cam.transform.position.z)).x;
 
         void Apply()
         {
