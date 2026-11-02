@@ -1,0 +1,50 @@
+# Sube la versión web de FASE a itch.io cuando se publica una release con el archivo FASE-web.zip.
+#
+# Cómo usarlo:
+#   1. En Unity: menú Fase → Exportar web (genera Builds/Web).
+#   2. Comprimir Builds/Web en Builds/FASE-web.zip (rutas con "/").
+#   3. gh release create web-AAAAMMDD-N Builds/FASE-web.zip --target fase --title "Web ..."
+#
+# Usa los mismos ajustes del repo que la plantilla de Godot:
+#   Secret   BUTLER_API_KEY   clave de API de itch.io
+#   Variable ITCH_USER        usuario de itch.io
+#   Variable ITCH_GAME        parte final de la URL del juego
+# Unity no se instala aquí: la exportación se hace en el PC y aquí solo se sube.
+
+name: Subir web a itch
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release con el FASE-web.zip"
+        required: true
+
+jobs:
+  upload:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - name: Descargar FASE-web.zip de la release
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern FASE-web.zip
+          mkdir web && unzip -q FASE-web.zip -d web
+          test -f web/index.html
+          ls -la web web/Build
+
+      - name: Subir a itch.io (canal html5)
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+          ITCH_TARGET: ${{ vars.ITCH_USER }}/${{ vars.ITCH_GAME }}
+        run: |
+          curl -fsSL -o /tmp/butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q /tmp/butler.zip -d ~/butler
+          chmod +x ~/butler/butler
+          ~/butler/butler push web "$ITCH_TARGET:html5" --userversion "$TAG"
+          sleep 30
+          ~/butler/butler status "$ITCH_TARGET"
