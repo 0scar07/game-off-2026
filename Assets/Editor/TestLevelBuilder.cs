@@ -194,7 +194,28 @@ public static class TestLevelBuilder
         audio.appearNight = Clip(Sfx + "glass_001.ogg");
         audio.vanish = Clip(Sfx + "glass_004.ogg");
         audio.goal = Clip("Assets/Audio/Jingles/jingles_PIZZI00.ogg");
+
+        // Música propia (Tools/musica.py): comprimida en memoria, que es lo que mejor va en la web.
+        foreach (string path in new[] { Music + "dia.wav", Music + "noche.wav" })
+        {
+            var importer = (AudioImporter)AssetImporter.GetAtPath(path);
+            if (importer == null) continue;
+            var settings = importer.defaultSampleSettings;
+            if (settings.loadType != AudioClipLoadType.CompressedInMemory || settings.compressionFormat != AudioCompressionFormat.Vorbis)
+            {
+                settings.loadType = AudioClipLoadType.CompressedInMemory;
+                settings.compressionFormat = AudioCompressionFormat.Vorbis;
+                settings.quality = 0.6f;
+                importer.defaultSampleSettings = settings;
+                importer.SaveAndReimport();
+            }
+        }
+        var music = audio.gameObject.AddComponent<MusicLayers>();
+        music.day = Clip(Music + "dia.wav");
+        music.night = Clip(Music + "noche.wav");
     }
+
+    const string Music = "Assets/Audio/Music/";
 
     static AudioClip Clip(string path)
     {
