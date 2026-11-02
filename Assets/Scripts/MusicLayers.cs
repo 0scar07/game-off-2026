@@ -15,7 +15,7 @@ namespace Fase
         public AudioClip ambienceDay;
         public AudioClip ambienceNight;
         [Range(0f, 1f)] public float volume = 0.55f;
-        [Range(0f, 1f)] public float ambienceVolume = 0.45f;
+        [Range(0f, 1f)] public float ambienceVolume = 0.3f;
         [Tooltip("Lo rápido que sigue el volumen a la línea.")]
         public float smoothing = 6f;
 
