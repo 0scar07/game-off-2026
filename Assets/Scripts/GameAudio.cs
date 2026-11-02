@@ -25,8 +25,11 @@ namespace Fase
         public AudioClip appearNight;
         public AudioClip vanish;
 
-        [Header("Meta")]
+        [Header("Nivel")]
         public AudioClip goal;
+        public AudioClip collect;
+        public AudioClip checkpoint;
+        public AudioClip bounce;
 
         [Range(0f, 1f)] public float volume = 0.8f;
 
@@ -58,6 +61,9 @@ namespace Fase
             GameEvents.PieceAppeared += OnPieceAppeared;
             GameEvents.PieceVanished += OnPieceVanished;
             GameEvents.GoalReached += OnGoal;
+            GameEvents.Collected += OnCollected;
+            GameEvents.CheckpointReached += OnCheckpoint;
+            GameEvents.Bounced += OnBounced;
         }
 
         void OnDisable()
@@ -72,6 +78,9 @@ namespace Fase
             GameEvents.PieceAppeared -= OnPieceAppeared;
             GameEvents.PieceVanished -= OnPieceVanished;
             GameEvents.GoalReached -= OnGoal;
+            GameEvents.Collected -= OnCollected;
+            GameEvents.CheckpointReached -= OnCheckpoint;
+            GameEvents.Bounced -= OnBounced;
         }
 
         void OnStep(bool night) => Play(Pick(night ? stepsNight : stepsDay), 0.35f, 0.12f);
@@ -82,6 +91,9 @@ namespace Fase
         void OnLineReleased() => Play(lineRelease, 0.45f, 0.05f);
         void OnLineTick() => Play(lineTick, 0.18f, 0.15f);
         void OnGoal() => Play(goal, 0.9f, 0f);
+        void OnCollected() => Play(collect, 0.7f, 0.05f, 1.2f);
+        void OnCheckpoint() => Play(checkpoint, 0.6f, 0f);
+        void OnBounced() => Play(bounce, 0.6f, 0.08f, 0.75f);
 
         // Muchas piezas pueden cambiar a la vez: como mucho un sonido cada 0,08 s.
         void OnPieceAppeared(Vector3 at, World world)

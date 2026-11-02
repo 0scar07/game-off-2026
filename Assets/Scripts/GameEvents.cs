@@ -19,6 +19,9 @@ namespace Fase
         public static event Action<Vector3, World> PieceAppeared;
         public static event Action<Vector3, World> PieceVanished;
         public static event Action GoalReached;
+        public static event Action Collected;
+        public static event Action CheckpointReached;
+        public static event Action Bounced;
 
         public static void RaiseJumped() => Jumped?.Invoke();
         public static void RaiseLanded(float fallSpeed) => Landed?.Invoke(fallSpeed);
@@ -30,5 +33,8 @@ namespace Fase
         public static void RaisePieceAppeared(Vector3 at, World world) => PieceAppeared?.Invoke(at, world);
         public static void RaisePieceVanished(Vector3 at, World world) => PieceVanished?.Invoke(at, world);
         public static void RaiseGoalReached() => GoalReached?.Invoke();
+        public static void RaiseCollected() => Collected?.Invoke();
+        public static void RaiseCheckpoint() => CheckpointReached?.Invoke();
+        public static void RaiseBounced() => Bounced?.Invoke();
     }
 }

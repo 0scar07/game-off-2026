@@ -1,0 +1,16 @@
+nombre: Noche estrellada
+pista: Lo que brilla en azul solo existe de noche.
+linea: 30
+---
+
+
+
+                  *
+
+
+                 nn
+             nn      nn
+  S      nn                    G
+########                 #########
+########                 #########
+########                 #########

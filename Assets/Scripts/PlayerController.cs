@@ -126,6 +126,14 @@ namespace Fase
             if (IsCrushed() || transform.position.y < killHeight) Die();
         }
 
+        /// <summary>Impulso hacia arriba (flor-muelle). Cuenta como salto para el coyote y el búfer.</summary>
+        public void Bounce(float upSpeed)
+        {
+            body.linearVelocity = new Vector2(body.linearVelocity.x, upSpeed);
+            coyoteLeft = 0f;
+            bufferLeft = 0f;
+        }
+
         public void Die()
         {
             body.linearVelocity = Vector2.zero;

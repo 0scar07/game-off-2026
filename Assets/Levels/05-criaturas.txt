@@ -1,0 +1,16 @@
+nombre: Criaturas
+pista: Las criaturas de la noche duermen cuando es de día.
+linea: 3
+---
+
+
+
+
+                         *
+
+
+                          nn
+  S           M        nn    C       M    G
+######################      ################
+######################      ################
+######################      ################

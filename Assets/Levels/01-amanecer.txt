@@ -1,0 +1,16 @@
+nombre: Amanecer
+pista: A la izquierda de la línea es de día; a la derecha, de noche.\nMuévela con Shift (o Q/E), o arrastrándola.
+linea: 4
+---
+
+
+
+
+
+
+             *
+
+  S                        G
+##########dddddd##############
+##########      ##############
+##########      ##############

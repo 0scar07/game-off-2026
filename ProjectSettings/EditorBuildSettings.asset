@@ -6,10 +6,22 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Prueba.unity
-    guid: 7d7bb8940941ad943802eb47bd15a536
+    path: Assets/Scenes/Niveles/01-amanecer.unity
+    guid: a552aad5830f7f24eb57977ebec31121
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Niveles/02-noche-estrellada.unity
+    guid: 7098725f1d68eb84f908185607370bd5
+  - enabled: 1
+    path: Assets/Scenes/Niveles/03-las-dos-mitades.unity
+    guid: 86a63b20e06f57d4ea2f2f5c6b683039
+  - enabled: 1
+    path: Assets/Scenes/Niveles/04-lago-helado.unity
+    guid: 7fe800dfcfbdf0b4285cd0909338aa91
+  - enabled: 1
+    path: Assets/Scenes/Niveles/05-criaturas.unity
+    guid: 4755eed1865a5374db8ff7999800942a
+  - enabled: 1
+    path: Assets/Scenes/Niveles/06-todo-a-la-vez.unity
+    guid: 516f18ba9b06d2d4985c39f0e5fd6a3f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

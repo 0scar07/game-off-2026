@@ -1,0 +1,16 @@
+nombre: Las dos mitades
+pista: Deja el puente de día y el hielo de noche a la vez.
+linea: 3
+---
+
+
+
+
+                    *
+                               N
+                               N
+                     nn        N
+  S              nn        C   N     G
+#########dddddd          ###############
+#########                ###############
+#########                ###############
