@@ -14,6 +14,10 @@ linea: 4
 
 `linea` es la columna donde empieza la línea. A su izquierda es de día y a su derecha de noche.
 
+Opcionales:
+- `dia: derecha` — el mundo al revés: de día a la derecha de la línea y de noche a la izquierda.
+- `limites: 10 30` — la línea solo puede moverse entre esas columnas (se marcan con postes rojos).
+
 ## Mapa
 
 Cada letra es una casilla de 1×1. El personaje mide 2 casillas de alto, salta unas 2,5 casillas hacia arriba y unas 4 de lado. La fila de más abajo está en el suelo del mundo; si caes por debajo, vuelves al último punto de control.

@@ -1,0 +1,16 @@
+nombre: Guardianes
+pista: Si no puedes evitarla, duérmela... o sáltala.
+linea: 40
+---
+
+
+
+
+
+                        *
+
+
+  S                C     M               G
+##########nnnnnnnn############nnnnnn########
+##########        ############      ########
+##########^^^^^^^^############^^^^^^########

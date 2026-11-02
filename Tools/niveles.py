@@ -33,9 +33,10 @@ class Map:
         return "\n".join("".join(row).rstrip() for row in self.grid)
 
 
-def save(file, name, hint, line, m):
+def save(file, name, hint, line, m, extra=""):
+    """`extra`: cabeceras opcionales, por ejemplo "dia: derecha\\n" o "limites: 10 18\\n"."""
     os.makedirs(OUT, exist_ok=True)
-    body = f"nombre: {name}\npista: {hint}\nlinea: {line}\n---\n{m.text()}\n"
+    body = f"nombre: {name}\npista: {hint}\nlinea: {line}\n{extra}---\n{m.text()}\n"
     with open(os.path.join(OUT, file), "w", encoding="utf-8", newline="\n") as f:
         f.write(body)
     print(f"== {file}: {name}\n{m.text()}\n")
@@ -91,3 +92,46 @@ m.ground(r(32, 40), 6).fill("n", r(41, 46), [6]).ground(r(47, 55), 6)
 m.put("S", 2, 8).put("C", 27, 8).put("C", 36, 5).put("G", 53, 5).put("*", 17, 5)
 save("06-todo-a-la-vez.txt", "Todo a la vez",
      "Paso a paso: cada tramo pide la línea en un sitio distinto.", 3, m)
+
+# 7. Al revés: aquí el día está a la DERECHA de la línea.
+m = Map(36).ground(r(0, 7)).fill("d", r(8, 13), [9]).ground(r(14, 19)).ground(r(28, 35))
+m.fill("n", r(21, 22), [8]).fill("n", r(25, 26), [7])
+m.put("S", 2, 8).put("C", 16, 8).put("G", 33, 8).put("*", 24, 4)
+save("07-al-reves.txt", "Al revés",
+     "Cuidado: aquí el día está a la DERECHA de la línea.", 30, m, "dia: derecha\n")
+
+# 8. La torre: subir en zigzag por cajas (día) y hielo (noche) con la línea atrapada en medio.
+m = Map(30).ground(r(0, 29))
+m.fill("D", r(11, 12), [8]).fill("N", r(15, 16), [7]).fill("D", r(11, 12), [5]).fill("N", r(15, 16), [3])
+m.fill("#", r(20, 27), [1])
+m.put("S", 2, 8).put("G", 25, 0).put("*", 13, 1)
+save("08-la-torre.txt", "La torre",
+     "La línea no puede salir de entre los postes rojos.\\nSube en zigzag.", 10, m, "limites: 10 18\n")
+
+# 9. Guardianes: cruza el hielo y duerme (o salta) a la criatura antes de que te alcance.
+m = Map(44).ground(r(0, 9)).fill("n", r(10, 17), [9]).fill("^", r(10, 17), [11])
+m.ground(r(18, 29)).fill("n", r(30, 35), [9]).fill("^", r(30, 35), [11]).ground(r(36, 43))
+m.put("M", 25, 8)
+m.put("S", 2, 8).put("C", 19, 8).put("G", 41, 8).put("*", 24, 5)
+save("09-guardianes.txt", "Guardianes",
+     "Si no puedes evitarla, duérmela... o sáltala.", 40, m)
+
+# 10. Río nocturno: flor de día y lago de noche, uno a cada lado de la línea.
+m = Map(44).ground(r(0, 7)).fill("~", r(8, 15), [9]).ground(r(8, 15), 10).ground(r(16, 20))
+m.ground(r(21, 22), 4).ground(r(23, 25)).fill("~", r(26, 33), [9]).ground(r(26, 33), 10).ground(r(34, 43))
+m.put("F", 18, 8)
+m.put("S", 2, 8).put("C", 17, 8).put("G", 41, 8).put("*", 21, 2)
+save("10-rio-nocturno.txt", "Río nocturno",
+     "Una cosa a cada lado de la línea.", 12, m, "limites: 4 25\n")
+
+# 11. Eclipse: el final. Todo lo aprendido, tres fragmentos de luna.
+m = Map(64).ground(r(0, 7)).fill("~", r(8, 13), [9]).ground(r(8, 13), 10).ground(r(14, 19))
+m.put("D", 18, 8).put("D", 19, 7).ground(r(20, 27), 6)
+m.put("M", 24, 5)
+m.fill("n", r(28, 33), [6]).ground(r(34, 41), 6).fill("^", r(37, 38), [5]).put("F", 40, 5)
+m.ground(r(43, 50), 2).ground(r(51, 63))
+m.put("M", 57, 8)
+m.put("S", 2, 8).put("C", 15, 8).put("C", 35, 5).put("C", 52, 8).put("G", 62, 8)
+m.put("*", 11, 5).put("*", 24, 2).put("*", 47, 0)
+save("11-eclipse.txt", "Eclipse",
+     "El último paso. Usa todo lo que has aprendido.", 3, m)

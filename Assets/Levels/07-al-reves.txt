@@ -1,0 +1,17 @@
+nombre: Al revés
+pista: Cuidado: aquí el día está a la DERECHA de la línea.
+linea: 30
+dia: derecha
+---
+
+
+
+
+                        *
+
+
+                         nn
+  S             C    nn          G
+########dddddd######        ########
+########      ######        ########
+########      ######        ########

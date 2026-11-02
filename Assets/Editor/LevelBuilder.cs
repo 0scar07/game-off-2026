@@ -44,6 +44,8 @@ public static class LevelBuilder
     {
         public string file, name = "", hint = "";
         public float line;
+        public bool dayOnLeft = true;
+        public float minLine = float.NaN, maxLine = float.NaN;
         public string[] rows;
         public int Width => rows.Max(r => r.Length);
         public int Height => rows.Length;
@@ -91,6 +93,13 @@ public static class LevelBuilder
             if (key == "nombre") level.name = value;
             else if (key == "pista") level.hint = value.Replace("\\n", "\n");
             else if (key == "linea") level.line = float.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            else if (key == "dia") level.dayOnLeft = value.ToLowerInvariant() != "derecha";
+            else if (key == "limites")
+            {
+                var parts = value.Split(new[] { ' ', '-', ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+                level.minLine = float.Parse(parts[0], System.Globalization.CultureInfo.InvariantCulture);
+                level.maxLine = float.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture);
+            }
         }
         // Las filas vacías también cuentan (son aire); solo se quitan las del final del archivo.
         var rows = lines.Skip(separator + 1).Select(l => l.TrimEnd()).ToList();
@@ -111,8 +120,10 @@ public static class LevelBuilder
         BuildLight();
         var line = new GameObject("Linea").AddComponent<ShiftLine>();
         line.x = level.line;
-        line.minX = 0.5f;
-        line.maxX = width - 0.5f;
+        line.dayOnLeft = level.dayOnLeft;
+        line.minX = float.IsNaN(level.minLine) ? 0.5f : level.minLine;
+        line.maxX = float.IsNaN(level.maxLine) ? width - 0.5f : level.maxLine;
+        if (!float.IsNaN(level.minLine)) BuildLimits(line.minX, line.maxX);
         var lineVisual = Primitive(PrimitiveType.Cube, "DibujoLinea", new Vector3(0f, 5f, -1.6f), new Vector3(0.1f, 80f, 0.1f),
             Flat("Linea", Both, new Color(1.8f, 1.6f, 1.2f)));
         lineVisual.AddComponent<LineVisual>();
@@ -164,6 +175,15 @@ public static class LevelBuilder
         string path = $"{ScenesFolder}/{Path.GetFileNameWithoutExtension(level.file)}.unity";
         EditorSceneManager.SaveScene(scene, path);
         return path;
+    }
+
+    /// <summary>Hasta dónde puede llegar la línea en este nivel: dos postes rojizos punteados.</summary>
+    static void BuildLimits(float min, float max)
+    {
+        var mat = Flat("Limite", Both, new Color(0.9f, 0.25f, 0.2f));
+        foreach (float x in new[] { min, max })
+            for (int i = -2; i < 16; i++)
+                Primitive(PrimitiveType.Cube, "Limite", new Vector3(x, i + 0.25f, -1.3f), new Vector3(0.06f, 0.5f, 0.06f), mat);
     }
 
     static bool IsRunChar(char c) => c == '#' || c == 'D' || c == 'N' || c == 'd' || c == 'n' || c == '~';

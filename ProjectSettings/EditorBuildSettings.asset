@@ -23,5 +23,20 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Niveles/06-todo-a-la-vez.unity
     guid: 516f18ba9b06d2d4985c39f0e5fd6a3f
+  - enabled: 1
+    path: Assets/Scenes/Niveles/07-al-reves.unity
+    guid: 16675086a7daaa24bbbb2a5ec3310f36
+  - enabled: 1
+    path: Assets/Scenes/Niveles/08-la-torre.unity
+    guid: e22a5cf6f25cb6f46be86bc2343b6e35
+  - enabled: 1
+    path: Assets/Scenes/Niveles/09-guardianes.unity
+    guid: e6659e969e15ab14e806d74017dbf934
+  - enabled: 1
+    path: Assets/Scenes/Niveles/10-rio-nocturno.unity
+    guid: 514d2a4055eb8fc43988120f30b3fc34
+  - enabled: 1
+    path: Assets/Scenes/Niveles/11-eclipse.unity
+    guid: 9e2bb6e8747b9ea45ae40277597de348
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
