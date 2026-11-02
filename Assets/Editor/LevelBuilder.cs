@@ -21,7 +21,7 @@ using UnityEngine.UI;
 ///   ---
 ///   (mapa: una letra por casilla de 1×1; abajo del todo es el suelo)
 /// </summary>
-public static class LevelBuilder
+public static partial class LevelBuilder
 {
     const string LevelsFolder = "Assets/Levels";
     const string ScenesFolder = "Assets/Scenes/Niveles";
@@ -65,14 +65,16 @@ public static class LevelBuilder
         if (files.Length == 0) { Debug.LogWarning("No hay niveles en " + LevelsFolder); return; }
         if (!AssetDatabase.IsValidFolder(ScenesFolder)) AssetDatabase.CreateFolder("Assets/Scenes", "Niveles");
 
-        var scenes = new List<EditorBuildSettingsScene>();
+        // Orden del juego: Menu, niveles..., Final.
         var levels = files.Select(Parse).ToList();
+        var scenes = new List<EditorBuildSettingsScene> { new EditorBuildSettingsScene(BuildMenu(levels), true) };
         for (int i = 0; i < levels.Count; i++)
         {
-            string next = Path.GetFileNameWithoutExtension(levels[(i + 1) % levels.Count].file);
+            string next = i + 1 < levels.Count ? Path.GetFileNameWithoutExtension(levels[i + 1].file) : FinalScene;
             string path = Build(levels[i], i + 1, next);
             scenes.Add(new EditorBuildSettingsScene(path, true));
         }
+        scenes.Add(new EditorBuildSettingsScene(BuildFinal(levels), true));
         EditorBuildSettings.scenes = scenes.ToArray();
         AssetDatabase.SaveAssets();
         EditorSceneManager.OpenScene(scenes[0].path);
@@ -114,6 +116,23 @@ public static class LevelBuilder
     {
         materialCache.Clear();
         var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        var (start, fragments, _) = BuildWorld(level, nextScene);
+
+        var body = BuildHero(start);
+        BuildCamera(body, level.Width);
+        BuildAudio();
+        BuildHud(level, number, fragments);
+        BuildMobileUi();
+        BuildPause();
+
+        string path = $"{ScenesFolder}/{Path.GetFileNameWithoutExtension(level.file)}.unity";
+        EditorSceneManager.SaveScene(scene, path);
+        return path;
+    }
+
+    /// <summary>Luz, línea, cielo y todo lo del mapa. Devuelve la salida, los fragmentos y la línea.</summary>
+    static (Vector3 start, int fragments, ShiftLine line) BuildWorld(Level level, string nextScene)
+    {
         int width = level.Width;
         var random = new System.Random(level.name.GetHashCode());
 
@@ -165,16 +184,7 @@ public static class LevelBuilder
                     Decorate(cell + Vector3.up, random, decor);
             }
         }
-
-        var body = BuildHero(start);
-        BuildCamera(body, width);
-        BuildAudio();
-        BuildHud(level, number, fragments);
-        BuildMobileUi();
-
-        string path = $"{ScenesFolder}/{Path.GetFileNameWithoutExtension(level.file)}.unity";
-        EditorSceneManager.SaveScene(scene, path);
-        return path;
+        return (start, fragments, line);
     }
 
     /// <summary>Hasta dónde puede llegar la línea en este nivel: dos postes rojizos punteados.</summary>
@@ -495,13 +505,14 @@ public static class LevelBuilder
     {
         var canvas = NewCanvas("Interfaz", 0).transform;
         var hud = canvas.gameObject.AddComponent<Hud>();
+        hud.levelNumber = number;
         hud.levelName = $"{number}. {level.name}";
         hud.hint = level.hint;
         hud.fragmentsTotal = fragments;
         hud.title = Label(canvas, "Titulo", new Vector2(0.5f, 0.5f), new Vector2(0f, 220f), new Vector2(1600f, 140f), 96, TextAnchor.MiddleCenter);
         hud.hintText = Label(canvas, "Pista", new Vector2(0.5f, 0.5f), new Vector2(0f, 110f), new Vector2(1500f, 140f), 44, TextAnchor.MiddleCenter);
         hud.corner = Label(canvas, "Esquina", new Vector2(0f, 1f), new Vector2(40f, -30f), new Vector2(900f, 60f), 38, TextAnchor.UpperLeft);
-        hud.counter = Label(canvas, "Contador", new Vector2(1f, 1f), new Vector2(-40f, -30f), new Vector2(500f, 60f), 40, TextAnchor.UpperRight);
+        hud.counter = Label(canvas, "Contador", new Vector2(1f, 1f), new Vector2(-170f, -30f), new Vector2(500f, 60f), 40, TextAnchor.UpperRight);
         hud.banner = Label(canvas, "Aviso", new Vector2(0.5f, 0.5f), new Vector2(0f, 120f), new Vector2(1600f, 240f), 100, TextAnchor.MiddleCenter);
     }
 

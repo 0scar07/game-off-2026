@@ -1,0 +1,64 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+
+namespace Fase
+{
+    /// <summary>
+    /// Pausa: Esc / P / Start del mando, o el botón II en el móvil. Para el tiempo del juego y
+    /// muestra Continuar, Reiniciar nivel y Menú.
+    /// </summary>
+    public class PauseMenu : MonoBehaviour
+    {
+        public const string MenuScene = "Menu";
+
+        public static bool Paused { get; private set; }
+
+        public GameObject panel;
+
+        void Start() => SetPaused(false);
+
+        void OnDestroy()
+        {
+            Paused = false;
+            Time.timeScale = 1f;
+        }
+
+        void Update()
+        {
+            var kb = Keyboard.current;
+            var pad = Gamepad.current;
+            if ((kb != null && (kb.escapeKey.wasPressedThisFrame || kb.pKey.wasPressedThisFrame))
+                || (pad != null && pad.startButton.wasPressedThisFrame))
+                Toggle();
+        }
+
+        /// <summary>Si la ventana pierde el foco (otra pestaña, otra app), pausar.</summary>
+        void OnApplicationFocus(bool focus)
+        {
+            if (!focus && !Paused) SetPaused(true);
+        }
+
+        public void Toggle() => SetPaused(!Paused);
+        public void Resume() => SetPaused(false);
+
+        public void Restart()
+        {
+            SetPaused(false);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        public void ToMenu()
+        {
+            SetPaused(false);
+            SceneManager.LoadScene(MenuScene);
+        }
+
+        void SetPaused(bool paused)
+        {
+            Paused = paused;
+            Time.timeScale = paused ? 0f : 1f;
+            if (panel != null) panel.SetActive(paused);
+        }
+    }
+}

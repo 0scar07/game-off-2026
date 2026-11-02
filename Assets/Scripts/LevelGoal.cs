@@ -24,6 +24,7 @@ namespace Fase
         {
             if (reached || other.GetComponent<PlayerController>() == null) return;
             reached = true;
+            if (Hud.Instance != null) Progress.Complete(Hud.Instance.levelNumber, Hud.Instance.Fragments);
             GameEvents.RaiseGoalReached();
             StartCoroutine(Finish());
         }

@@ -58,8 +58,9 @@ namespace Fase
         // Mezcla de igual potencia: a mitad de pantalla las dos suenan igual de fuerte, sin bajón.
         void Apply()
         {
-            daySource.volume = Mathf.Cos(nightAmount * Mathf.PI * 0.5f) * volume;
-            nightSource.volume = Mathf.Sin(nightAmount * Mathf.PI * 0.5f) * volume;
+            float master = volume * Progress.MusicVolume;
+            daySource.volume = Mathf.Cos(nightAmount * Mathf.PI * 0.5f) * master;
+            nightSource.volume = Mathf.Sin(nightAmount * Mathf.PI * 0.5f) * master;
         }
     }
 }

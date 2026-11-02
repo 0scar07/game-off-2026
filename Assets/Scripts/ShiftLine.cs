@@ -37,6 +37,10 @@ namespace Fase
         [Tooltip("Posición inicial.")]
         public float x;
 
+        [Header("Movimiento automático (menú y final)")]
+        public bool autoSweep;
+        public float sweepCenter, sweepAmplitude = 6f, sweepSpeed = 0.35f;
+
         static readonly int ShiftXId = Shader.PropertyToID("_ShiftX");
         static readonly int ShiftScreenXId = Shader.PropertyToID("_ShiftScreenX");
         static readonly int DayOnLeftId = Shader.PropertyToID("_DayOnLeft");
@@ -63,6 +67,13 @@ namespace Fase
 
         void Update()
         {
+            if (autoSweep)
+            {
+                // Menú y final: la línea se mueve sola, sin controles.
+                x = Mathf.Clamp(sweepCenter + Mathf.Sin(Time.time * sweepSpeed) * sweepAmplitude, minX, maxX);
+                return;
+            }
+            if (PauseMenu.Paused) return;
             float move = 0f;
             var kb = Keyboard.current;
             if (kb != null)

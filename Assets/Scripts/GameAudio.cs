@@ -119,7 +119,7 @@ namespace Fase
             var source = sources[next];
             next = (next + 1) % Voices;
             source.pitch = pitch * (1f + Random.Range(-pitchVariation, pitchVariation));
-            source.PlayOneShot(clip, clipVolume * volume);
+            source.PlayOneShot(clip, clipVolume * volume * Progress.SfxVolume);
         }
     }
 }

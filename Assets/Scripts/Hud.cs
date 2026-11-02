@@ -10,6 +10,9 @@ namespace Fase
     /// </summary>
     public class Hud : MonoBehaviour
     {
+        public static Hud Instance { get; private set; }
+
+        public int levelNumber = 1;
         public string levelName = "";
         [TextArea] public string hint = "";
         public int fragmentsTotal;
@@ -22,6 +25,10 @@ namespace Fase
 
         int fragments;
         float age;
+
+        public int Fragments => fragments;
+
+        void Awake() => Instance = this;
 
         void OnEnable()
         {
