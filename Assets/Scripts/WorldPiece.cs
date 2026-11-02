@@ -17,6 +17,7 @@ namespace Fase
 
         BoxCollider2D box;
         Vector2 fullSize, fullOffset;
+        bool clippedOnce;
 
         void Awake()
         {
@@ -41,12 +42,15 @@ namespace Fase
             if (onLeft) right = Mathf.Min(right, line);
             else left = Mathf.Max(left, line);
 
-            if (right - left <= 0.01f)
+            bool exists = right - left > 0.01f;
+            if (exists != box.enabled && clippedOnce)
             {
-                box.enabled = false;
-                return;
+                if (exists) GameEvents.RaisePieceAppeared(transform.position, world);
+                else GameEvents.RaisePieceVanished(transform.position, world);
             }
-            box.enabled = true;
+            clippedOnce = true;
+            box.enabled = exists;
+            if (!exists) return;
             box.size = new Vector2((right - left) / Mathf.Abs(scale), fullSize.y);
             box.offset = new Vector2(((left + right) * 0.5f - transform.position.x) / scale, fullOffset.y);
         }

@@ -147,11 +147,13 @@ public static class TestLevelBuilder
         controller.animator = animator;
 
         BuildMobileUi();
+        BuildAudio();
 
         // Cámara lateral en perspectiva (2.5D).
         var cameraObject = new GameObject("Camara") { tag = "MainCamera" };
         cameraObject.transform.position = new Vector3(-8f, 3f, -18f);
         var cam = cameraObject.AddComponent<Camera>();
+        cameraObject.AddComponent<AudioListener>();
         cam.fieldOfView = 35f;
         cam.farClipPlane = 200f;
         cam.clearFlags = CameraClearFlags.SolidColor;
@@ -170,6 +172,42 @@ public static class TestLevelBuilder
         }
         AssetDatabase.SaveAssets();
         Debug.Log("Nivel de prueba creado en " + ScenePath + ". Dale a Play.");
+    }
+
+    // ───────────────────────── Sonido ─────────────────────────
+
+    const string Sfx = "Assets/Audio/Sfx/";
+
+    /// <summary>Efectos de Kenney (CC0) asignados a cada momento del juego.</summary>
+    static void BuildAudio()
+    {
+        var audio = new GameObject("Sonido").AddComponent<GameAudio>();
+        audio.stepsDay = Clips("footstep_grass_00", 5);
+        audio.stepsNight = Clips("footstep_snow_00", 5);
+        audio.jump = Clip(Sfx + "drop_002.ogg");
+        audio.land = Clips("impactSoft_medium_00", 3);
+        audio.die = Clip(Sfx + "error_004.ogg");
+        audio.lineGrab = Clip(Sfx + "maximize_003.ogg");
+        audio.lineRelease = Clip(Sfx + "minimize_003.ogg");
+        audio.lineTick = Clip(Sfx + "switch_005.ogg");
+        audio.appearDay = Clip(Sfx + "pluck_001.ogg");
+        audio.appearNight = Clip(Sfx + "glass_001.ogg");
+        audio.vanish = Clip(Sfx + "glass_004.ogg");
+        audio.goal = Clip("Assets/Audio/Jingles/jingles_PIZZI00.ogg");
+    }
+
+    static AudioClip Clip(string path)
+    {
+        var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+        if (clip == null) Debug.LogWarning("No encuentro el sonido " + path);
+        return clip;
+    }
+
+    static AudioClip[] Clips(string prefix, int count)
+    {
+        var clips = new AudioClip[count];
+        for (int i = 0; i < count; i++) clips[i] = Clip($"{Sfx}{prefix}{i}.ogg");
+        return clips;
     }
 
     // ───────────────────────── Interfaz táctil ─────────────────────────

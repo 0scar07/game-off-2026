@@ -43,6 +43,8 @@ namespace Fase
         float coyoteLeft, bufferLeft;
         bool grounded;
         float facing = 1f;
+        float lastFallSpeed, stepLeft;
+        const float stepInterval = 0.3f;
         string currentState = "";
 
         void Awake()
@@ -88,11 +90,22 @@ namespace Fase
 
         void FixedUpdate()
         {
+            bool wasGrounded = grounded;
             grounded = CheckGround();
             coyoteLeft = grounded ? coyoteTime : coyoteLeft - Time.fixedDeltaTime;
+            if (grounded && !wasGrounded) GameEvents.RaiseLanded(lastFallSpeed);
 
             float input = MoveInput();
             Vector2 v = body.linearVelocity;
+            if (!grounded) lastFallSpeed = Mathf.Max(0f, -v.y);
+
+            // Pasos: hierba en el lado de día, nieve en el de noche.
+            stepLeft -= Time.fixedDeltaTime;
+            if (grounded && Mathf.Abs(v.x) > 1f && stepLeft <= 0f)
+            {
+                GameEvents.RaiseStep(!ShiftLine.IsDay(transform.position.x));
+                stepLeft = stepInterval;
+            }
             float accel = grounded ? acceleration : airAcceleration;
             v.x = Mathf.MoveTowards(v.x, input * speed, accel * Time.fixedDeltaTime);
 
@@ -101,6 +114,7 @@ namespace Fase
                 v.y = jumpSpeed;
                 bufferLeft = 0f;
                 coyoteLeft = 0f;
+                GameEvents.RaiseJumped();
             }
 
             // Cae más rápido de lo que sube, y el salto se corta si se suelta el botón.
@@ -117,6 +131,7 @@ namespace Fase
             body.linearVelocity = Vector2.zero;
             transform.position = checkpoint;
             Died?.Invoke();
+            GameEvents.RaiseDied();
         }
 
         bool CheckGround()

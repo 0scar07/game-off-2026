@@ -45,6 +45,9 @@ namespace Fase
         int dragTouch = -1;
         bool draggingMouse;
         float grabOffset;
+        bool wasHolding;
+        float lastTickX;
+        const float TickDistance = 0.7f;
 
         void Awake()
         {
@@ -71,6 +74,17 @@ namespace Fase
 
             HandleDrag();
             x = Mathf.Clamp(x, minX, maxX);
+
+            // Avisos para el sonido: agarrar, soltar y un clic por cada tramo recorrido.
+            bool holding = move != 0f || dragTouch >= 0 || draggingMouse;
+            if (holding && !wasHolding) { GameEvents.RaiseLineGrabbed(); lastTickX = x; }
+            if (!holding && wasHolding) GameEvents.RaiseLineReleased();
+            wasHolding = holding;
+            if (Mathf.Abs(x - lastTickX) >= TickDistance)
+            {
+                lastTickX = x;
+                GameEvents.RaiseLineTick();
+            }
         }
 
         // Después de que la cámara se mueva (CameraFollow usa LateUpdate con orden 0).
