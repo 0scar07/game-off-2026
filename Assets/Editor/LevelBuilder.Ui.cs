@@ -95,6 +95,27 @@ public static partial class LevelBuilder
         return AssetDatabase.LoadAssetAtPath<Sprite>(path);
     }
 
+    /// <summary>Rectángulo con esquinas suaves (paneles grandes).</summary>
+    static Sprite PanelSprite()
+    {
+        string path = Generated + "panel.png";
+        GeneratedTexture("panel", 96, 96, (u, v) =>
+        {
+            float x = Mathf.Abs(u - 0.5f) * 96f, y = Mathf.Abs(v - 0.5f) * 96f, r = 28f;
+            float dx = Mathf.Max(x - (48f - r), 0f), dy = Mathf.Max(y - (48f - r), 0f);
+            float d = Mathf.Sqrt(dx * dx + dy * dy);
+            return new Color(1f, 1f, 1f, Mathf.Clamp01(r - d + 0.5f));
+        });
+        var importer = (TextureImporter)AssetImporter.GetAtPath(path);
+        if (importer.textureType != TextureImporterType.Sprite)
+        {
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteBorder = new Vector4(32f, 32f, 32f, 32f);
+            importer.SaveAndReimport();
+        }
+        return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+    }
+
     static Canvas NewCanvas(string name, int order)
     {
         var canvasObject = new GameObject(name);
@@ -121,6 +142,8 @@ public static partial class LevelBuilder
         var text = go.AddComponent<Text>();
         text.font = UiFont();
         text.fontSize = fontSize;
+        // La fuente variable (Fredoka) es fina por defecto: los textos grandes, en negrita.
+        if (fontSize >= 40) text.fontStyle = FontStyle.Bold;
         text.alignment = align;
         text.color = Color.white;
         text.raycastTarget = false;

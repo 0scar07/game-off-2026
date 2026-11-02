@@ -222,8 +222,9 @@ public static partial class LevelBuilder
                     bool top = level.At(col, row - 1) != '#';
                     bool leftEnd = level.At(col - 1, row) != '#', rightEnd = level.At(col + 1, row) != '#';
                     string kind = top ? "Grass" : "Dirt";
-                    string piece = leftEnd || rightEnd ? $"Cube_{kind}_1x1End" : $"Cube_{kind}_1x1Center";
-                    if (leftEnd && rightEnd) piece = top ? "Cube_Grass_Single" : "Cube_Dirt_Single";
+                    // Solo la hierba lleva el extremo redondeado; la tierra de debajo, recta (acantilado limpio).
+                    string piece = top && (leftEnd || rightEnd) ? $"Cube_{kind}_1x1End" : $"Cube_{kind}_1x1Center";
+                    if (top && leftEnd && rightEnd) piece = "Cube_Grass_Single";
                     float yaw = leftEnd && !rightEnd ? 180f : 0f;
                     Fit(Quat + piece + ".fbx", new Vector3(col + 0.5f, bottom, 0f), new Vector3(1.02f, 1f, Depth), Both, parent,
                         recolor: ground, yaw: yaw);

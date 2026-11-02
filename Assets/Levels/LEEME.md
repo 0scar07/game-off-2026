@@ -32,7 +32,10 @@ Cada letra es una casilla de 1×1. El personaje mide 2 casillas de alto, salta u
 | `~` | lago: agua que hace perder de día, hielo que se pisa de noche | los dos |
 | `^` | pinchos | los dos |
 | `F` | flor-muelle: te impulsa hacia arriba | día |
-| `M` | criatura que patrulla y hace perder | noche |
+| `M` | Sombra: patrulla y hace perder; de día es de piedra | noche |
+| `B` | Sombra voladora (abeja) que va y viene | noche |
+| `X` | sierra que sube y baja | los dos |
+| `K` | cofre secreto: da un fragmento de luna | los dos |
 | `*` | fragmento de luna (coleccionable) | los dos |
 | `C` | punto de control | los dos |
 | `S` | salida del personaje | — |
@@ -41,4 +44,4 @@ Cada letra es una casilla de 1×1. El personaje mide 2 casillas de alto, salta u
 
 Los árboles, flores y setas se colocan solos encima del suelo.
 
-`Tools/niveles.py` dibuja los mapas de los niveles 1 a 6. Puedes usarlo o editar los `.txt` a mano.
+`Tools/niveles.py` crea los 11 niveles encadenando tramos (puente, lago, muelle, muros...). Puedes usarlo o editar los `.txt` a mano.

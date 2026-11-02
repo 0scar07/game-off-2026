@@ -1,27 +1,39 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Fase
 {
     /// <summary>
-    /// Menú principal: Jugar (sigue por el último nivel desbloqueado), Niveles (los
-    /// desbloqueados con su luna conseguida) y Opciones (volumen). Lo monta el generador.
+    /// Menú principal: Jugar/Continuar, "El viaje" (mapa de niveles por capítulos, con récord y
+    /// luna de cada uno) y Opciones (volumen, idioma, ver la historia, borrar progreso).
+    /// Lo monta el generador (LevelBuilder.Menus).
     /// </summary>
     public class MainMenu : MonoBehaviour
     {
-        public GameObject mainPanel, levelsPanel, optionsPanel;
+        public GameObject mainPanel, journeyPanel, optionsPanel;
 
         [Header("Niveles (en orden)")]
         public string[] scenes;
-        public string[] names;
+        public string[] names, namesEn;
         public int[] fragmentsTotal;
-        public Button[] levelButtons;
-        public Text[] levelLabels;
+        public string introScene = "Intro";
+
+        [Header("El viaje")]
+        public Button[] nodes;
+        public Image[] nodeImages;
+        public RectTransform marker;
+        public Text infoTitle, infoDetail;
+        public Button infoPlay;
 
         [Header("Opciones")]
         public Slider music, sfx;
         public Text playLabel;
+
+        static readonly Color Done = new Color(1f, 0.78f, 0.35f);
+        static readonly Color Current = new Color(1f, 1f, 1f);
+        static readonly Color Locked = new Color(0.25f, 0.24f, 0.4f, 0.85f);
+
+        int selected = 1;
 
         void Start()
         {
@@ -31,50 +43,93 @@ namespace Fase
             ShowMain();
         }
 
-        public void Play() => LoadLevel(Mathf.Clamp(Progress.Unlocked, 1, scenes.Length));
+        void OnEnable() => Loc.Changed += Refresh;
+        void OnDisable() => Loc.Changed -= Refresh;
+
+        int Unlocked => Mathf.Clamp(Progress.Unlocked, 1, scenes.Length);
+
+        /// <summary>Jugar: la primera vez cuenta la historia; después, sigue por donde ibas.</summary>
+        public void Play()
+        {
+            if (Progress.Unlocked <= 1 && PlayerPrefs.GetInt(Intro.SeenKey, 0) == 0 && !string.IsNullOrEmpty(introScene))
+                SceneFader.Load(introScene);
+            else
+                LoadLevel(Unlocked);
+        }
 
         public void LoadLevel(int level) => SceneFader.Load(scenes[level - 1]);
 
         public void ShowMain() => Show(mainPanel);
         public void ShowOptions() => Show(optionsPanel);
 
-        public void ShowLevels()
+        public void ShowJourney()
         {
-            int unlocked = Progress.Unlocked;
-            for (int i = 0; i < levelButtons.Length; i++)
+            Show(journeyPanel);
+            SelectLevel(Unlocked);
+        }
+
+        public void SelectLevel(int level)
+        {
+            selected = level;
+            bool open = level <= Unlocked;
+            infoTitle.text = $"{level}. {(open ? Loc.Pick(names[level - 1], namesEn[level - 1]) : "???")}";
+            if (!open)
+                infoDetail.text = Loc.Get("locked");
+            else
+            {
+                string moon = fragmentsTotal[level - 1] > 0 ? $"{Loc.Get("moon")} {Progress.Fragments(level)}/{fragmentsTotal[level - 1]}" : "";
+                infoDetail.text = $"{Loc.Get("best")} {Hud.FormatTime(Progress.BestTime(level))}    ·    {moon}";
+            }
+            infoPlay.interactable = open;
+            if (marker != null) marker.position = nodes[level - 1].transform.position + Vector3.up * 70f * marker.lossyScale.y;
+        }
+
+        public void PlaySelected() => LoadLevel(selected);
+
+        void Update()
+        {
+            if (!journeyPanel.activeSelf) return;
+            int unlocked = Unlocked;
+            for (int i = 0; i < nodes.Length; i++)
             {
                 int level = i + 1;
-                bool open = level <= unlocked;
-                levelButtons[i].interactable = open;
-                string moon = fragmentsTotal[i] > 0 ? $"\nLuna {Progress.Fragments(level)}/{fragmentsTotal[i]}" : "";
-                levelLabels[i].text = open ? $"{level}. {names[i]}{moon}" : $"{level}. ???";
+                var color = level < unlocked ? Done : level == unlocked ? Current : Locked;
+                if (level == selected) color = Color.Lerp(color, Color.white, 0.35f + 0.25f * Mathf.Sin(Time.time * 5f));
+                nodeImages[i].color = color;
+                float pulse = level == unlocked ? 1f + 0.08f * Mathf.Sin(Time.time * 4f) : 1f;
+                nodes[i].transform.localScale = Vector3.one * pulse;
             }
-            Show(levelsPanel);
+            if (marker != null) marker.localRotation = Quaternion.Euler(0f, 0f, Mathf.Sin(Time.time * 3f) * 6f);
         }
 
         public void OnMusicChanged(float value) => Progress.MusicVolume = value;
         public void OnSfxChanged(float value) => Progress.SfxVolume = value;
+        public void ToggleLanguage() => Loc.English = !Loc.English;
+        public void WatchIntro() => SceneFader.Load(introScene);
 
         public void ResetProgress()
         {
             float m = Progress.MusicVolume, s = Progress.SfxVolume;
+            bool english = Loc.English;
             Progress.ResetAll();
             Progress.MusicVolume = m;
             Progress.SfxVolume = s;
-            UpdatePlayLabel();
+            Loc.English = english;
+            Refresh();
         }
 
         void Show(GameObject panel)
         {
             mainPanel.SetActive(panel == mainPanel);
-            levelsPanel.SetActive(panel == levelsPanel);
+            journeyPanel.SetActive(panel == journeyPanel);
             optionsPanel.SetActive(panel == optionsPanel);
-            UpdatePlayLabel();
+            Refresh();
         }
 
-        void UpdatePlayLabel()
+        void Refresh()
         {
-            if (playLabel != null) playLabel.text = Progress.Unlocked > 1 ? "Continuar" : "Jugar";
+            if (playLabel != null) playLabel.text = Loc.Get(Progress.Unlocked > 1 ? "continue" : "play");
+            if (journeyPanel.activeSelf) SelectLevel(selected);
         }
     }
 }

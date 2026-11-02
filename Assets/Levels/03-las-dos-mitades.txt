@@ -1,16 +1,21 @@
 nombre: Las dos mitades
-pista: Deja el puente de día y el hielo de noche a la vez.
+name: Two Halves
+pista: A veces necesitas el día y la noche a la vez.
+hint: Sometimes you need day and night at once.
+capitulo: 1
 linea: 3
 ---
 
 
 
 
-                    *
-                               N
-                               N
-                     nn        N
-  S              nn        C   N     G
-#########dddddd          ###############
-#########                ###############
-#########                ###############
+                                                                                      K
+                                                                                     ddd
+                                                            *
+                              N        D                                          dd          N
+                              N        D                                                      N
+                              N        D                   nn              D#############     N
+  S                           N    C   D               nn      nn         DD#############     N               G
+#########ddddd###nnnnn#######################dddddd###            ###############################nnnnnn##########
+#########     ###     #######################      ###            ###############################      ##########
+#########     ###     #######################      ###            ###############################      ##########

@@ -233,7 +233,8 @@ public static partial class LevelBuilder
             mesh.SetVertices(vertices);
             mesh.SetTriangles(triangles, 0);
             var colors = new List<Color>();
-            for (int i = 0; i < vertices.Count; i++) colors.Add(i % 2 == 0 ? top : low);
+            // Los colores de vértice van en espacio lineal: sin convertir saldrían lavados.
+            for (int i = 0; i < vertices.Count; i++) colors.Add((i % 2 == 0 ? top : low).linear);
             mesh.SetColors(colors);
             mesh.RecalculateBounds();
             string path = Generated + mesh.name + ".asset";

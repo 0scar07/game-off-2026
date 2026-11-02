@@ -25,7 +25,7 @@ namespace Fase
             texts.interactable = texts.blocksRaycasts = false;
             int moon = 0;
             for (int level = 1; level <= levels; level++) moon += Progress.Fragments(level);
-            moonLabel.text = $"Luna reunida: {moon}/{fragmentsTotal}";
+            moonLabel.text = $"{Loc.Get("moontotal")}: {moon}/{fragmentsTotal}";
 
             // La noche se retira: la línea avanza hasta que todo es de día.
             line.autoSweep = false;

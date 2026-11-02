@@ -1,16 +1,21 @@
 nombre: Noche estrellada
+name: Starry Night
 pista: Lo que brilla en azul solo existe de noche.
-linea: 30
+hint: What glows blue only exists at night.
+capitulo: 1
+linea: 60
 ---
 
 
 
-                  *
 
 
-                 nn
-             nn      nn
-  S      nn                    G
-########                 #########
-########                 #########
-########                 #########
+
+                             *                                                      K
+                                                                                   nnn
+
+                            nn                                   nn             nn
+  S                     nn      nn      C                    nn      nn                             G
+##########nnnnn########            ##########nnnnnnnn#######            ###############nnnnnn##########
+##########     ########            ##########        #######            ###############      ##########
+##########     ########            ##########        #######            ###############      ##########

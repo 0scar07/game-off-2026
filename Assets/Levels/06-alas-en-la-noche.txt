@@ -1,0 +1,21 @@
+nombre: Alas en la noche
+name: Wings at Night
+pista: Las abejas de la noche vuelan bajo: espera tu momento.
+hint: Night bees fly low: wait for your moment.
+capitulo: 2
+linea: 3
+---
+
+
+
+
+
+
+                                                       *                          K
+                                                                                 nnn
+
+             B                       B                nn             B        nn                   B
+  S                                            C  nn      nn                                                  G
+#########nnnnnnnn######dddddd###nnnnnnnnnn#######            #####nnnnnnn############~~~~~~~###nnnnnnnn##########
+#########        ######      ###          #######            #####       ######################        ##########
+#########        ######      ###          #######            #####       ######################        ##########

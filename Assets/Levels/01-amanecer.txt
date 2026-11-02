@@ -1,5 +1,8 @@
 nombre: Amanecer
+name: Daybreak
 pista: A la izquierda de la línea es de día; a la derecha, de noche.\nMuévela con Shift (o Q/E), o arrastrándola.
+hint: Left of the line is day; right of it, night.\nMove it with Shift (or Q/E), or drag it.
+capitulo: 1
 linea: 4
 ---
 
@@ -8,9 +11,11 @@ linea: 4
 
 
 
-             *
+                                                                                          K
+                                                *                                        ddd
 
-  S                        G
-##########dddddd##############
-##########      ##############
-##########      ##############
+                                                                        D#######      dd
+  S                                   C        ^^                      DD#######                            G
+############ddddd#########ddddddd#######################dddddd###############################dddddddd##########
+############     #########       #######################      ###############################        ##########
+############     #########       #######################      ###############################        ##########

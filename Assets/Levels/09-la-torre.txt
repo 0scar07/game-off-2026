@@ -1,0 +1,22 @@
+nombre: La torre
+name: The Tower
+pista: La línea no puede salir de entre los postes rojos.\nSube en zigzag.
+hint: The line can't leave the red posts.\nClimb in a zigzag.
+capitulo: 3
+linea: 15
+limites: 15 17
+---
+                        K   G
+                 NN   ########
+               *
+             DD
+
+                 NN
+
+             DD
+
+                 NN
+  S    C     DD
+########################################
+########################################
+########################################
