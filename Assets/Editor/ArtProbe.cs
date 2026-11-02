@@ -13,7 +13,7 @@ public static class ArtProbe
     public static void Probe()
     {
         var sb = new StringBuilder();
-        foreach (string folder in new[] { "Assets/Art/Platformer", "Assets/Art/Characters", "Assets/Art/Nature" })
+        foreach (string folder in new[] { "Assets/Art/Quaternius", "Assets/Art/Platformer", "Assets/Art/Characters", "Assets/Art/Nature" })
         {
             foreach (string guid in AssetDatabase.FindAssets("t:Model", new[] { folder }))
             {
@@ -34,7 +34,13 @@ public static class ArtProbe
                 var clips = new StringBuilder();
                 foreach (var asset in AssetDatabase.LoadAllAssetsAtPath(path))
                     if (asset is AnimationClip clip && !clip.name.StartsWith("__preview")) clips.Append(clip.name + " ");
-                sb.AppendLine($"{Path.GetFileNameWithoutExtension(path)} | center {bounds.center:F2} size {bounds.size:F2} | {materials}| anims: {clips}");
+                sb.AppendLine($"{Path.GetFileNameWithoutExtension(path)} | center {bounds.center:F2} size {bounds.size:F2} | rot {model.transform.localEulerAngles:F0} scale {model.transform.localScale:F2} | {materials}| anims: {clips}");
+                if (path.Contains("Quaternius") && (path.Contains("Character") || path.Contains("Enemy") || path.Contains("Bee")))
+                {
+                    var bones = new StringBuilder();
+                    foreach (var t in model.GetComponentsInChildren<Transform>()) bones.Append(t.name + " ");
+                    sb.AppendLine("   huesos: " + bones);
+                }
             }
         }
         Directory.CreateDirectory("Logs");

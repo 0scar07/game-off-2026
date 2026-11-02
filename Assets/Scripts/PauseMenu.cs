@@ -45,13 +45,13 @@ namespace Fase
         public void Restart()
         {
             SetPaused(false);
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneFader.Load(SceneManager.GetActiveScene().name);
         }
 
         public void ToMenu()
         {
             SetPaused(false);
-            SceneManager.LoadScene(MenuScene);
+            SceneFader.Load(MenuScene);
         }
 
         void SetPaused(bool paused)

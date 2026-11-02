@@ -33,7 +33,7 @@ namespace Fase
 
         public void Play() => LoadLevel(Mathf.Clamp(Progress.Unlocked, 1, scenes.Length));
 
-        public void LoadLevel(int level) => SceneManager.LoadScene(scenes[level - 1]);
+        public void LoadLevel(int level) => SceneFader.Load(scenes[level - 1]);
 
         public void ShowMain() => Show(mainPanel);
         public void ShowOptions() => Show(optionsPanel);

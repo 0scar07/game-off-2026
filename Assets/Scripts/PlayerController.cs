@@ -43,7 +43,8 @@ namespace Fase
         float coyoteLeft, bufferLeft;
         bool grounded;
         float facing = 1f;
-        float lastFallSpeed, stepLeft;
+        float lastFallSpeed, stepLeft, landLeft;
+        bool celebrating;
         const float stepInterval = 0.3f;
         string currentState = "";
 
@@ -58,6 +59,9 @@ namespace Fase
 
         public void SetCheckpoint(Vector3 position) => checkpoint = position;
 
+        /// <summary>En la meta: deja de responder a los controles, mira a la cámara y saluda.</summary>
+        public void Celebrate() => celebrating = true;
+
         void Update()
         {
             if (JumpPressed()) bufferLeft = jumpBuffer;
@@ -67,20 +71,25 @@ namespace Fase
         }
 
         /// <summary>
-        /// Elige la animación (idle, walk, jump, fall) y gira el modelo hacia donde camina.
-        /// Los estados del Animator se llaman igual que las animaciones del modelo de Kenney.
+        /// Elige la animación y gira el modelo hacia donde camina. Estados del Animator (los del
+        /// personaje de Quaternius): Idle, Run, Jump (despegue), Jump_Idle (en el aire),
+        /// Jump_Land (aterrizaje) y Wave (saluda en la meta).
         /// </summary>
         void Animate()
         {
             Vector2 v = body.linearVelocity;
-            if (visual != null && Mathf.Abs(v.x) > 0.3f) facing = Mathf.Sign(v.x);
+            if (visual != null && Mathf.Abs(v.x) > 0.3f && !celebrating) facing = Mathf.Sign(v.x);
+            float yaw = celebrating ? 180f : facing * 90f;
             if (visual != null)
                 visual.localRotation = Quaternion.Slerp(visual.localRotation,
-                    Quaternion.Euler(0f, facing * 90f, 0f), Time.deltaTime * 14f);
+                    Quaternion.Euler(0f, yaw, 0f), Time.deltaTime * 14f);
 
             if (animator == null || animator.runtimeAnimatorController == null) return;
-            string state = !grounded ? (v.y > 0.5f ? "jump" : "fall")
-                : Mathf.Abs(v.x) > 0.5f ? "walk" : "idle";
+            landLeft -= Time.deltaTime;
+            string state = celebrating ? "Wave"
+                : !grounded ? (v.y > 2f ? "Jump" : "Jump_Idle")
+                : landLeft > 0f && Mathf.Abs(v.x) < 0.5f ? "Jump_Land"
+                : Mathf.Abs(v.x) > 0.5f ? "Run" : "Idle";
             if (state != currentState)
             {
                 animator.CrossFadeInFixedTime(state, 0.1f);
@@ -93,9 +102,13 @@ namespace Fase
             bool wasGrounded = grounded;
             grounded = CheckGround();
             coyoteLeft = grounded ? coyoteTime : coyoteLeft - Time.fixedDeltaTime;
-            if (grounded && !wasGrounded) GameEvents.RaiseLanded(lastFallSpeed);
+            if (grounded && !wasGrounded)
+            {
+                GameEvents.RaiseLanded(lastFallSpeed);
+                if (lastFallSpeed > 6f) landLeft = 0.18f;
+            }
 
-            float input = MoveInput();
+            float input = celebrating ? 0f : MoveInput();
             Vector2 v = body.linearVelocity;
             if (!grounded) lastFallSpeed = Mathf.Max(0f, -v.y);
 

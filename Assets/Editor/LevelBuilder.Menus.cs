@@ -57,7 +57,7 @@ public static partial class LevelBuilder
         line.sweepCenter = 20f;
         line.sweepAmplitude = 11f;
         StaticCamera(new Vector3(20f, 5f, -19f));
-        BuildAudio();
+        BuildAudio(Biomes[0]);
 
         var canvas = NewCanvas("Menu", 0).transform;
         var menu = canvas.gameObject.AddComponent<MainMenu>();
@@ -130,15 +130,11 @@ public static partial class LevelBuilder
         line.maxX = 45f;
         line.x = -2f;
         StaticCamera(new Vector3(20f, 5f, -19f));
-        BuildAudio();
+        BuildAudio(Biomes[0]);
 
-        // El personaje mira el amanecer en mitad del paisaje.
-        var hero = Model(HeroModel, new Vector3(20f, 3f, 0f), Vector3.one * 2f, Both, null);
-        hero.name = "Jugador";
-        var animator = hero.GetComponentInChildren<Animator>();
-        if (animator == null) animator = hero.AddComponent<Animator>();
-        animator.runtimeAnimatorController = HeroAnimator();
-        hero.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        // Lumi mira el amanecer en mitad del paisaje.
+        var hero = BuildLumi(new Vector3(20f, 3f, 0f), null);
+        hero.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * hero.transform.rotation;
 
         var canvas = NewCanvas("Final", 0).transform;
         new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
@@ -210,7 +206,11 @@ public static partial class LevelBuilder
         cam.farClipPlane = 200f;
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = Color.black;
+        EnablePostProcessing(cam, Biomes[0]);
     }
+
+    /// <summary>Escena de la historia (se completa con las viñetas en Assets/Art/Intro).</summary>
+    static string BuildIntro() => null;
 
     /// <summary>Columna centrada que coloca a sus hijos uno debajo de otro.</summary>
     static GameObject Column(Transform parent, string name, Vector2 position, float spacing, Color? background = null)

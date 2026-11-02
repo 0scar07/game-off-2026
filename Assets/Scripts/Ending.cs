@@ -45,6 +45,6 @@ namespace Fase
             texts.interactable = texts.blocksRaycasts = true;
         }
 
-        public void ToMenu() => SceneManager.LoadScene(PauseMenu.MenuScene);
+        public void ToMenu() => SceneFader.Load(PauseMenu.MenuScene);
     }
 }

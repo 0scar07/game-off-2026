@@ -24,6 +24,7 @@ namespace Fase
         {
             if (reached || other.GetComponent<PlayerController>() == null) return;
             reached = true;
+            other.GetComponent<PlayerController>().Celebrate();
             if (Hud.Instance != null) Progress.Complete(Hud.Instance.levelNumber, Hud.Instance.Fragments);
             GameEvents.RaiseGoalReached();
             StartCoroutine(Finish());
@@ -33,7 +34,7 @@ namespace Fase
         {
             yield return new WaitForSeconds(delay);
             string scene = string.IsNullOrEmpty(nextScene) ? SceneManager.GetActiveScene().name : nextScene;
-            SceneManager.LoadScene(scene);
+            SceneFader.Load(scene);
         }
     }
 }

@@ -38,6 +38,19 @@ namespace Fase
             PlayerPrefs.Save();
         }
 
+        /// <summary>Mejor tiempo del nivel en segundos (0 = sin récord).</summary>
+        public static float BestTime(int level) => PlayerPrefs.GetFloat("fase_tiempo_" + level, 0f);
+
+        /// <summary>Guarda el tiempo si es récord. Devuelve true si lo es.</summary>
+        public static bool SaveTime(int level, float seconds)
+        {
+            float best = BestTime(level);
+            if (best > 0f && seconds >= best) return false;
+            PlayerPrefs.SetFloat("fase_tiempo_" + level, seconds);
+            PlayerPrefs.Save();
+            return true;
+        }
+
         public static void ResetAll()
         {
             PlayerPrefs.DeleteAll();
