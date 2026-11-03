@@ -328,8 +328,8 @@ save("11-eclipse.txt", 3, "Eclipse", "Eclipse",
 
 # ───────────────────────── Niveles de la segunda tanda ─────────────────────────
 
-L = Level().start().flat(3).sun_gap().flat(2).sun_gap(11).check().box_wall().updraft(5).flat(2).bridge(5)
-L.sun_gap().flat(2).updraft(6).secret_ledge().drop(6).spikes(star=True).goal()
+L = Level().start().flat(3).sun_gap().flat(2).sun_gap(11).check().box_wall().updraft(4).flat(2).bridge(5)
+L.drop(5).sun_gap().flat(2).updraft(4).secret_ledge().drop(4).spikes(star=True).goal()
 save("04b-relojes-de-sol.txt", 1, "Relojes de sol", "Sundials",
      "Las plataformas con engranaje solo se mueven de día.\nEl aire de día te eleva.",
      "Geared platforms only move by day.\nDaytime air lifts you up.", 3, L)
@@ -387,8 +387,8 @@ for n in range(1, 15):
     L = Level().start().flat(3)
     for i in range(6):
         random.choice(TRAMOS)(L)
-        if L.top < 4:
-            L.drop(4)
+        while L.top < 7:   # deja sitio por encima para muros y muelles
+            L.drop(2)
         L.flat(2)
         if i == 2:
             L.check()

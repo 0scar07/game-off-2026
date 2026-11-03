@@ -24,6 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Niveles/04b-relojes-de-sol.unity
     guid: 80fd62e925c40ee418287ea5663d8c2f
   - enabled: 1
+    path: Assets/Scenes/Niveles/04c-garra-del-alba.unity
+    guid: 54d886150b3c2dc419b1f275699752fa
+  - enabled: 1
     path: Assets/Scenes/Niveles/04-lago-helado.unity
     guid: 7fe800dfcfbdf0b4285cd0909338aa91
   - enabled: 1
@@ -39,6 +42,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Niveles/08b-luciernagas.unity
     guid: ebc79c0f453c67c41a89c0a41d3aca22
   - enabled: 1
+    path: Assets/Scenes/Niveles/08c-reina-de-escarcha.unity
+    guid: a3588975087be7a448b8fa8dc6daff0d
+  - enabled: 1
     path: Assets/Scenes/Niveles/08-sierras.unity
     guid: 8b01def1e0547a24d82288ec4903c25d
   - enabled: 1
@@ -48,8 +54,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Niveles/10b-dos-lineas.unity
     guid: 66f3da55b03cf7a439950157552590e7
   - enabled: 1
+    path: Assets/Scenes/Niveles/10c-la-subida.unity
+    guid: 54ebb15cbeef1b2428929f45c1cbcf87
+  - enabled: 1
     path: Assets/Scenes/Niveles/10-rio-nocturno.unity
     guid: 514d2a4055eb8fc43988120f30b3fc34
+  - enabled: 1
+    path: Assets/Scenes/Niveles/11b-cuesta-de-la-luna.unity
+    guid: b1e351d4f07ecbf4180860266f6d4e6f
   - enabled: 1
     path: Assets/Scenes/Niveles/11-eclipse.unity
     guid: 9e2bb6e8747b9ea45ae40277597de348
@@ -68,6 +80,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Final.unity
     guid: 5c9f012b74633e842b9ab0acd6cd6863
+  - enabled: 1
+    path: Assets/Scenes/Niveles/Taller.unity
+    guid: db7f8ab2669248f4b85872800a7ea406
+  - enabled: 1
+    path: Assets/Scenes/Niveles/SinFin.unity
+    guid: c40ba9ebb098a884b9b1cfe1ab955e90
   - enabled: 1
     path: Assets/Scenes/Niveles/diario-01.unity
     guid: f3acf82b7414e9647b9cb0742f35c05e

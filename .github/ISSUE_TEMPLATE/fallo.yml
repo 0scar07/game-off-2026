@@ -1,0 +1,30 @@
+name: Fallo · Bug
+description: Algo no funciona como debería · Something doesn't work as it should
+labels: [fallo]
+body:
+  - type: textarea
+    id: que
+    attributes:
+      label: Qué pasa · What happens
+      description: Cuéntalo con tus palabras. Si puedes, añade una captura o un vídeo.
+    validations:
+      required: true
+  - type: input
+    id: donde
+    attributes:
+      label: Dónde · Where
+      placeholder: "Nivel 6 · Lago helado, cerca del segundo punto de control"
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Cómo repetirlo · Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+  - type: dropdown
+    id: plataforma
+    attributes:
+      label: Dónde juegas · Platform
+      options: [Navegador en ordenador, Navegador en móvil, Windows, Otro]
+    validations:
+      required: true

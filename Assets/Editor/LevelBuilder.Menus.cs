@@ -28,7 +28,7 @@ public static partial class LevelBuilder
     [MenuItem("Fase/Generar solo el menú")]
     static void BuildMenuOnly()
     {
-        var levels = Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f).Select(Parse).OrderBy(l => l.secret).ToList();
+        var levels = Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f, System.StringComparer.Ordinal).Select(Parse).OrderBy(l => l.secret).ToList();
         PrepareRendering();
         BuildMenu(levels);
         AssetDatabase.SaveAssets();
@@ -381,7 +381,7 @@ public static partial class LevelBuilder
         intro.voiceEs = Enumerable.Range(0, 4).Select(i => AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/Voz/intro_es_{i}.wav")).ToArray();
         intro.voiceEn = Enumerable.Range(0, 4).Select(i => AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/Voz/intro_en_{i}.wav")).ToArray();
         intro.linesEn = IntroEn;
-        intro.nextScene = Path.GetFileNameWithoutExtension(Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f).First());
+        intro.nextScene = Path.GetFileNameWithoutExtension(Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f, System.StringComparer.Ordinal).First());
         UnityEventTools.AddPersistentListener(skip.onClick, intro.Skip);
 
         string path = $"Assets/Scenes/{IntroScene}.unity";

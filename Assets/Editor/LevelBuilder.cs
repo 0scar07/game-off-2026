@@ -82,7 +82,7 @@ public static partial class LevelBuilder
     public static void BuildAll()
     {
         // Sin preguntar por guardar: todas las escenas salen de aquí y el diálogo bloqueaba la generación automática.
-        var files = Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f).ToArray();
+        var files = Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f, System.StringComparer.Ordinal).ToArray();
         if (files.Length == 0) { Debug.LogWarning("No hay niveles en " + LevelsFolder); return; }
         if (!AssetDatabase.IsValidFolder(ScenesFolder)) AssetDatabase.CreateFolder("Assets/Scenes", "Niveles");
         PrepareRendering();
@@ -109,7 +109,7 @@ public static partial class LevelBuilder
         // Desafíos diarios: escenas sueltas que vuelven al menú.
         string dailyFolder = LevelsFolder + "/Diarios";
         if (Directory.Exists(dailyFolder))
-            foreach (var file in Directory.GetFiles(dailyFolder, "*.txt").OrderBy(f => f))
+            foreach (var file in Directory.GetFiles(dailyFolder, "*.txt").OrderBy(f => f, System.StringComparer.Ordinal))
             {
                 var daily = Parse(file);
                 daily.daily = true;

@@ -1,0 +1,15 @@
+name: Idea · Suggestion
+description: Algo que mejoraría el juego · Something that would make the game better
+labels: [idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: La idea · The idea
+    validations:
+      required: true
+  - type: textarea
+    id: porque
+    attributes:
+      label: Por qué · Why
+      description: Qué problema resuelve o qué hace más divertido.

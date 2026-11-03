@@ -1,0 +1,21 @@
+# Texto con saltos de línea de Unix en el repositorio
+* text=auto eol=lf
+
+# Escenas y prefabs de Unity: fusión con la herramienta de Unity (UnityYAMLMerge)
+*.unity    merge=unityyamlmerge text eol=lf
+*.prefab   merge=unityyamlmerge text eol=lf
+*.asset    merge=unityyamlmerge text eol=lf
+*.mat      merge=unityyamlmerge text eol=lf
+*.controller merge=unityyamlmerge text eol=lf
+*.meta     text eol=lf
+
+# Binarios
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.wav  binary
+*.ogg  binary
+*.mp4  binary
+*.fbx  binary
+*.ttf  binary
+*.wasm binary

@@ -1,0 +1,19 @@
+name: Comprobar niveles
+
+# Cada cambio en los niveles o en su generador comprueba que todos se pueden terminar.
+on:
+  push:
+    paths: ["Assets/Levels/**", "Tools/niveles.py", "Tools/comprobar_niveles.py"]
+  pull_request:
+    paths: ["Assets/Levels/**", "Tools/niveles.py", "Tools/comprobar_niveles.py"]
+
+jobs:
+  comprobar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Los niveles se pueden terminar
+        run: python Tools/comprobar_niveles.py
