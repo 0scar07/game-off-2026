@@ -12,7 +12,9 @@
 
 Plataformas 2.5D para el **GitHub Game Off 2026**. Navegador, ordenador y móvil. Español e inglés.
 
-![FASE en movimiento](docs/fase.gif)
+![FASE en movimiento](docs/fase.webp)
+
+<sub>[GIF en máxima calidad](docs/fase-maxima-calidad.gif) · [GIF ligero](docs/fase.gif)</sub>
 
 [Español](#español) · [English](#english) · [Niveles](#niveles) · [Cómo está hecho](#cómo-está-hecho) · [Créditos](#créditos) · [Licencia](#licencia)
 
