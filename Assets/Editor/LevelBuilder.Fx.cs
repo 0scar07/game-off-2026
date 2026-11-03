@@ -151,6 +151,7 @@ public static partial class LevelBuilder
         sun.shadows = LightShadows.Soft;
         sun.shadowStrength = 0.75f;
         sun.transform.rotation = Quaternion.Euler(38f, -35f, 0f);
+        sun.gameObject.AddComponent<LightMood>();
         RenderSettings.ambientMode = AmbientMode.Flat;
         RenderSettings.ambientLight = Color.Lerp(new Color(0.5f, 0.52f, 0.6f), biome.haze, 0.3f);
         RenderSettings.fog = false;
@@ -268,6 +269,14 @@ public static partial class LevelBuilder
         var core = Primitive(PrimitiveType.Cube, "Nucleo", new Vector3(0f, 5f, -1.6f), new Vector3(0.07f, 80f, 0.07f), Flat("Linea", Both, new Color(2.6f, 2.4f, 2f)));
         core.transform.SetParent(line.transform, true);
         var glow = Quad("Halo", new Vector3(0f, 5f, -1.65f), new Vector2(2.2f, 80f), ParticleMaterial("LineaHalo", Ray(true), new Color(1f, 0.95f, 0.85f, 0.35f), Both, true), line.transform);
+        // Rayos de sol que entran en diagonal junto a la línea, por el lado de día.
+        if (index == 0)
+            for (int k = 0; k < 5; k++)
+            {
+                var ray = Quad("RayoDeSol", new Vector3(-1.2f - k * 1.6f, 9f, -1.4f + k * 0.05f), new Vector2(0.9f + k * 0.25f, 26f),
+                    ParticleMaterial("RayoDeSol", Ray(true), new Color(1f, 0.9f, 0.7f, 0.07f), Day, true), line.transform);
+                ray.transform.rotation = Quaternion.Euler(0f, 0f, -24f);
+            }
         // Chispas: cálidas hacia el día y frías hacia la noche.
         var sparks = Particles("Chispas", line.transform, new Vector3(0f, 5f, -1.7f), ParticleMaterial("Chispa", SoftDot(), Color.white, Both, true));
         var main = sparks.main;

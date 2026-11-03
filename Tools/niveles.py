@@ -209,15 +209,24 @@ class Level:
         self.x += 3 * w
         return self.flat(3)
 
-    def boss_arena(self):
-        """Arena de la Gran Sombra: escalera de cajas (de día) para subir a su cabeza."""
+    def box_wall(self):
+        """Caja que cambia delante de un muro de 3: empújala hasta el muro (de noche resbala) y súbete."""
+        t, x = self.top, self.x
+        self.flat(12)
+        self.put("Z", x + 3, t - 1)
+        self.fill("#", [x + 10, x + 11], range(t - 3, t))
+        self.top = t - 3
+        return self.flat(4)
+
+    def boss_arena(self, kind="J", stairs="D"):
+        """Arena de un jefe: escalera (de cajas de día o de hielo de noche) para subir a su cabeza."""
         t, x = self.top, self.x
         self.ground(x, x + 30, t)
         self.put("G", x + 4, t - 1)
-        self.put("D", x + 12, t - 1)
-        self.fill("D", [x + 13], [t - 1, t - 2])
-        self.fill("D", [x + 14], [t - 1, t - 2, t - 3])
-        self.put("J", x + 18, t - 1)
+        self.put(stairs, x + 12, t - 1)
+        self.fill(stairs, [x + 13], [t - 1, t - 2])
+        self.fill(stairs, [x + 14], [t - 1, t - 2, t - 3])
+        self.put(kind, x + 18, t - 1)
         self.x += 30
         return self
 
@@ -319,7 +328,7 @@ save("11-eclipse.txt", 3, "Eclipse", "Eclipse",
 
 # ───────────────────────── Niveles de la segunda tanda ─────────────────────────
 
-L = Level().start().flat(3).sun_gap().flat(2).sun_gap(11).check().updraft(5).flat(2).bridge(5)
+L = Level().start().flat(3).sun_gap().flat(2).sun_gap(11).check().box_wall().updraft(5).flat(2).bridge(5)
 L.sun_gap().flat(2).updraft(6).secret_ledge().drop(6).spikes(star=True).goal()
 save("04b-relojes-de-sol.txt", 1, "Relojes de sol", "Sundials",
      "Las plataformas con engranaje solo se mueven de día.\nEl aire de día te eleva.",
@@ -370,6 +379,7 @@ TRAMOS = [
     lambda L: L.ice_steps(), lambda L: L.crate_steps(), lambda L: L.lake(random.choice([6, 8])),
     lambda L: L.spring_wall(4), lambda L: L.creature(10), lambda L: L.saws(10), lambda L: L.spikes(),
     lambda L: L.sun_gap(), lambda L: L.updraft(5), lambda L: L.firefly_gap(6), lambda L: L.night_wall(),
+    lambda L: L.box_wall(),
 ]
 
 for n in range(1, 15):
@@ -385,3 +395,64 @@ for n in range(1, 15):
     L.spikes(star=True).goal()
     save(f"Diarios/diario-{n:02}.txt", 1 + (n % 3), f"Desafío {n}", f"Challenge {n}",
          "Desafío diario: mañana habrá otro.", "Daily challenge: there's a new one tomorrow.", 3, L)
+
+# ───────────────────────── Línea tumbada e inclinada ─────────────────────────
+
+def vertical_tower():
+    """La subida: la línea está tumbada (arriba día, abajo noche). Plataformas de hielo, madera y
+    piedra en zigzag: hielo por debajo de la línea, madera por encima, piedra para descansar."""
+    width, rows = 24, 36
+    grid = [[" "] * width for _ in range(rows)]
+    for r in range(rows - 3, rows):
+        for c in range(width):
+            grid[r][c] = "#"
+    grid[rows - 4][3] = "S"
+    kinds = ["n", "d", "#"]
+    top = rows - 3
+    for i in range(14):
+        top -= 2
+        left = 3 if i % 2 == 0 else 10
+        kind = kinds[i % 3]
+        for c in range(left, left + 6):
+            grid[top][c] = kind
+        if i == 6:
+            grid[top - 1][left + 3] = "*"
+        if i % 3 == 2:
+            grid[top - 1][left + 1] = "C" if i < 12 else " "
+    grid[top - 1][12] = "G"
+    grid[top - 3][17] = "K"   # secreto: hace falta la burbuja de noche del farol
+    for c in range(16, 20):
+        grid[top - 2][c] = "n"
+    return "\n".join("".join(r).rstrip() for r in grid)
+
+
+def save_text(file, chapter, name, name_en, hint, hint_en, line, text, extra=""):
+    body = (f"nombre: {name}\nname: {name_en}\npista: {hint}\nhint: {hint_en}\n"
+            f"capitulo: {chapter}\nlinea: {line}\n{extra}---\n{text}\n")
+    with open(os.path.join(OUT, file), "w", encoding="utf-8", newline="\n") as f:
+        f.write(body)
+    print(f"{file}: torre")
+
+
+save_text("10c-la-subida.txt", 3, "La subida", "The Climb",
+          "La línea ahora está TUMBADA: arriba es de día, abajo de noche.\nSúbela y bájala con Q/E o arrastrándola.",
+          "The line is now LYING DOWN: day above, night below.\nRaise and lower it with Q/E or by dragging.",
+          5, vertical_tower(), "angulo: 90\ndia: derecha\n")
+
+L = Level().start().flat(3).bridge(5).flat(2).ice_bridge(6).check().box_wall().bridge(7).creature(10).ice_steps(star=True)
+L.crate_steps().secret_ledge().drop(2).ice_bridge(7).bridge(6).goal()
+save("11b-cuesta-de-la-luna.txt", 3, "Cuesta de la luna", "Moon Slope",
+     "La línea se ha inclinado. Arriba y abajo ya no son lo mismo.", "The line has tilted. High and low are no longer the same.", 6, L,
+     "angulo: 25\n")
+
+# ───────────────────────── Jefes intermedios ─────────────────────────
+
+L = Level().start().flat(4).box_wall().check().flat(6).boss_arena("P", "N")
+save("04c-garra-del-alba.txt", 1, "Garra del Alba", "Dawn Talon",
+     "Un pájaro enorme que solo vive de día. Llévale la noche para dormirlo\ny sube por el hielo hasta su cabeza. Dos veces.",
+     "A huge bird that only lives by day. Bring it night to put it to sleep\nand climb the ice to its head. Twice.", 26, L, "dia: derecha\n")
+
+L = Level().start().flat(4).check().flat(6).boss_arena("R", "D")
+save("08c-reina-de-escarcha.txt", 2, "Reina de Escarcha", "Frost Queen",
+     "La reina del hielo despierta de noche. Dale el día y sube por las cajas.",
+     "The ice queen wakes at night. Give it daylight and climb the crates.", 8, L)

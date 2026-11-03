@@ -84,17 +84,36 @@ namespace Fase
             instance.tip.color = new Color(0.8f, 0.84f, 1f, 0.9f);
             instance.tip.horizontalOverflow = HorizontalWrapMode.Wrap;
 
+            // Sombra del pliegue, por encima de todo lo de la cortina.
+            var shade = new GameObject("Pliegue", typeof(RectTransform)).GetComponent<RectTransform>();
+            shade.SetParent(curtain, false);
+            shade.anchorMin = Vector2.zero;
+            shade.anchorMax = Vector2.one;
+            shade.offsetMin = shade.offsetMax = Vector2.zero;
+            instance.fold = shade.gameObject.AddComponent<Image>();
+            instance.fold.raycastTarget = false;
+
             instance.curtain = curtain;
             instance.SetCover(-1f);
         }
 
         /// <summary>-1 = fuera por la izquierda, 0 = tapando, 1 = fuera por la derecha.</summary>
+        /// <summary>
+        /// La cortina se despliega como una página: entra doblándose desde el borde izquierdo y
+        /// sale plegándose hacia el derecho. Una sombra marca el pliegue.
+        /// </summary>
         void SetCover(float t)
         {
-            float width = ((RectTransform)transform).rect.width + 100f;
-            curtain.anchoredPosition = new Vector2(t * width, 0f);
+            bool entering = t <= 0f;
+            curtain.pivot = new Vector2(entering ? 0f : 1f, 0.5f);
+            curtain.anchoredPosition = Vector2.zero;
+            float angle = entering ? -t * 90f : t * 90f;
+            curtain.localRotation = Quaternion.Euler(0f, entering ? angle : -angle, 0f);
+            if (fold != null) fold.color = new Color(0f, 0f, 0.05f, Mathf.Sin(angle * Mathf.Deg2Rad) * 0.6f);
             curtain.gameObject.SetActive(t > -0.999f && t < 0.999f);
         }
+
+        Image fold;
 
         static int caught;
 

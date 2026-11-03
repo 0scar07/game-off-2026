@@ -24,7 +24,7 @@ namespace Fase
         void Update()
         {
             bool near = player != null && Vector2.Distance(player.transform.position, transform.position) < revealDistance;
-            bool on = near && !ShiftLine.IsDay(transform.position.x);
+            bool on = near && !ShiftLine.IsDay(transform.position);
             shown = Mathf.MoveTowards(shown, on ? 1f : 0f, Time.deltaTime * (on ? 4f : 1.5f));
             Apply(shown);
         }

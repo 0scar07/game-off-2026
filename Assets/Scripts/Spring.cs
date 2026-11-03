@@ -32,7 +32,7 @@ namespace Fase
 
         void OnTriggerStay2D(Collider2D other)
         {
-            if (cooldown > 0f || !ShiftLine.IsDay(transform.position.x)) return;
+            if (cooldown > 0f || !ShiftLine.IsDay(transform.position)) return;
             var player = other.GetComponent<PlayerController>();
             if (player == null || other.attachedRigidbody.linearVelocity.y > 1f) return;
             player.Bounce(launchSpeed);

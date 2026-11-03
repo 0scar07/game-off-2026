@@ -6,6 +6,8 @@ namespace Fase
     public class BossWave : MonoBehaviour
     {
         public float speed = 6f, direction = -1f, life = 8f;
+        [Tooltip("Onda de un jefe de día: solo existe de día.")]
+        public bool dayWave;
         PlayerController player;
 
         void Start() => player = FindAnyObjectByType<PlayerController>();
@@ -14,9 +16,9 @@ namespace Fase
         {
             transform.position += Vector3.right * direction * speed * Time.deltaTime;
             life -= Time.deltaTime;
-            bool night = !ShiftLine.IsDay(transform.position.x);
-            // Al entrar en el día se deshace.
-            if (!night || life <= 0f) { Destroy(gameObject); return; }
+            bool mine = ShiftLine.IsDay(transform.position) == dayWave;
+            // Al entrar en el otro mundo se deshace.
+            if (!mine || life <= 0f) { Destroy(gameObject); return; }
             if (player != null)
             {
                 Vector2 d = player.transform.position - transform.position;

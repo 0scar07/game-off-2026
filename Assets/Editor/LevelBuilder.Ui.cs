@@ -46,7 +46,7 @@ public static partial class LevelBuilder
         // Capas que reaccionan al juego (Tools/musica_extra.py), en la tonalidad de cada capítulo.
         int chapter = System.Array.IndexOf(Biomes, biome);
         music.lineLayer = MusicClip(new[] { "linea_pradera", "linea_bosque", "linea_cumbre" }[Mathf.Clamp(chapter, 0, 2)]);
-        if (chapter == 2) music.bossLayer = MusicClip("jefe_tambores");
+        music.bossLayer = MusicClip(new[] { "jefe_tambores_pradera", "jefe_tambores_bosque", "jefe_tambores" }[Mathf.Clamp(chapter, 0, 2)]);
     }
 
     /// <summary>Música o ambiente de Assets/Audio/Music, comprimido en memoria (lo que mejor va en la web).</summary>

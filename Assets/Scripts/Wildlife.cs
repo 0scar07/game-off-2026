@@ -94,13 +94,13 @@ namespace Fase
                 if (Mathf.Abs(p.x - camX) > 22f) p.x = camX - Mathf.Sign(speed[i]) * 21f;
                 bird.position = p;
                 // Aleteo: las alas se aplastan y se abren. Los murciélagos aletean más rápido.
-                bool night = !ShiftLine.IsDay(p.x);
+                bool night = !ShiftLine.IsDay(p);
                 float flap = 0.35f + 0.65f * Mathf.Abs(Mathf.Sin(Time.time * (night ? 14f : 8f) + phase[i]));
                 bird.localScale = new Vector3(Mathf.Sign(speed[i]), flap, 1f);
             }
             for (int i = 0; i < flowers.Length; i++)
             {
-                bool day = ShiftLine.IsDay(flowers[i].position.x);
+                bool day = ShiftLine.IsDay(flowers[i].position);
                 var target = day ? flowerScale[i] : new Vector3(flowerScale[i].x * 0.55f, flowerScale[i].y * 0.7f, flowerScale[i].z * 0.55f);
                 flowers[i].localScale = Vector3.Lerp(flowers[i].localScale, target, Time.deltaTime * 3f);
             }

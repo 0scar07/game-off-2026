@@ -103,31 +103,56 @@ public static partial class LevelBuilder
         FadeOut(flies, true);
     }
 
-    /// <summary>La Gran Sombra: Sombra enorme con estatua de piedra, ondas y punto débil.</summary>
-    static void BuildBoss(Level level, Vector3 cell, Transform parent)
+    static readonly Dictionary<string, (Color, Color)> DawnBird = new Dictionary<string, (Color, Color)>
     {
-        string path = Quat + "Enemy.fbx";
-        var boss = new GameObject("GranSombra");
+        ["Main"] = (new Color(1f, 0.55f, 0.25f), new Color(0.35f, 0.12f, 0f)),
+        ["Main_2"] = (new Color(0.75f, 0.3f, 0.15f), default),
+        ["Wings"] = (new Color(1f, 0.85f, 0.45f), new Color(0.6f, 0.4f, 0.05f)),
+        ["Eyes"] = (new Color(0.1f, 0.08f, 0.1f), default),
+    };
+
+    static readonly Dictionary<string, (Color, Color)> FrostQueen = new Dictionary<string, (Color, Color)>
+    {
+        ["Main"] = (new Color(0.55f, 0.82f, 1f), new Color(0.1f, 0.35f, 0.7f)),
+        ["Main_2"] = (new Color(0.35f, 0.6f, 0.95f), default),
+        ["Main_Dark"] = (new Color(0.25f, 0.45f, 0.85f), default),
+        ["Eyes"] = (new Color(1f, 0.3f, 0.55f), new Color(1.6f, 0.25f, 0.7f)),
+    };
+
+    /// <summary>
+    /// Jefes: J = la Gran Sombra (de noche), P = la Garra del Alba (pájaro de día),
+    /// R = la Reina de Escarcha (de noche). Todos: estatua en el otro mundo, ondas y punto débil.
+    /// </summary>
+    static void BuildBoss(Level level, Vector3 cell, Transform parent, char kind = 'J')
+    {
+        bool bird = kind == 'P', queen = kind == 'R';
+        string path = Quat + (bird ? "Bee.fbx" : queen ? "Crab.fbx" : "Enemy.fbx");
+        var palette = bird ? DawnBird : queen ? FrostQueen : ShadowNight;
+        var boss = new GameObject(bird ? "GarraDelAlba" : queen ? "ReinaDeEscarcha" : "GranSombra");
         boss.transform.SetParent(parent);
-        boss.transform.position = cell;
-        var size = new Vector3(4.6f, 4.4f, 3.6f);
-        var night = Fit(path, cell, size, Night, boss.transform, recolor: ShadowNight);
-        var statue = Fit(path, cell, size, Day, boss.transform, recolor: ShadowStone);
+        boss.transform.position = cell + (bird ? Vector3.up * 1.5f : Vector3.zero);
+        cell = boss.transform.position;
+        var size = bird ? new Vector3(4.6f, 3.2f, 3.4f) : queen ? new Vector3(4.8f, 3.4f, 3.6f) : new Vector3(4.6f, 4.4f, 3.6f);
+        int awakeWorld = bird ? Day : Night, sleepWorld = bird ? Night : Day;
+        var night = Fit(path, cell, size, awakeWorld, boss.transform, recolor: palette);
+        var statue = Fit(path, cell, size, sleepWorld, boss.transform, recolor: ShadowStone);
         night.transform.rotation = Quaternion.Euler(0f, 90f, 0f) * night.transform.rotation;
         statue.transform.rotation = Quaternion.Euler(0f, 90f, 0f) * statue.transform.rotation;
         var animator = night.GetComponentInChildren<Animator>();
         if (animator == null) animator = night.AddComponent<Animator>();
-        animator.runtimeAnimatorController = ClipController(path, "Assets/Art/GranSombra.controller", new[] { "Idle", "Bite_InPlace", "HitRecieve" });
+        string idle = bird ? "Flying" : "Idle", attack = bird ? "Bite_Front" : "Bite_InPlace";
+        animator.runtimeAnimatorController = ClipController(path, $"Assets/Art/Jefe_{kind}.controller", new[] { idle, attack, "HitRecieve" });
         var statueAnimator = statue.GetComponentInChildren<Animator>();
         if (statueAnimator != null) Object.DestroyImmediate(statueAnimator);
-        Glow("Aura", cell + new Vector3(0f, 2.2f, -1.5f), 9f, new Color(0.6f, 0.25f, 1f, 0.5f), Night, night.transform);
+        Glow("Aura", cell + new Vector3(0f, 2.2f, -1.5f), 9f, bird ? new Color(1.4f, 0.8f, 0.3f, 0.45f) : queen ? new Color(0.4f, 0.8f, 1.6f, 0.5f) : new Color(0.6f, 0.25f, 1f, 0.5f), awakeWorld, night.transform);
         // Cuerpo sólido: se puede subir encima cuando es de piedra.
-        Solid("CuerpoJefe", new Vector2(cell.x, cell.y + 1.6f), new Vector2(2.8f, 3.2f), null, boss.transform);
+        float bodyHeight = size.y * 0.72f;
+        Solid("CuerpoJefe", new Vector2(cell.x, cell.y + bodyHeight * 0.5f), new Vector2(2.8f, bodyHeight), null, boss.transform);
 
         // Punto débil: fragmento de luna en la cabeza.
         var weak = new GameObject("PuntoDebil").transform;
         weak.SetParent(boss.transform);
-        weak.position = cell + new Vector3(0f, 4.2f, 0f);
+        weak.position = cell + new Vector3(0f, bodyHeight + 1f, 0f);
         Fit(Quat + "Star.fbx", weak.position + new Vector3(0f, -0.35f, 0f), new Vector3(0.9f, 0.86f, 0.4f), Both, weak,
             recolor: new Dictionary<string, (Color, Color)> { ["Gold"] = (new Color(1f, 0.92f, 0.6f), new Color(0.9f, 0.7f, 0.2f)) });
         Glow("Brillo", weak.position + new Vector3(0f, 0f, -0.5f), 3f, new Color(1.5f, 1.1f, 0.5f, 0.8f), Both, weak).GetComponent<GlowSprite>().dayFactor = 1f;
@@ -135,8 +160,8 @@ public static partial class LevelBuilder
         // Onda de muestra: un arco morado que corre por el suelo.
         var wave = new GameObject("Onda");
         wave.transform.SetParent(boss.transform);
-        wave.transform.position = cell + new Vector3(-2f, 0.5f, -0.2f);
-        Glow("Arco", wave.transform.position, 2.2f, new Color(0.8f, 0.35f, 1.6f, 0.9f), Night, wave.transform).transform.localScale = new Vector3(1.2f, 1.8f, 1f);
+        wave.transform.position = new Vector3(cell.x - 2f, cell.y - (bird ? 1.5f : 0f) + 0.5f, -0.2f);
+        Glow("Arco", wave.transform.position, 2.2f, bird ? new Color(1.6f, 0.9f, 0.3f, 0.9f) : new Color(0.8f, 0.35f, 1.6f, 0.9f), awakeWorld, wave.transform).transform.localScale = new Vector3(1.2f, 1.8f, 1f);
         wave.AddComponent<BossWave>();
         wave.SetActive(false);
 
@@ -146,6 +171,28 @@ public static partial class LevelBuilder
         b.animator = animator;
         b.weakPoint = weak;
         b.waveTemplate = wave;
+        b.dayCreature = bird;
+        b.idleState = idle;
+        b.attackState = attack;
+        if (bird || queen)
+        {
+            b.health = 2;
+            b.bossName = bird ? "Garra del Alba" : "Reina de Escarcha";
+            b.bossNameEn = bird ? "Dawn Talon" : "Frost Queen";
+        }
+    }
+
+    /// <summary>Caja que cambia (Z): madera de día, hielo de noche; se puede empujar.</summary>
+    static void BuildChangingBox(Vector3 cell, Transform parent)
+    {
+        var box = new GameObject("CajaQueCambia");
+        box.transform.SetParent(parent);
+        box.transform.position = cell + new Vector3(0f, 0.5f, 0f);
+        box.AddComponent<Rigidbody2D>();
+        box.AddComponent<BoxCollider2D>().size = new Vector2(0.96f, 0.96f);
+        box.AddComponent<ChangingBox>();
+        Fit(Quat + "Cube_Crate.fbx", cell, new Vector3(0.98f, 0.98f, 1.2f), Day, box.transform);
+        Fit(Platformer + "block-snow.fbx", cell, new Vector3(0.98f, 0.98f, 1.2f), Night, box.transform, new Color(0.7f, 0.85f, 1f), IceGlow);
     }
 
     /// <summary>Tras construir el nivel: la meta del jefe solo aparece al vencerlo.</summary>

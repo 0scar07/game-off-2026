@@ -18,11 +18,11 @@ namespace Fase
         void OnTriggerStay2D(Collider2D other)
         {
             var player = other.GetComponent<PlayerController>();
-            if (player == null || !IsActive(other.transform.position.x)) return;
+            if (player == null || !IsActive(other.transform.position)) return;
             player.Die();
         }
 
-        bool IsActive(float x) =>
-            active == When.Always || (active == When.DayOnly) == ShiftLine.IsDay(x);
+        bool IsActive(Vector2 at) =>
+            active == When.Always || (active == When.DayOnly) == ShiftLine.IsDay(at);
     }
 }

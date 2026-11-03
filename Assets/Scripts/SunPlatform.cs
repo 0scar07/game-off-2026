@@ -29,7 +29,7 @@ namespace Fase
 
         void FixedUpdate()
         {
-            bool day = ShiftLine.IsDay(body.position.x);
+            bool day = ShiftLine.IsDay(body.position);
             float step = day ? direction * speed : 0f;
             Vector2 next = body.position + Vector2.right * step * Time.fixedDeltaTime;
             if (next.x > startX + range) { next.x = startX + range; direction = -1f; }

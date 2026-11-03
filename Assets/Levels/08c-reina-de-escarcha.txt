@@ -1,0 +1,21 @@
+nombre: Reina de Escarcha
+name: Frost Queen
+pista: La reina del hielo despierta de noche. Dale el día y sube por las cajas.
+hint: The ice queen wakes at night. Give it daylight and climb the crates.
+capitulo: 2
+linea: 8
+---
+
+
+
+
+
+
+
+
+                                  D
+                                 DD
+  S         C           G       DDD   R
+##################################################
+##################################################
+##################################################

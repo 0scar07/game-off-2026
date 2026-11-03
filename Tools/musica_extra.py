@@ -80,3 +80,5 @@ if __name__ == "__main__":
     shimmer("linea_bosque", [D, A, 1396.9], 76, 16)
     shimmer("linea_cumbre", [E, B, 1661.2], 70, 16)
     drums("jefe_tambores", 70, 16)
+    drums("jefe_tambores_pradera", 84, 16)
+    drums("jefe_tambores_bosque", 76, 16)

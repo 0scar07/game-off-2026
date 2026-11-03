@@ -20,6 +20,10 @@ namespace Fase
         [Tooltip("Meta que aparece al vencerla.")]
         public GameObject goal;
         public int health = 3;
+        [Tooltip("Criatura de día (despierta al sol, piedra de noche), como la Garra del Alba.")]
+        public bool dayCreature;
+        public string bossName = "La Gran Sombra", bossNameEn = "The Great Shadow";
+        public string idleState = "Idle", attackState = "Bite_InPlace", hitState = "HitRecieve";
         public float pushSpeed = 1.6f, waveEvery = 2.8f, stoneTime = 6f;
 
         PlayerController player;
@@ -45,14 +49,15 @@ namespace Fase
             var back = UiKit.Box(canvas.transform, "Barra", new Vector2(0.5f, 1f), new Vector2(0f, -110f), new Vector2(820f, 40f), new Color(0.04f, 0.03f, 0.14f, 0.7f));
             bar = UiKit.Box(back.transform, "Vida", new Vector2(0f, 0.5f), new Vector2(6f, 0f), new Vector2(808f, 28f), new Color(0.75f, 0.35f, 1f));
             bar.rectTransform.pivot = new Vector2(0f, 0.5f);
-            UiKit.Text(back.transform, "Nombre", Loc.Pick("La Gran Sombra", "The Great Shadow"), new Vector2(0.5f, 0f), new Vector2(0f, -36f), new Vector2(820f, 44f), 34);
+            UiKit.Text(back.transform, "Nombre", Loc.Pick(bossName, bossNameEn), new Vector2(0.5f, 0f), new Vector2(0f, -36f), new Vector2(820f, 44f), 34);
         }
 
         void Update()
         {
             if (defeated || busy) return;
-            bool day = ShiftLine.IsDay(transform.position.x);
-            if (day != stone) SetStone(day);
+            bool day = ShiftLine.IsDay(transform.position);
+            bool asleep = dayCreature ? !day : day;
+            if (asleep != stone) SetStone(asleep);
 
             if (stone)
             {
@@ -68,7 +73,8 @@ namespace Fase
             var line = ShiftLine.Instance;
             if (line != null && !PauseMenu.Paused)
             {
-                float toward = line.dayOnLeft ? -1f : 1f;
+                // Empuja la línea para que su mundo (noche o día) crezca hacia Lumi.
+                float toward = Toward(line);
                 line.x = Mathf.Clamp(line.x + toward * pushSpeed * Time.deltaTime, line.minX, line.maxX);
             }
             waveLeft -= Time.deltaTime;
@@ -76,14 +82,22 @@ namespace Fase
             {
                 waveLeft = waveEvery - hits * 0.5f;
                 var wave = Instantiate(waveTemplate, waveTemplate.transform.position, Quaternion.identity);
+                wave.GetComponent<BossWave>().dayWave = dayCreature;
                 wave.SetActive(true);
-                if (animator != null) { animator.Play("Bite_InPlace", 0, 0f); Invoke(nameof(BackToIdle), 0.9f); }
+                if (animator != null) { animator.Play(attackState, 0, 0f); Invoke(nameof(BackToIdle), 0.9f); }
             }
+        }
+
+        /// <summary>Hacia dónde mover la línea para que el mundo del jefe (a la derecha) crezca.</summary>
+        float Toward(ShiftLine line)
+        {
+            bool myWorldOnRight = dayCreature ? !line.dayOnLeft : line.dayOnLeft;
+            return myWorldOnRight ? -1f : 1f;
         }
 
         void BackToIdle()
         {
-            if (animator != null && !stone) animator.CrossFadeInFixedTime("Idle", 0.2f);
+            if (animator != null && !stone) animator.CrossFadeInFixedTime(idleState, 0.2f);
         }
 
         void SetStone(bool value)
@@ -116,7 +130,7 @@ namespace Fase
             var line = ShiftLine.Instance;
             if (line != null)
             {
-                float target = line.dayOnLeft ? line.minX + 2f : line.maxX - 2f;
+                float target = Toward(line) < 0f ? line.minX + 2f : line.maxX - 2f;
                 float from = line.x;
                 for (float t = 0f; t < 0.6f; t += Time.deltaTime)
                 {
@@ -125,7 +139,7 @@ namespace Fase
                 }
             }
             SetStone(false);
-            if (animator != null) { animator.Play("HitRecieve", 0, 0f); Invoke(nameof(BackToIdle), 0.9f); }
+            if (animator != null) { animator.Play(hitState, 0, 0f); Invoke(nameof(BackToIdle), 0.9f); }
             waveLeft = 1.2f;
             busy = false;
         }
@@ -133,7 +147,7 @@ namespace Fase
         IEnumerator Defeat()
         {
             defeated = true;
-            Achievements.Unlock("eclipse");
+            if (!dayCreature && health >= 3) Achievements.Unlock("eclipse");
             // Se deshace en luz: se encoge y sube mientras brilla.
             Vector3 scale = transform.localScale;
             for (float t = 0f; t < 1.6f; t += Time.deltaTime)

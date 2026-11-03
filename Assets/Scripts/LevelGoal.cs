@@ -26,7 +26,7 @@ namespace Fase
         void OnTriggerStay2D(Collider2D other)
         {
             if (reached || other.GetComponent<PlayerController>() == null) return;
-            if (nightRoute && ShiftLine.IsDay(transform.position.x)) return;
+            if (nightRoute && ShiftLine.IsDay(transform.position)) return;
             reached = true;
             LastWasNightRoute = nightRoute;
             other.GetComponent<PlayerController>().Celebrate();

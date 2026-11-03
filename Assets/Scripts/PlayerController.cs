@@ -138,7 +138,7 @@ namespace Fase
             stepLeft -= Time.fixedDeltaTime;
             if (grounded && Mathf.Abs(v.x) > 1f && stepLeft <= 0f)
             {
-                GameEvents.RaiseStep(!ShiftLine.IsDay(transform.position.x));
+                GameEvents.RaiseStep(!ShiftLine.IsDay(transform.position));
                 stepLeft = stepInterval;
             }
             float accel = grounded ? acceleration : airAcceleration;

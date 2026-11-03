@@ -28,10 +28,14 @@ namespace Fase
             var line = ShiftLine.Instance;
             if (line == null || cam == null) return;
             if (index == 1 && !line.hasSecond) { transform.localScale = Vector3.zero; return; }
+            // El dibujo está más cerca de la cámara que el nivel: se coloca donde la línea cae en
+            // la pantalla, y se gira con ella si está inclinada o tumbada.
             Vector3 p = transform.position;
             float depth = p.z - cam.transform.position.z;
-            p.x = cam.ViewportToWorldPoint(new Vector3(line.ScreenX(index == 0 ? line.x : line.x2), 0.5f, depth)).x;
-            transform.position = p;
+            Vector3 onScreen = cam.WorldToViewportPoint(line.PointOnLine(index == 0 ? line.x : line.x2));
+            Vector3 world = cam.ViewportToWorldPoint(new Vector3(onScreen.x, onScreen.y, depth));
+            transform.position = new Vector3(world.x, world.y, p.z);
+            transform.rotation = Quaternion.Euler(0f, 0f, line.angle);
             float pulse = 1f + Mathf.Sin(Time.time * pulseSpeed) * pulseAmount;
             transform.localScale = new Vector3(baseScale.x * pulse, baseScale.y, baseScale.z);
         }

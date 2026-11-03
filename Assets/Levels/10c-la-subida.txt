@@ -1,0 +1,47 @@
+nombre: La subida
+name: The Climb
+pista: La línea ahora está TUMBADA: arriba es de día, abajo de noche.
+Súbela y bájala con Q/E o arrastrándola.
+hint: The line is now LYING DOWN: day above, night below.
+Raise and lower it with Q/E or by dragging.
+capitulo: 3
+linea: 5
+angulo: 90
+dia: derecha
+---
+
+
+                 K
+                nnnn
+            G
+          dddddd
+
+   nnnnnn
+           C
+          ######
+
+   dddddd
+
+          nnnnnn
+    C
+   ######
+
+          dddddd
+      *
+   nnnnnn
+           C
+          ######
+
+   dddddd
+
+          nnnnnn
+    C
+   ######
+
+          dddddd
+
+   nnnnnn
+   S
+########################
+########################
+########################

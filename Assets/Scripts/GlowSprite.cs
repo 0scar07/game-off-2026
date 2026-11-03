@@ -26,7 +26,7 @@ namespace Fase
         void LateUpdate()
         {
             if (cam != null) transform.rotation = cam.transform.rotation;
-            float day = ShiftLine.IsDay(transform.position.x) ? dayFactor : 1f;
+            float day = ShiftLine.IsDay(transform.position) ? dayFactor : 1f;
             float s = size * day * (1f + Mathf.Sin(Time.time * pulseSpeed + phase) * pulse);
             transform.localScale = Vector3.one * s / Mathf.Max(transform.parent != null ? transform.parent.lossyScale.x : 1f, 1e-4f);
         }

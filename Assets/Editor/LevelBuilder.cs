@@ -48,6 +48,7 @@ public static partial class LevelBuilder
         public bool secret;      // cabecera "secreto: si" — se abre con todos los fragmentos de su capítulo
         public float line2 = float.NaN; // cabecera "linea2:" — segunda línea
         public float energy;     // cabecera "energia:" — la línea gasta energía al moverse
+        public float angle;      // cabecera "angulo:" — 0 vertical, 90 tumbada (entonces "linea" es la altura)
         public bool daily;       // desafío diario (Assets/Levels/Diarios)
         public string[] rows;
         public int Width => rows.Max(r => r.Length);
@@ -163,6 +164,7 @@ public static partial class LevelBuilder
                     break;
                 case "linea2": level.line2 = float.Parse(value, inv); break;
                 case "energia": level.energy = float.Parse(value, inv); break;
+                case "angulo": level.angle = float.Parse(value, inv); break;
                 case "secreto": level.secret = value.ToLowerInvariant().StartsWith("s") || value == "1"; break;
                 case "limites":
                     var parts = value.Split(new[] { ' ', '-', ',' }, System.StringSplitOptions.RemoveEmptyEntries);
@@ -191,6 +193,7 @@ public static partial class LevelBuilder
         var body = BuildHero(start);
         body.gameObject.AddComponent<Footprints>();
         body.gameObject.AddComponent<Ghost>();
+        body.gameObject.AddComponent<LanternPower>();
         BuildCamera(body, level.Width, level.Biome);
         BuildAudio(level.Biome);
         BuildFx();
@@ -217,16 +220,23 @@ public static partial class LevelBuilder
 
         BuildLight(biome);
         var line = new GameObject("Linea").AddComponent<ShiftLine>();
-        line.x = level.line;
         line.dayOnLeft = level.dayOnLeft;
-        line.minX = float.IsNaN(level.minLine) ? 0.5f : level.minLine;
-        line.maxX = float.IsNaN(level.maxLine) ? width - 0.5f : level.maxLine;
+        line.angle = level.angle;
+        line.referenceY = level.Height * 0.5f;
+        // La posición va a lo largo de la normal: para la vertical es la columna; tumbada, la altura.
+        float cos = Mathf.Cos(level.angle * Mathf.Deg2Rad), sin = Mathf.Sin(level.angle * Mathf.Deg2Rad);
+        System.Func<float, float> along = v => level.angle >= 89f ? v : v * cos + line.referenceY * sin;
+        line.x = along(level.line);
+        float lo = level.angle >= 89f ? 0.5f : Mathf.Min(0f, width * cos) + Mathf.Min(0f, level.Height * sin);
+        float hi = level.angle >= 89f ? level.Height - 0.5f : Mathf.Max(0f, width * cos) + Mathf.Max(0f, level.Height * sin);
+        line.minX = float.IsNaN(level.minLine) ? lo : along(level.minLine);
+        line.maxX = float.IsNaN(level.maxLine) ? hi : along(level.maxLine);
         if (!float.IsNaN(level.minLine)) BuildLimits(line.minX, line.maxX);
         BuildLineVisual();
         if (!float.IsNaN(level.line2))
         {
             line.hasSecond = true;
-            line.x2 = level.line2;
+            line.x2 = along(level.line2);
             BuildLineVisual(1);
         }
         if (level.energy > 0f) new GameObject("EnergiaLinea").AddComponent<LineEnergy>().max = level.energy;
@@ -272,7 +282,8 @@ public static partial class LevelBuilder
                     case 'O': BuildSunPlatform(cell, moving); break;
                     case 'W': if (level.At(col, row + 1) != 'W') BuildAirCurrent(level, col, row, moving); break;
                     case 'Y': BuildGlowTile(cell, moving); break;
-                    case 'J': BuildBoss(level, cell, moving); break;
+                    case 'J': case 'P': case 'R': BuildBoss(level, cell, moving, c); break;
+                    case 'Z': BuildChangingBox(cell, moving); break;
                 }
                 if (c == '#' && level.At(col, row - 1) == ' ' && level.At(col, row - 2) == ' ')
                     Decorate(cell + Vector3.up, random, decor, biome);

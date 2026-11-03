@@ -31,30 +31,46 @@ namespace Fase
         /// <summary>Ajusta la colisión al trozo visible. Público para que el nivel lo fuerce al cargar.</summary>
         public void Clip()
         {
-            float scale = transform.lossyScale.x;
-            float center = transform.position.x + fullOffset.x * scale;
-            float half = fullSize.x * 0.5f * Mathf.Abs(scale);
-            float left = center - half, right = center + half;
+            float scaleX = transform.lossyScale.x, scaleY = transform.lossyScale.y;
+            Vector2 center = (Vector2)transform.position + Vector2.Scale(fullOffset, new Vector2(scaleX, scaleY));
+            Vector2 half = Vector2.Scale(fullSize, new Vector2(Mathf.Abs(scaleX), Mathf.Abs(scaleY))) * 0.5f;
+            var line = ShiftLine.Instance;
+            Vector2 n = line != null ? line.Normal : Vector2.right;
+            // Se recorta a lo largo del eje que más se parece a la normal: x si la línea es casi
+            // vertical, y si está casi tumbada.
+            bool alongX = Mathf.Abs(n.x) >= Mathf.Abs(n.y);
+            float left = alongX ? center.x - half.x : center.y - half.y;
+            float right = alongX ? center.x + half.x : center.y + half.y;
 
-            // Trozos del mundo de esta pieza entre las líneas; con dos líneas puede haber dos
-            // trozos sueltos y la colisión se queda con el más grande.
-            var lines = ShiftLine.Lines;
-            float bestLeft = 0f, bestRight = 0f;
-            float regionStart = float.NegativeInfinity;
-            for (int i = 0; i <= lines.Length; i++)
+            // Burbuja de noche del farol: si cubre el centro de la pieza, manda ella.
+            bool bubble = LanternPower.Contains(center);
+            if (bubble)
             {
-                float regionEnd = i < lines.Length ? lines[i] : float.PositiveInfinity;
-                float probe = float.IsNegativeInfinity(regionStart) ? regionEnd - 1f : float.IsPositiveInfinity(regionEnd) ? regionStart + 1f : (regionStart + regionEnd) * 0.5f;
-                bool day = ShiftLine.IsDay(probe);
-                if (day == (world == World.Day))
-                {
-                    float a = Mathf.Max(left, regionStart), b = Mathf.Min(right, regionEnd);
-                    if (b - a > bestRight - bestLeft) { bestLeft = a; bestRight = b; }
-                }
-                regionStart = regionEnd;
+                if (world == World.Day) right = left;
             }
-            left = bestLeft;
-            right = bestRight;
+            else
+            {
+                // Trozos del mundo de esta pieza entre las líneas; con dos líneas puede haber
+                // dos trozos sueltos y la colisión se queda con el más grande.
+                var lines = ShiftLine.Lines;
+                float bestLeft = 0f, bestRight = 0f;
+                float regionStart = float.NegativeInfinity;
+                for (int i = 0; i <= lines.Length; i++)
+                {
+                    // Posición de la línea en el eje de recorte, a la altura (o anchura) del centro.
+                    float regionEnd = i < lines.Length ? AxisPosition(lines[i], n, center, alongX) : float.PositiveInfinity;
+                    float probe = float.IsNegativeInfinity(regionStart) ? regionEnd - 1f : float.IsPositiveInfinity(regionEnd) ? regionStart + 1f : (regionStart + regionEnd) * 0.5f;
+                    Vector2 probePoint = alongX ? new Vector2(probe, center.y) : new Vector2(center.x, probe);
+                    if (ShiftLine.IsDay(probePoint) == (world == World.Day))
+                    {
+                        float lo = Mathf.Max(left, regionStart), hi = Mathf.Min(right, regionEnd);
+                        if (hi - lo > bestRight - bestLeft) { bestLeft = lo; bestRight = hi; }
+                    }
+                    regionStart = regionEnd;
+                }
+                left = bestLeft;
+                right = bestRight;
+            }
 
             bool exists = right - left > 0.01f;
             if (exists != box.enabled && clippedOnce)
@@ -65,8 +81,24 @@ namespace Fase
             clippedOnce = true;
             box.enabled = exists;
             if (!exists) return;
-            box.size = new Vector2((right - left) / Mathf.Abs(scale), fullSize.y);
-            box.offset = new Vector2(((left + right) * 0.5f - transform.position.x) / scale, fullOffset.y);
+            if (bubble) { box.size = fullSize; box.offset = fullOffset; return; }
+            if (alongX)
+            {
+                box.size = new Vector2((right - left) / Mathf.Abs(scaleX), fullSize.y);
+                box.offset = new Vector2(((left + right) * 0.5f - transform.position.x) / scaleX, fullOffset.y);
+            }
+            else
+            {
+                box.size = new Vector2(fullSize.x, (right - left) / Mathf.Abs(scaleY));
+                box.offset = new Vector2(fullOffset.x, ((left + right) * 0.5f - transform.position.y) / scaleY);
+            }
+        }
+
+        /// <summary>Dónde cruza la línea (offset a lo largo de la normal n) el eje de recorte que pasa por el centro.</summary>
+        static float AxisPosition(float offset, Vector2 n, Vector2 center, bool alongX)
+        {
+            // n·p = offset  →  x = (offset - n.y·y) / n.x   o   y = (offset - n.x·x) / n.y
+            return alongX ? (offset - n.y * center.y) / n.x : (offset - n.x * center.x) / n.y;
         }
     }
 }

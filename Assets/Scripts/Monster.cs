@@ -38,7 +38,7 @@ namespace Fase
 
         void Update()
         {
-            bool awake = !ShiftLine.IsDay(transform.position.x);
+            bool awake = !ShiftLine.IsDay(transform.position);
             if (awake) { if (flying) Fly(); else Patrol(); }
             if (awake != wasAwake && animator != null) animator.speed = awake ? 1f : 0f;
             wasAwake = awake;

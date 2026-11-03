@@ -26,7 +26,7 @@ namespace Fase
             {
                 Vector2 c = zone.transform.position;
                 if (Mathf.Abs(position.x - c.x) > zone.size.x * 0.5f || position.y < c.y - zone.size.y * 0.5f || position.y > c.y + zone.size.y * 0.5f) continue;
-                if (!ShiftLine.IsDay(position.x)) continue;
+                if (!ShiftLine.IsDay(position)) continue;
                 // Más fuerza abajo que arriba: Lumi flota cerca del techo de la corriente.
                 float height = Mathf.InverseLerp(c.y - zone.size.y * 0.5f, c.y + zone.size.y * 0.5f, position.y);
                 total += zone.lift * (1.2f - height);
