@@ -36,7 +36,7 @@ namespace Fase
         /// <summary>Cámara lenta breve. Se ignora si el juego está en pausa.</summary>
         public static void SlowMotion(float seconds = 0.5f, float scale = 0.3f)
         {
-            if (PauseMenu.Paused) return;
+            if (PauseMenu.Paused || PhotoMode.Active) return;
             var t = Instance;
             t.slowLeft = seconds;
             t.slowScale = scale;
@@ -44,7 +44,8 @@ namespace Fase
 
         void Update()
         {
-            if (PauseMenu.Paused || slowLeft <= 0f) return;
+            // En pausa o en el modo foto el juego está congelado: la cámara lenta no lo toca.
+            if (PauseMenu.Paused || PhotoMode.Active || slowLeft <= 0f) return;
             slowLeft -= Time.unscaledDeltaTime;
             // Entra de golpe y sale suave en el último tercio.
             float k = Mathf.Clamp01(slowLeft / 0.18f);

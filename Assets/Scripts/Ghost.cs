@@ -21,6 +21,8 @@ namespace Fase
 
         void Start()
         {
+            // La repetición es la del nivel que se está jugando (en el diario, el Taller o el sin fin no hay).
+            LastRun = null;
             if (Hud.Instance == null || Hud.Instance.Daily) { enabled = false; return; }
             level = Hud.Instance.levelNumber;
             best = Load(level);

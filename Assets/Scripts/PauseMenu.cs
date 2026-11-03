@@ -26,6 +26,8 @@ namespace Fase
 
         void Update()
         {
+            // El modo foto usa Esc para salir, y en el Taller se escriben códigos con P o R.
+            if (PhotoMode.Active || UiKit.Typing) return;
             var kb = Keyboard.current;
             var pad = Gamepad.current;
             if ((kb != null && (kb.escapeKey.wasPressedThisFrame || kb.pKey.wasPressedThisFrame))

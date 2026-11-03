@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Fase
@@ -120,6 +121,17 @@ namespace Fase
             Text(image.transform, "Texto", text, new Vector2(0.5f, 0.5f), Vector2.zero, size, fontSize);
             if (onClick != null) button.onClick.AddListener(onClick);
             return button;
+        }
+
+        /// <summary>Se está escribiendo en un campo de texto (las teclas no deben mover el juego).</summary>
+        public static bool Typing
+        {
+            get
+            {
+                var selected = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+                var field = selected != null ? selected.GetComponent<InputField>() : null;
+                return field != null && field.isFocused;
+            }
         }
 
         /// <summary>Hay un EventSystem en la escena (los botones lo necesitan).</summary>

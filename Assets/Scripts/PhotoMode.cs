@@ -40,6 +40,13 @@ namespace Fase
         static PhotoMode instance;
         void Awake() => instance = this;
 
+        // Si la escena cambia con el modo foto abierto, que no se quede marcado para la siguiente.
+        void OnDestroy()
+        {
+            if (instance == this) instance = null;
+            Active = false;
+        }
+
         /// <summary>Desde el botón de la pausa (sirve también en el móvil).</summary>
         public static void Open()
         {
@@ -52,7 +59,7 @@ namespace Fase
         {
             var kb = Keyboard.current;
             if (kb == null) return;
-            if (!Active && kb.fKey.wasPressedThisFrame && !PauseMenu.Paused && FindAnyObjectByType<ResultsScreen>() == null) Enter();
+            if (!Active && kb.fKey.wasPressedThisFrame && !PauseMenu.Paused && !UiKit.Typing && FindAnyObjectByType<ResultsScreen>() == null) Enter();
             else if (Active && (kb.fKey.wasPressedThisFrame || kb.escapeKey.wasPressedThisFrame)) Exit();
             if (!Active) return;
 

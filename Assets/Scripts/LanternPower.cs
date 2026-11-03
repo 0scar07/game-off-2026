@@ -49,7 +49,7 @@ namespace Fase
             Center = (Vector2)transform.position + Vector2.up * 0.8f;
             var kb = Keyboard.current;
             var pad = Gamepad.current;
-            bool pressed = touchPressed || (kb != null && kb.lKey.wasPressedThisFrame) || (pad != null && pad.buttonNorth.wasPressedThisFrame);
+            bool pressed = touchPressed || (kb != null && kb.lKey.wasPressedThisFrame && !UiKit.Typing) || (pad != null && pad.buttonNorth.wasPressedThisFrame);
             touchPressed = false;
             if (PauseMenu.Paused) return;
             if (pressed && wait <= 0f && active <= 0f)
