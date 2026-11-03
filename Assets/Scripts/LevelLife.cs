@@ -160,15 +160,18 @@ namespace Fase
             {
                 guide = new GameObject("Guia").transform;
                 guide.position = player.transform.position + new Vector3(6f, 5f, -0.5f);
-                var glow = Instantiate(lantern != null ? lantern.gameObject : new GameObject(), guide);
-                glow.transform.localPosition = Vector3.zero;
-                var g = glow.GetComponent<GlowSprite>();
-                if (g != null) { g.size = 1.2f; g.dayFactor = 1f; }
-                foreach (var r in glow.GetComponentsInChildren<Renderer>())
+                if (lantern != null)
                 {
-                    var block = new MaterialPropertyBlock();
-                    block.SetColor("_Color", new Color(0.7f, 1.5f, 0.5f, 0.9f));
-                    r.SetPropertyBlock(block);
+                    var glow = Instantiate(lantern.gameObject, guide);
+                    glow.transform.localPosition = Vector3.zero;
+                    var g = glow.GetComponent<GlowSprite>();
+                    if (g != null) { g.size = 1.2f; g.dayFactor = 1f; }
+                    foreach (var r in glow.GetComponentsInChildren<Renderer>())
+                    {
+                        var block = new MaterialPropertyBlock();
+                        block.SetColor("_Color", new Color(0.7f, 1.5f, 0.5f, 0.9f));
+                        r.SetPropertyBlock(block);
+                    }
                 }
                 var canvas = UiKit.Canvas("PistaGuia", 8);
                 canvas.transform.SetParent(transform, false);

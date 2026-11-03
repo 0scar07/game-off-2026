@@ -10,12 +10,30 @@ namespace Fase
         float direction = 1f, pause;
         string state = "";
 
+        float footOffset;   // distancia del origen del modelo a sus pies
+
         void Start()
         {
             animator = GetComponentInChildren<Animator>();
+            var renderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+            if (renderers.Length > 0)
+            {
+                float feet = renderers[0].bounds.min.y;
+                foreach (var r in renderers) feet = Mathf.Min(feet, r.bounds.min.y);
+                footOffset = transform.position.y - feet;
+            }
+            Snap(1f);
+        }
+
+        /// <summary>Pone los pies sobre el suelo que hay justo debajo (k = 1 de golpe, menos = suave).</summary>
+        void Snap(float k)
+        {
             var p = transform.position;
-            var hit = Physics2D.Raycast(new Vector2(p.x, p.y + 6f), Vector2.down, 20f);
-            if (hit.collider != null) transform.position = new Vector3(p.x, hit.point.y, p.z);
+            float feet = p.y - footOffset;
+            var hit = Physics2D.Raycast(new Vector2(p.x, feet + 1.2f), Vector2.down, 8f);
+            if (hit.collider == null) return;
+            p.y = Mathf.Lerp(p.y, hit.point.y + footOffset, k);
+            transform.position = p;
         }
 
         void Update()
@@ -33,10 +51,9 @@ namespace Fase
                 direction = -direction;
                 pause = Random.value < 0.5f ? 3.2f : 1.2f;
             }
-            // Los pies siempre sobre el suelo (el del menú no es plano).
-            var hit = Physics2D.Raycast(new Vector2(p.x, p.y + 6f), Vector2.down, 20f);
-            if (hit.collider != null) p.y = Mathf.Lerp(p.y, hit.point.y, Time.deltaTime * 12f);
             transform.position = p;
+            // Los pies siempre sobre el suelo (el del menú no es plano).
+            Snap(Time.deltaTime * 12f);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, -direction * 90f, 0f), Time.deltaTime * 6f);
             Play("Run");
         }
