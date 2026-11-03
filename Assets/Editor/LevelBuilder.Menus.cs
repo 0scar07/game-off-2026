@@ -60,15 +60,19 @@ public static partial class LevelBuilder
         file = name,
         name = name,
         line = 20f,
+        // Suelo continuo y plano de punta a punta (sin huecos que aparezcan y desaparezcan);
+        // las piezas de día y de noche flotan encima para que la línea siga mostrando el cambio.
         rows = new[]
         {
-            "", "", "", "", "", "", "",
-            "                          nn",
-            "            DD       nn",
-            "                                 ",
-            "########dddddd##########nnnnnn##########",
-            "########################################",
-            "########################################",
+            "", "", "", "", "",
+            "                        nnn",
+            "                  DD            nn",
+            "",
+            "",
+            "",
+            "##################################################",
+            "##################################################",
+            "##################################################",
         },
     };
 
