@@ -43,11 +43,25 @@
             ]
         },
         {
+            "scene": "04-lago-helado",
+            "name": "Lago helado",
+            "nameEn": "Frozen Lake",
+            "chapter": 1,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                62.0,
+                43.0,
+                31.0,
+                25.0
+            ]
+        },
+        {
             "scene": "04b-relojes-de-sol",
             "name": "Relojes de sol",
             "nameEn": "Sundials",
             "chapter": 1,
-            "fragments": 0,
+            "fragments": 2,
             "secret": false,
             "medals": [
                 70.0,
@@ -68,20 +82,6 @@
                 31.0,
                 22.0,
                 18.0
-            ]
-        },
-        {
-            "scene": "04-lago-helado",
-            "name": "Lago helado",
-            "nameEn": "Frozen Lake",
-            "chapter": 1,
-            "fragments": 2,
-            "secret": false,
-            "medals": [
-                62.0,
-                43.0,
-                31.0,
-                25.0
             ]
         },
         {
@@ -127,6 +127,20 @@
             ]
         },
         {
+            "scene": "08-sierras",
+            "name": "Sierras del bosque",
+            "nameEn": "Forest Saws",
+            "chapter": 2,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                68.0,
+                48.0,
+                34.0,
+                27.0
+            ]
+        },
+        {
             "scene": "08b-luciernagas",
             "name": "Luciérnagas",
             "nameEn": "Fireflies",
@@ -155,20 +169,6 @@
             ]
         },
         {
-            "scene": "08-sierras",
-            "name": "Sierras del bosque",
-            "nameEn": "Forest Saws",
-            "chapter": 2,
-            "fragments": 2,
-            "secret": false,
-            "medals": [
-                68.0,
-                48.0,
-                34.0,
-                27.0
-            ]
-        },
-        {
             "scene": "09-la-torre",
             "name": "La torre",
             "nameEn": "The Tower",
@@ -180,6 +180,20 @@
                 22.0,
                 16.0,
                 13.0
+            ]
+        },
+        {
+            "scene": "10-rio-nocturno",
+            "name": "Río nocturno",
+            "nameEn": "Night River",
+            "chapter": 3,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                62.0,
+                43.0,
+                31.0,
+                25.0
             ]
         },
         {
@@ -211,17 +225,17 @@
             ]
         },
         {
-            "scene": "10-rio-nocturno",
-            "name": "Río nocturno",
-            "nameEn": "Night River",
+            "scene": "11-eclipse",
+            "name": "Eclipse",
+            "nameEn": "Eclipse",
             "chapter": 3,
-            "fragments": 2,
+            "fragments": 3,
             "secret": false,
             "medals": [
-                62.0,
-                43.0,
-                31.0,
-                25.0
+                90.0,
+                63.0,
+                45.0,
+                36.0
             ]
         },
         {
@@ -236,20 +250,6 @@
                 50.0,
                 36.0,
                 29.0
-            ]
-        },
-        {
-            "scene": "11-eclipse",
-            "name": "Eclipse",
-            "nameEn": "Eclipse",
-            "chapter": 3,
-            "fragments": 3,
-            "secret": false,
-            "medals": [
-                90.0,
-                63.0,
-                45.0,
-                36.0
             ]
         },
         {

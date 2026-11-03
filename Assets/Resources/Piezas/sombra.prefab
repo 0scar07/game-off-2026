@@ -138,7 +138,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5228370994429463364}
-  - {fileID: 4164047674005515612}
+  - {fileID: 4261106742462935397}
   m_Father: {fileID: 6283509116448195103}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2499239622326326661
@@ -163,7 +163,7 @@ MonoBehaviour:
   flyRange: 3
   visual: {fileID: 5228370994429463364}
   animator: {fileID: 4699089617389725724}
-  statue: {fileID: 4164047674005515612}
+  statue: {fileID: 4261106742462935397}
 --- !u!1 &8841774831960689000
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,7 +196,7 @@ Transform:
   - {fileID: 5215255722270961243}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &4486449656969988791
+--- !u!1001 &4370962777917560462
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -293,10 +293,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 32cb5d2e0ab9ca342911df553c27b82d, type: 3}
---- !u!4 &4164047674005515612 stripped
+--- !u!4 &4261106742462935397 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 32cb5d2e0ab9ca342911df553c27b82d, type: 3}
-  m_PrefabInstance: {fileID: 4486449656969988791}
+  m_PrefabInstance: {fileID: 4370962777917560462}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5693780053168614575
 PrefabInstance:
