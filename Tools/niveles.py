@@ -50,7 +50,17 @@ class Level:
         self.put("S", 2, self.top - 1)
         return self
 
-    def goal(self):
+    def goal(self, alt=False):
+        """Meta. Con alt=True hay además una meta de noche en lo alto de unas placas de hielo."""
+        if alt:
+            t, x = self.top, self.x
+            self.flat(14)
+            self.fill("n", range(x + 2, x + 4), [t - 2])
+            self.fill("n", range(x + 5, x + 7), [t - 4])
+            self.fill("n", range(x + 8, x + 11), [t - 6])
+            self.put("H", x + 9, t - 7)
+            self.put("G", self.x - 2, t - 1)
+            return self
         self.flat(7)
         self.put("G", self.x - 3, self.top - 1)
         return self
@@ -242,7 +252,7 @@ save("01-amanecer.txt", 1, "Amanecer", "Daybreak",
      "Left of the line is day; right of it, night.\\nMove it with Shift (or Q/E), or drag it.", 4, L)
 
 L = Level().start().flat(4).ice_bridge(5).flat(5).ice_steps(star=True).check().flat(3).ice_bridge(8).flat(4)
-L.ice_steps().flat(3).secret_ledge("n").ice_bridge(6).goal()
+L.ice_steps().flat(3).secret_ledge("n").ice_bridge(6).goal(alt=True)
 save("02-noche-estrellada.txt", 1, "Noche estrellada", "Starry Night",
      "Lo que brilla en azul solo existe de noche.", "What glows blue only exists at night.", 60, L)
 
@@ -265,7 +275,7 @@ save("05-criaturas.txt", 2, "Criaturas", "Creatures",
      "Las Sombras duermen de día: se vuelven de piedra.", "Shadows sleep by day: they turn to stone.", 3, L)
 
 L = Level().start().flat(3).bee_over_ice(8).flat(3).bridge(6).bee_over_ice(10).check().ice_steps(star=True)
-L.flat(2).bee_over_ice(7).secret_ledge("n").lake(7).bee_over_ice(8).goal()
+L.flat(2).bee_over_ice(7).secret_ledge("n").lake(7).bee_over_ice(8).goal(alt=True)
 save("06-alas-en-la-noche.txt", 2, "Alas en la noche", "Wings at Night",
      "Las abejas de la noche vuelan bajo: espera tu momento.", "Night bees fly low: wait for your moment.", 3, L)
 
@@ -297,7 +307,7 @@ save("09-la-torre.txt", 3, "La torre", "The Tower",
      "The line can't leave the red posts.\\nClimb in a zigzag.", 15, T, "limites: 15 17\n")
 
 L = Level().start().flat(3).lake(8).flat(2).spring_wall().flat(2).drop(5).lake(10, star=True).check().spring_wall(4)
-L.secret_ledge().drop(4).lake(8).flat(2).bee_over_ice(7).goal()
+L.secret_ledge().drop(4).lake(8).flat(2).bee_over_ice(7).goal(alt=True)
 save("10-rio-nocturno.txt", 3, "Río nocturno", "Night River",
      "Una cosa a cada lado de la línea.", "One thing on each side of the line.", 12, L)
 

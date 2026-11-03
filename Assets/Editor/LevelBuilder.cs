@@ -190,10 +190,15 @@ public static partial class LevelBuilder
 
         var body = BuildHero(start);
         body.gameObject.AddComponent<Footprints>();
+        body.gameObject.AddComponent<Ghost>();
         BuildCamera(body, level.Width, level.Biome);
         BuildAudio(level.Biome);
         BuildFx();
         BuildHud(level, number, fragments);
+        // Farol que siente los fragmentos, tarjeta de capítulo, luciérnaga guía, clima y modo foto.
+        var life = new GameObject("VidaDelNivel");
+        life.AddComponent<LevelLife>();
+        life.AddComponent<PhotoMode>();
         BuildMobileUi();
         BuildPause();
         BuildTransition();
@@ -255,6 +260,7 @@ public static partial class LevelBuilder
                 {
                     case 'S': start = cell + Vector3.up * 0.95f; break;
                     case 'G': BuildGoal(cell, nextScene, root); break;
+                    case 'H': BuildGoal(cell, nextScene, root, true); break;
                     case '^': BuildSpikes(cell, root); break;
                     case 'M': BuildMonster(cell, root, false); break;
                     case 'B': BuildMonster(cell, root, true); break;
@@ -473,13 +479,17 @@ public static partial class LevelBuilder
         checkpoint.AddComponent<Checkpoint>().visual = visual.transform;
     }
 
-    static void BuildGoal(Vector3 cell, string nextScene, Transform parent)
+    /// <summary>Meta; con nightRoute es la meta de la ruta de noche (bandera azul, solo existe de noche).</summary>
+    static void BuildGoal(Vector3 cell, string nextScene, Transform parent, bool nightRoute = false)
     {
-        var goal = Trigger("Meta", cell + new Vector3(0f, 1f, 0f), new Vector2(1f, 2f), parent);
-        goal.AddComponent<LevelGoal>().nextScene = nextScene;
-        Fit(Quat + "Goal_Flag.fbx", cell, new Vector3(1.2f, 2.6f, 0.35f), Both, goal.transform,
-            recolor: new Dictionary<string, (Color, Color)> { ["Flag"] = (new Color(1f, 0.8f, 0.3f), new Color(0.6f, 0.4f, 0.05f)) });
-        Glow("Brillo", cell + new Vector3(0f, 1.5f, -0.3f), 3.5f, new Color(1.3f, 1f, 0.5f, 0.5f), Both, goal.transform);
+        var goal = Trigger(nightRoute ? "MetaNoche" : "Meta", cell + new Vector3(0f, 1f, 0f), new Vector2(1f, 2f), parent);
+        var g = goal.AddComponent<LevelGoal>();
+        g.nextScene = nextScene;
+        g.nightRoute = nightRoute;
+        var flag = nightRoute ? (new Color(0.55f, 0.65f, 1f), new Color(0.2f, 0.25f, 0.7f)) : (new Color(1f, 0.8f, 0.3f), new Color(0.6f, 0.4f, 0.05f));
+        Fit(Quat + "Goal_Flag.fbx", cell, new Vector3(1.2f, 2.6f, 0.35f), nightRoute ? Night : Both, goal.transform,
+            recolor: new Dictionary<string, (Color, Color)> { ["Flag"] = flag });
+        Glow("Brillo", cell + new Vector3(0f, 1.5f, -0.3f), 3.5f, nightRoute ? new Color(0.6f, 0.8f, 1.6f, 0.5f) : new Color(1.3f, 1f, 0.5f, 0.5f), nightRoute ? Night : Both, goal.transform);
     }
 
     static void Decorate(Vector3 top, System.Random random, Transform parent, Biome biome)

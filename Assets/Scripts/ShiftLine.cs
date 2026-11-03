@@ -133,9 +133,11 @@ namespace Fase
             float move = 0f;
             if (Settings.Held(Settings.Action.LineLeft)) move -= 1f;
             if (Settings.Held(Settings.Action.LineRight)) move += 1f;
+            // Cooperativo con mandos: el segundo mando mueve la línea.
+            if (Settings.Coop && Gamepad.all.Count > 1) move += Gamepad.all[1].leftStick.x.ReadValue();
             float before = x + x2;
             int keyLine = KeyboardLine();
-            if (move != 0f) Set(keyLine, Get(keyLine) + move * MirrorMode.Sign * keySpeed * Time.deltaTime);
+            if (move != 0f) Set(keyLine, Get(keyLine) + move * MirrorMode.Sign * keySpeed * Settings.LineSpeedFactor * Time.deltaTime);
 
             HandleDrag();
             float travelled = Mathf.Abs(x + x2 - before);

@@ -96,6 +96,55 @@ namespace Fase
             curtain.gameObject.SetActive(t > -0.999f && t < 0.999f);
         }
 
+        static int caught;
+
+        IEnumerator CatchStars(float since)
+        {
+            var stars = new System.Collections.Generic.List<RectTransform>();
+            var label = new GameObject("Atrapadas", typeof(RectTransform)).GetComponent<RectTransform>();
+            label.SetParent(curtain, false);
+            label.anchorMin = label.anchorMax = new Vector2(1f, 1f);
+            label.anchoredPosition = new Vector2(-120f, -50f);
+            label.sizeDelta = new Vector2(200f, 60f);
+            var text = label.gameObject.AddComponent<Text>();
+            text.font = UiKit.Font; text.fontSize = 34; text.alignment = TextAnchor.MiddleRight; text.color = new Color(1f, 0.85f, 0.45f);
+            text.text = caught > 0 ? $"★ {caught}" : "";
+            float spawn = 0f;
+            var size = ((RectTransform)transform).rect.size;
+            while (Time.unscaledTime - since < 1.3f)
+            {
+                spawn -= Time.unscaledDeltaTime;
+                if (spawn <= 0f)
+                {
+                    spawn = 0.18f;
+                    var star = new GameObject("Estrella", typeof(RectTransform)).GetComponent<RectTransform>();
+                    star.SetParent(curtain, false);
+                    star.sizeDelta = new Vector2(46f, 46f);
+                    star.anchoredPosition = new Vector2(Random.Range(-size.x * 0.4f, size.x * 0.4f), size.y * 0.55f);
+                    var t = star.gameObject.AddComponent<Text>();
+                    t.font = UiKit.Font; t.fontSize = 40; t.alignment = TextAnchor.MiddleCenter; t.text = "★"; t.color = new Color(1f, 0.9f, 0.5f);
+                    stars.Add(star);
+                }
+                Vector2 pointer = UnityEngine.InputSystem.Pointer.current != null ? UnityEngine.InputSystem.Pointer.current.position.ReadValue() : new Vector2(-9999f, 0f);
+                for (int i = stars.Count - 1; i >= 0; i--)
+                {
+                    var s2 = stars[i];
+                    s2.anchoredPosition += Vector2.down * 520f * Time.unscaledDeltaTime;
+                    if (RectTransformUtility.RectangleContainsScreenPoint(s2, pointer, null))
+                    {
+                        caught++;
+                        text.text = $"★ {caught}";
+                        Destroy(s2.gameObject);
+                        stars.RemoveAt(i);
+                    }
+                    else if (s2.anchoredPosition.y < -size.y * 0.6f) { Destroy(s2.gameObject); stars.RemoveAt(i); }
+                }
+                yield return null;
+            }
+            foreach (var s3 in stars) Destroy(s3.gameObject);
+            Destroy(label.gameObject);
+        }
+
         IEnumerator Run(string scene)
         {
             busy = true;
@@ -111,8 +160,8 @@ namespace Fase
             float covered = Time.unscaledTime;
             var load = SceneManager.LoadSceneAsync(scene);
             while (!load.isDone) yield return null;
-            // Un momento para leer el consejo.
-            while (Time.unscaledTime - covered < 1.3f) yield return null;
+            // Un momento para leer el consejo... y atrapar estrellas que caen por la cortina.
+            yield return CatchStars(covered);
             for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime / Duration)
             {
                 SetCover(Mathf.SmoothStep(0f, 1f, t));

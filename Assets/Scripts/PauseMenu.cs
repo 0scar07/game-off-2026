@@ -31,6 +31,8 @@ namespace Fase
             if ((kb != null && (kb.escapeKey.wasPressedThisFrame || kb.pKey.wasPressedThisFrame))
                 || (pad != null && pad.startButton.wasPressedThisFrame))
                 Toggle();
+            // R: reintento rápido (salvo con la pantalla de resultados, que tiene la suya).
+            if (kb != null && kb.rKey.wasPressedThisFrame && FindAnyObjectByType<ResultsScreen>() == null) Restart();
         }
 
         /// <summary>Si la ventana pierde el foco (otra pestaña, otra app), pausar.</summary>

@@ -35,6 +35,10 @@ namespace Fase
         public int Fragments => fragments;
         public float Elapsed => elapsed;
         public bool IsRecord { get; private set; }
+        /// <summary>Caídas y agarres de la línea en este intento (para los desafíos).</summary>
+        public int Deaths { get; private set; }
+        public int Grabs { get; private set; }
+        int deathStreak;
         public bool Daily => daily;
         /// <summary>El nivel se está jugando en modo espejo (el mundo dado la vuelta).</summary>
         public bool Mirror => MirrorMode.Active;
@@ -45,13 +49,50 @@ namespace Fase
         {
             GameEvents.Collected += OnCollected;
             GameEvents.GoalReached += OnGoal;
+            GameEvents.Died += OnDied;
+            GameEvents.LineGrabbed += OnGrab;
+            GameEvents.CheckpointReached += OnCheckpoint;
         }
 
         void OnDisable()
         {
             GameEvents.Collected -= OnCollected;
             GameEvents.GoalReached -= OnGoal;
+            GameEvents.Died -= OnDied;
+            GameEvents.LineGrabbed -= OnGrab;
+            GameEvents.CheckpointReached -= OnCheckpoint;
         }
+
+        static readonly (string es, string en)[] Cheers =
+        {
+            ("¡Casi!", "So close!"), ("¡Tú puedes!", "You've got this!"), ("Prueba a mover la línea antes", "Try moving the line first"),
+            ("La próxima sale", "Next one's it"), ("Respira... y otra vez", "Breathe... and again"),
+        };
+
+        void OnDied()
+        {
+            Deaths++;
+            deathStreak++;
+            Stats.AddFall();
+            // Tras varias caídas seguidas, un ánimo pequeño en el centro.
+            if (deathStreak >= 3 && banner != null)
+            {
+                var cheer = Cheers[Random.Range(0, Cheers.Length)];
+                banner.text = Loc.Pick(cheer.es, cheer.en);
+                cheerLeft = 2f;
+                deathStreak = 0;
+            }
+        }
+
+        void OnCheckpoint() => deathStreak = 0;
+
+        void OnGrab()
+        {
+            Grabs++;
+            Stats.AddLineMove();
+        }
+
+        float cheerLeft;
 
         void Start()
         {
@@ -61,6 +102,14 @@ namespace Fase
             corner.text = name;
             banner.text = "";
             UpdateCounter();
+            if (Settings.Coop)
+            {
+                // Quién controla qué, arriba en el centro.
+                var p1 = UiKit.Box(transform, "J1", new Vector2(0.5f, 1f), new Vector2(-260f, -40f), new Vector2(480f, 60f), new Color(1f, 0.6f, 0.35f, 0.85f));
+                UiKit.Text(p1.transform, "Texto", Loc.Pick("J1 · Lumi (A/D + Espacio)", "P1 · Lumi (A/D + Space)"), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(480f, 60f), 28);
+                var p2 = UiKit.Box(transform, "J2", new Vector2(0.5f, 1f), new Vector2(260f, -40f), new Vector2(480f, 60f), new Color(0.47f, 0.43f, 1f, 0.85f));
+                UiKit.Text(p2.transform, "Texto", Loc.Pick("J2 · La línea (← → o ratón)", "P2 · The line (← → or mouse)"), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(480f, 60f), 28);
+            }
         }
 
         void Update()
@@ -72,6 +121,12 @@ namespace Fase
             SetAlpha(hintText, Fade(age, 6f, 1f));
             SetAlpha(corner, 1f - Fade(age, 2.5f, 0.8f));
             if (timer != null) timer.text = FormatTime(elapsed);
+            if (cheerLeft > 0f)
+            {
+                cheerLeft -= Time.deltaTime;
+                SetAlpha(banner, Mathf.Clamp01(cheerLeft));
+                if (cheerLeft <= 0f) banner.text = "";
+            }
         }
 
         public static string FormatTime(float seconds) =>

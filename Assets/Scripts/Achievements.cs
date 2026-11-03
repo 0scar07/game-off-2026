@@ -15,6 +15,7 @@ namespace Fase
         public class Info
         {
             public string id, nameEs, nameEn, descEs, descEn;
+            public bool secret;   // no se ve en la lista hasta conseguirlo
             public string Name => Loc.Pick(nameEs, nameEn);
             public string Description => Loc.Pick(descEs, descEn);
         }
@@ -39,7 +40,18 @@ namespace Fase
             New("secreto", "Más allá del mapa", "Off the map", "Termina un nivel secreto", "Finish a secret level"),
             New("espejo", "Al otro lado", "Through the mirror", "Termina un nivel en modo espejo", "Finish a level in mirror mode"),
             New("diario", "Cada día", "Every day", "Termina un desafío diario", "Finish a daily challenge"),
+            Secret("noctambulo", "Noctámbulo", "Night owl", "Pasa 60 s seguidos de noche", "Spend 60 s in a row at night"),
+            Secret("saltarin", "Saltarín", "Bouncy", "Salta 15 veces en 8 segundos", "Jump 15 times in 8 seconds"),
+            Secret("lector", "Lector", "Bookworm", "Encuentra 5 páginas del diario", "Find 5 diary pages"),
+            Secret("fotografo", "Fotógrafo", "Photographer", "Haz una foto en el modo foto", "Take a picture in photo mode"),
         };
+
+        static Info Secret(string id, string nameEs, string nameEn, string descEs, string descEn)
+        {
+            var info = New(id, nameEs, nameEn, descEs, descEn);
+            info.secret = true;
+            return info;
+        }
 
         static Info New(string id, string nameEs, string nameEn, string descEs, string descEn) =>
             new Info { id = id, nameEs = nameEs, nameEn = nameEn, descEs = descEs, descEn = descEn };
@@ -120,11 +132,28 @@ namespace Fase
         }
 
         void OnDied() => diedThisLevel = true;
-        void OnChest() => Unlock("cofre");
+        void OnChest()
+        {
+            Unlock("cofre");
+            // El cofre trae una página del diario de Lumi.
+            var hud = Hud.Instance;
+            if (hud != null && !hud.Daily && !Diary.Has(hud.levelNumber))
+            {
+                Diary.Find(hud.levelNumber);
+                if (Diary.Found >= 5) Unlock("lector");
+                queue.Enqueue("__diario");
+            }
+        }
+
+        readonly System.Collections.Generic.Queue<float> recentJumps = new System.Collections.Generic.Queue<float>();
+        float nightTime;
 
         void OnJumped()
         {
             if (AddCounter("saltos") >= 500) Unlock("saltos");
+            recentJumps.Enqueue(Time.time);
+            while (recentJumps.Count > 0 && Time.time - recentJumps.Peek() > 8f) recentJumps.Dequeue();
+            if (recentJumps.Count >= 15) Unlock("saltarin");
             // Saltar justo cuando el suelo bajo los pies va a desaparecer cuenta en OnPieceVanished.
             lastJump = Time.time;
         }
@@ -175,6 +204,8 @@ namespace Fase
             if (player == null || ShiftLine.Instance == null || PauseMenu.Paused) return;
             onLine = Mathf.Abs(player.transform.position.x - ShiftLine.X) < 0.35f ? onLine + Time.deltaTime : 0f;
             if (onLine >= 3f) Unlock("medioymedio");
+            nightTime = ShiftLine.IsDay(player.transform.position.x) ? 0f : nightTime + Time.deltaTime;
+            if (nightTime >= 60f) Unlock("noctambulo");
         }
 
         // ───────── Avisos ─────────
@@ -185,7 +216,9 @@ namespace Fase
             {
                 while (queue.Count == 0) yield return null;
                 string id = queue.Dequeue();
-                var info = System.Array.Find(All, a => a.id == id);
+                var info = id == "__diario"
+                    ? New("__diario", "Página del diario", "Diary page", "Léela en el menú → Diario", "Read it in the menu → Diary")
+                    : System.Array.Find(All, a => a.id == id);
                 if (info == null) continue;
                 yield return Toast(info);
             }
@@ -199,7 +232,7 @@ namespace Fase
             var glow = UiKit.Box(box.transform, "Brillo", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(120f, 120f), new Color(1f, 0.8f, 0.4f, 0.35f));
             UiKit.Box(box.transform, "Estrella", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(76f, 76f), new Color(1f, 0.84f, 0.35f));
             UiKit.Text(box.transform, "Icono", "★", new Vector2(0f, 0.5f), new Vector2(70f, 2f), new Vector2(76f, 76f), 46, TextAnchor.MiddleCenter, new Color(0.55f, 0.35f, 0.1f));
-            UiKit.Text(box.transform, "Titulo", Loc.Get("achievement") + " " + info.Name, new Vector2(0f, 0.5f), new Vector2(130f, 22f), new Vector2(490f, 50f), 36, TextAnchor.MiddleLeft, UiKit.Gold).rectTransform.pivot = new Vector2(0f, 0.5f);
+            UiKit.Text(box.transform, "Titulo", (info.id == "__diario" ? "" : Loc.Get("achievement") + " ") + info.Name, new Vector2(0f, 0.5f), new Vector2(130f, 22f), new Vector2(490f, 50f), 36, TextAnchor.MiddleLeft, UiKit.Gold).rectTransform.pivot = new Vector2(0f, 0.5f);
             UiKit.Text(box.transform, "Detalle", info.Description, new Vector2(0f, 0.5f), new Vector2(130f, -24f), new Vector2(490f, 40f), 26, TextAnchor.MiddleLeft, UiKit.Soft).rectTransform.pivot = new Vector2(0f, 0.5f);
             DontDestroyOnLoad(canvas.gameObject);
 

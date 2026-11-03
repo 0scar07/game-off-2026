@@ -57,6 +57,12 @@ namespace Fase
             body.freezeRotation = true;
             body.interpolation = RigidbodyInterpolation2D.Interpolate;
             checkpoint = transform.position;
+            if (Wardrobe.IsNox)
+            {
+                // Nox: salta más alto, corre más despacio.
+                jumpSpeed *= 1.12f;
+                speed *= 0.88f;
+            }
             if (Settings.Assist)
             {
                 jumpSpeed *= 1.1f;
@@ -157,6 +163,7 @@ namespace Fase
             v.y = Mathf.Max(v.y, -maxFallSpeed);
             body.linearVelocity = v;
 
+            if (grounded) Stats.AddMeters(Mathf.Abs(v.x) * Time.fixedDeltaTime);
             if (IsCrushed() || transform.position.y < killHeight) Die();
         }
 
@@ -230,7 +237,7 @@ namespace Fase
             float x = MobileInput.Move;
             if (Settings.Held(Settings.Action.Left)) x -= 1f;
             if (Settings.Held(Settings.Action.Right)) x += 1f;
-            var pad = Gamepad.current;
+            var pad = Settings.Coop && Gamepad.all.Count > 0 ? Gamepad.all[0] : Gamepad.current;
             if (pad != null) x += pad.leftStick.x.ReadValue();
             // En modo espejo "derecha" es la derecha de la pantalla, que en el mundo es la izquierda.
             return Mathf.Clamp(x, -1f, 1f) * MirrorMode.Sign;

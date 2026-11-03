@@ -13,6 +13,8 @@ namespace Fase
 
         bool opened;
 
+        public bool Opened => opened;
+
         void Reset() => GetComponent<Collider2D>().isTrigger = true;
 
         void OnTriggerEnter2D(Collider2D other)

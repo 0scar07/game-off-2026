@@ -73,6 +73,14 @@ public static partial class LevelBuilder
         line.sweepAmplitude = 11f;
         StaticCamera(new Vector3(20f, 5f, -19f));
         BuildAudio(Biomes[0]);
+        // Lumi pasea por el fondo del menú.
+        BuildLumi(new Vector3(12f, 3f, 1.5f), null).AddComponent<MenuWalker>();
+        // Música del capítulo por el que vas y día o noche según la hora real.
+        var mood = Object.FindAnyObjectByType<MusicLayers>().gameObject.AddComponent<MenuMood>();
+        mood.day = Biomes.Select(b => MusicClip(b.musicDay)).ToArray();
+        mood.night = Biomes.Select(b => MusicClip(b.musicNight)).ToArray();
+        mood.ambienceDay = Biomes.Select(b => MusicClip(b.ambienceDay)).ToArray();
+        mood.ambienceNight = Biomes.Select(b => MusicClip(b.ambienceNight)).ToArray();
 
         var canvas = NewCanvas("Menu", 0).transform;
         var menu = canvas.gameObject.AddComponent<MainMenu>();
@@ -320,6 +328,8 @@ public static partial class LevelBuilder
         intro.subtitle = subtitle;
         intro.slides = slides;
         intro.linesEs = IntroEs;
+        intro.voiceEs = Enumerable.Range(0, 4).Select(i => AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/Voz/intro_es_{i}.wav")).ToArray();
+        intro.voiceEn = Enumerable.Range(0, 4).Select(i => AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/Voz/intro_en_{i}.wav")).ToArray();
         intro.linesEn = IntroEn;
         intro.nextScene = Path.GetFileNameWithoutExtension(Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f).First());
         UnityEventTools.AddPersistentListener(skip.onClick, intro.Skip);
@@ -411,6 +421,7 @@ public static partial class LevelBuilder
         UnityEventTools.AddPersistentListener(UiButton(column.transform, "restart", new Vector2(520f, 110f), out _).onClick, pause.Restart);
         UnityEventTools.AddPersistentListener(UiButton(column.transform, "menu", new Vector2(520f, 110f), out _).onClick, pause.ToMenu);
         pause.panel = dim;
+        canvas.gameObject.AddComponent<PauseMap>();
     }
 
     // ───────────────────────── Piezas de interfaz ─────────────────────────

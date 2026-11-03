@@ -19,6 +19,12 @@ namespace Fase
             new[] { Key.LeftShift }, new[] { Key.RightShift },
         };
 
+        // En cooperativo las flechas son de la línea (jugador 2).
+        static readonly Key[][] CoopKeys =
+        {
+            new Key[0], new Key[0], new[] { Key.W }, new[] { Key.LeftArrow }, new[] { Key.RightArrow },
+        };
+
         static readonly int HighContrastId = Shader.PropertyToID("_HighContrast");
 
         public static event System.Action Changed;
@@ -36,6 +42,22 @@ namespace Fase
             get => PlayerPrefs.GetInt("fase_contraste", 0) == 1;
             set { SetBool("fase_contraste", value); ApplyShader(); }
         }
+
+        /// <summary>Dos jugadores en el mismo teclado: J1 mueve a Lumi (A/D/W/Espacio), J2 la línea (flechas o ratón).</summary>
+        public static bool Coop
+        {
+            get => PlayerPrefs.GetInt("fase_coop", 0) == 1;
+            set => SetBool("fase_coop", value);
+        }
+
+        /// <summary>Velocidad de la línea con el teclado o el mando: 0 lenta, 1 normal, 2 rápida.</summary>
+        public static int LineSpeed
+        {
+            get => PlayerPrefs.GetInt("fase_velocidad_linea", 1);
+            set { PlayerPrefs.SetInt("fase_velocidad_linea", (value % 3 + 3) % 3); PlayerPrefs.Save(); Changed?.Invoke(); }
+        }
+
+        public static float LineSpeedFactor => new[] { 0.6f, 1f, 1.6f }[LineSpeed];
 
         public static bool Vibration
         {
@@ -92,7 +114,7 @@ namespace Fase
             if (kb == null) return false;
             var key = GetKey(action);
             if (key != Key.None && test(kb[key])) return true;
-            foreach (var extra in Always[(int)action]) if (test(kb[extra])) return true;
+            foreach (var extra in Coop ? CoopKeys[(int)action] : Always[(int)action]) if (test(kb[extra])) return true;
             return false;
         }
 

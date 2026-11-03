@@ -21,24 +21,36 @@ namespace Fase
         [TextArea] public string[] linesEs;
         [TextArea] public string[] linesEn;
         public float secondsPerSlide = 5.5f;
+        [Tooltip("Narración de cada viñeta (voz suave), en español y en inglés.")]
+        public AudioClip[] voiceEs, voiceEn;
+        AudioSource voice;
         public string nextScene;
 
         bool advance, leaving;
 
         IEnumerator Start()
         {
+            voice = gameObject.AddComponent<AudioSource>();
             for (int i = 0; i < slides.Length && !leaving; i++)
             {
                 picture.sprite = slides[i];
                 subtitle.text = Loc.Pick(linesEs[i], linesEn[i]);
                 advance = false;
-                float panX = i % 2 == 0 ? -1f : 1f;
-                for (float t = 0f; t < secondsPerSlide && !advance && !leaving; t += Time.deltaTime)
+                var clips = Loc.English ? voiceEn : voiceEs;
+                float slideTime = secondsPerSlide;
+                if (clips != null && i < clips.Length && clips[i] != null)
                 {
-                    float k = t / secondsPerSlide;
+                    voice.Stop();
+                    voice.PlayOneShot(clips[i], Progress.SfxVolume);
+                    slideTime = Mathf.Max(secondsPerSlide, clips[i].length + 1.2f);
+                }
+                float panX = i % 2 == 0 ? -1f : 1f;
+                for (float t = 0f; t < slideTime && !advance && !leaving; t += Time.deltaTime)
+                {
+                    float k = t / slideTime;
                     picture.rectTransform.localScale = Vector3.one * Mathf.Lerp(1.04f, 1.14f, k);
                     picture.rectTransform.anchoredPosition = new Vector2(panX * Mathf.Lerp(-30f, 30f, k), 0f);
-                    pictureGroup.alpha = Mathf.Clamp01(Mathf.Min(t / 0.8f, (secondsPerSlide - t) / 0.6f));
+                    pictureGroup.alpha = Mathf.Clamp01(Mathf.Min(t / 0.8f, (slideTime - t) / 0.6f));
                     subtitle.color = new Color(1f, 1f, 1f, Mathf.Clamp01((t - 0.4f) / 0.6f));
                     yield return null;
                 }

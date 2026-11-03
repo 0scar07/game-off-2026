@@ -14,7 +14,7 @@ namespace Fase
     public class MenuExtras : MonoBehaviour
     {
         MainMenu menu;
-        GameObject achievementsPanel, wardrobePanel, accessPanel;
+        GameObject achievementsPanel, wardrobePanel, accessPanel, diaryPanel;
         readonly List<System.Action> refreshers = new List<System.Action>();
         Settings.Action? rebinding;
         Text rebindLabel;
@@ -26,8 +26,9 @@ namespace Fase
             achievementsPanel = BuildAchievements();
             wardrobePanel = BuildWardrobe();
             accessPanel = BuildAccess();
+            diaryPanel = BuildDiary();
             BuildJourneyExtras();
-            foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel }) menu.AddPanel(panel);
+            foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, diaryPanel }) menu.AddPanel(panel);
             menu.Shown += _ => Refresh();
             Loc.Changed += Refresh;
         }
@@ -48,7 +49,7 @@ namespace Fase
             // Justo debajo de "El viaje", antes de Opciones.
             row.transform.SetSiblingIndex(Mathf.Max(0, menu.mainPanel.transform.childCount - 2));
             var element = row.AddComponent<LayoutElement>();
-            element.preferredWidth = 560f;
+            element.preferredWidth = 640f;
             element.preferredHeight = 96f;
             var layout = row.AddComponent<HorizontalLayoutGroup>();
             layout.spacing = 14f;
@@ -56,12 +57,13 @@ namespace Fase
             layout.childForceExpandWidth = true;
             AddRowButton(row.transform, "wardrobe", () => menu.Show(wardrobePanel));
             AddRowButton(row.transform, "achievements", () => menu.Show(achievementsPanel));
+            AddRowButton(row.transform, "diary", () => menu.Show(diaryPanel));
             AddRowButton(row.transform, "daily", () => SceneFader.Load(DailyChallenge.SceneName));
         }
 
         void AddRowButton(Transform parent, string key, UnityEngine.Events.UnityAction action)
         {
-            var button = UiKit.Button(parent, key, Loc.Get(key), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(176f, 96f), action, 30);
+            var button = UiKit.Button(parent, key, Loc.Get(key), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(150f, 96f), action, 28);
             var label = button.GetComponentInChildren<Text>();
             refreshers.Add(() => label.text = Loc.Get(key));
         }
@@ -93,13 +95,13 @@ namespace Fase
             for (int i = 0; i < all.Length; i++)
             {
                 var info = all[i];
-                float x = (i % 3 - 1) * 460f, y = 250f - (i / 3) * 98f;
-                var card = UiKit.Box(content, info.id, new Vector2(0.5f, 0.5f), new Vector2(x, y - 30f), new Vector2(440f, 84f), Color.white);
+                float x = (i % 4 - 1.5f) * 350f, y = 250f - (i / 4) * 98f;
+                var card = UiKit.Box(content, info.id, new Vector2(0.5f, 0.5f), new Vector2(x, y - 30f), new Vector2(336f, 84f), Color.white);
                 var star = UiKit.Box(card.transform, "Estrella", new Vector2(0f, 0.5f), new Vector2(46f, 0f), new Vector2(60f, 60f), Color.white);
                 var icon = UiKit.Text(card.transform, "Icono", "", new Vector2(0f, 0.5f), new Vector2(46f, 2f), new Vector2(60f, 60f), 34);
-                var name = UiKit.Text(card.transform, "Nombre", "", new Vector2(0f, 0.5f), new Vector2(90f, 16f), new Vector2(340f, 40f), 28, TextAnchor.MiddleLeft);
+                var name = UiKit.Text(card.transform, "Nombre", "", new Vector2(0f, 0.5f), new Vector2(84f, 16f), new Vector2(240f, 40f), 24, TextAnchor.MiddleLeft);
                 name.rectTransform.pivot = new Vector2(0f, 0.5f);
-                var desc = UiKit.Text(card.transform, "Detalle", "", new Vector2(0f, 0.5f), new Vector2(90f, -18f), new Vector2(340f, 30f), 20, TextAnchor.MiddleLeft, UiKit.Soft);
+                var desc = UiKit.Text(card.transform, "Detalle", "", new Vector2(0f, 0.5f), new Vector2(84f, -18f), new Vector2(240f, 30f), 16, TextAnchor.MiddleLeft, UiKit.Soft);
                 desc.rectTransform.pivot = new Vector2(0f, 0.5f);
                 refreshers.Add(() =>
                 {
@@ -108,9 +110,10 @@ namespace Fase
                     star.color = has ? new Color(1f, 0.84f, 0.35f) : new Color(0.25f, 0.24f, 0.4f);
                     icon.text = has ? "★" : "?";
                     icon.color = has ? new Color(0.55f, 0.35f, 0.1f) : new Color(0.6f, 0.6f, 0.75f);
-                    name.text = info.Name;
+                    bool hidden = info.secret && !has;
+                    name.text = hidden ? Loc.Pick("Logro secreto", "Secret achievement") : info.Name;
                     name.color = has ? Color.white : new Color(0.65f, 0.65f, 0.8f);
-                    desc.text = info.Description;
+                    desc.text = hidden ? "???" : info.Description;
                 });
             }
             refreshers.Add(() => count.text = $"{Achievements.Count} / {all.Length}");
@@ -122,8 +125,10 @@ namespace Fase
         GameObject BuildWardrobe()
         {
             var panel = Panel("Armario", "wardrobetitle", out var content);
-            BuildItems(content, Wardrobe.Scarves, "scarf", 140f, true);
-            BuildItems(content, Wardrobe.Lanterns, "lantern", -200f, false);
+            Toggle(content, "character", new Vector2(0f, 300f), () => Wardrobe.IsNox, v => Wardrobe.IsNox = v, () => Wardrobe.NoxUnlocked,
+                v => v ? "Nox" : "Lumi");
+            BuildItems(content, Wardrobe.Scarves, "scarf", 110f, true);
+            BuildItems(content, Wardrobe.Lanterns, "lantern", -220f, false);
             return panel;
         }
 
@@ -159,6 +164,34 @@ namespace Fase
             }
         }
 
+        // ───────── Diario de Lumi ─────────
+
+        GameObject BuildDiary()
+        {
+            var panel = Panel("Diario", "diarytitle", out var content);
+            var count = UiKit.Text(content, "Cuenta", "", new Vector2(0.5f, 1f), new Vector2(0f, 20f), new Vector2(600f, 50f), 30, TextAnchor.MiddleCenter, UiKit.Gold);
+            var paper = UiKit.Box(content, "Papel", new Vector2(0.5f, 0.5f), new Vector2(0f, -20f), new Vector2(1000f, 480f), new Color(0.95f, 0.9f, 0.78f));
+            var title = UiKit.Text(paper.transform, "Pagina", "", new Vector2(0.5f, 1f), new Vector2(0f, -50f), new Vector2(900f, 50f), 34, TextAnchor.MiddleCenter, new Color(0.42f, 0.29f, 0.16f));
+            var body = UiKit.Text(paper.transform, "Texto", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -20f), new Vector2(860f, 300f), 36, TextAnchor.MiddleCenter, new Color(0.35f, 0.23f, 0.12f));
+            body.horizontalOverflow = HorizontalWrapMode.Wrap;
+            body.fontStyle = FontStyle.Normal;
+            foreach (var shadowed in new[] { title, body }) Destroy(shadowed.GetComponent<Shadow>());
+            int page = 0;
+            System.Action show = () =>
+            {
+                int level = page + 1;
+                count.text = $"{Diary.Found} / {Diary.Pages.Length}";
+                title.text = Loc.English ? $"Page {level}" : $"Página {level}";
+                body.text = Diary.Has(level) ? Loc.Pick(Diary.Pages[page].es, Diary.Pages[page].en)
+                    : Loc.Pick("Esta página está en el cofre secreto del nivel " + level + ".", "This page is in level " + level + "'s secret chest.");
+                body.color = Diary.Has(level) ? new Color(0.35f, 0.23f, 0.12f) : new Color(0.55f, 0.45f, 0.35f, 0.7f);
+            };
+            UiKit.Button(content, "Anterior", "◀", new Vector2(0.5f, 0.5f), new Vector2(-580f, -20f), new Vector2(90f, 90f), () => { page = (page + Diary.Pages.Length - 1) % Diary.Pages.Length; show(); }, 40);
+            UiKit.Button(content, "Siguiente", "▶", new Vector2(0.5f, 0.5f), new Vector2(580f, -20f), new Vector2(90f, 90f), () => { page = (page + 1) % Diary.Pages.Length; show(); }, 40);
+            refreshers.Add(show);
+            return panel;
+        }
+
         // ───────── Accesibilidad y controles ─────────
 
         GameObject BuildAccess()
@@ -168,6 +201,10 @@ namespace Fase
             Toggle(content, "contrast", new Vector2(-350f, 160f), () => Settings.HighContrast, v => Settings.HighContrast = v);
             Toggle(content, "vibration", new Vector2(-350f, 60f), () => Settings.Vibration, v => Settings.Vibration = v);
             Toggle(content, "mirror", new Vector2(-350f, -40f), () => MirrorMode.Enabled, v => MirrorMode.Enabled = v, () => MirrorMode.Unlocked);
+            Toggle(content, "coop", new Vector2(-350f, -140f), () => Settings.Coop, v => Settings.Coop = v);
+            // Velocidad de la línea: cada clic pasa a la siguiente.
+            Toggle(content, "linespeed", new Vector2(-350f, -240f), () => Settings.LineSpeed == 2, _ => Settings.LineSpeed++, null,
+                _ => Loc.Pick(new[] { "Lenta", "Normal", "Rápida" }[Settings.LineSpeed], new[] { "Slow", "Normal", "Fast" }[Settings.LineSpeed]));
 
             var actions = (Settings.Action[])System.Enum.GetValues(typeof(Settings.Action));
             string[] keys = { "left", "right", "jump", "lineleft", "lineright" };
@@ -198,7 +235,8 @@ namespace Fase
             return panel;
         }
 
-        void Toggle(RectTransform parent, string key, Vector2 position, System.Func<bool> get, System.Action<bool> set, System.Func<bool> available = null)
+        void Toggle(RectTransform parent, string key, Vector2 position, System.Func<bool> get, System.Action<bool> set, System.Func<bool> available = null,
+            System.Func<bool, string> valueText = null)
         {
             var button = UiKit.Button(parent, key, "", new Vector2(0.5f, 0.5f), position, new Vector2(560f, 80f), null, 32);
             var text = button.GetComponentInChildren<Text>();
@@ -207,7 +245,8 @@ namespace Fase
             {
                 bool can = available == null || available();
                 button.interactable = can;
-                text.text = $"{Loc.Get(key)}:  {(can ? Loc.Get(get() ? "on" : "off") : "🔒")}";
+                string value = valueText != null ? valueText(get()) : Loc.Get(get() ? "on" : "off");
+                text.text = $"{Loc.Get(key)}:  {(can ? value : "🔒")}";
             });
         }
 

@@ -47,6 +47,20 @@ namespace Fase
             new Item { id = "eclipse", nameEs = "Eclipse", nameEn = "Eclipse", howEs = "Vence a la Gran Sombra", howEn = "Defeat the Great Shadow", color = new Color(0.45f, 0.65f, 1.5f), unlocked = () => Achievements.Has("eclipse") },
         };
 
+        /// <summary>Nox: la Lumi de la noche (se abre al terminar el capítulo I).</summary>
+        public static bool NoxUnlocked => LevelCatalog.Get.ChapterDone(1);
+
+        public static bool IsNox
+        {
+            get => NoxUnlocked && PlayerPrefs.GetInt("fase_nox", 0) == 1;
+            set
+            {
+                PlayerPrefs.SetInt("fase_nox", value ? 1 : 0);
+                PlayerPrefs.Save();
+                foreach (var style in Object.FindObjectsByType<LumiStyle>()) style.Apply();
+            }
+        }
+
         public static Item Scarf => Find(Scarves, PlayerPrefs.GetString("fase_bufanda", "naranja"));
         public static Item Lantern => Find(Lanterns, PlayerPrefs.GetString("fase_farol", "ambar"));
 

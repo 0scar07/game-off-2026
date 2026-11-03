@@ -12,6 +12,7 @@ namespace Fase
 #if UNITY_WEBGL && !UNITY_EDITOR
         [DllImport("__Internal")] static extern int FaseShare(string text);
         [DllImport("__Internal")] static extern void FaseVibrate(int ms);
+        [DllImport("__Internal")] static extern void FaseDownload(string name, string base64);
 #endif
 
         public const string Url = "https://0scar07.itch.io/game-off-2026";
@@ -36,10 +37,23 @@ namespace Fase
                 : $"Hice el nivel {level} \"{name}\" de FASE en {Hud.FormatTime(seconds)}{medalText} 🌗 ¿Me superas? {Url}";
         }
 
+        /// <summary>Guarda una captura: en la web la descarga; en el editor, en la carpeta del proyecto.</summary>
+        public static void SavePicture(Texture2D picture)
+        {
+            byte[] png = picture.EncodeToPNG();
+            string name = $"FASE-{System.DateTime.Now:yyyyMMdd-HHmmss}.png";
+#if UNITY_WEBGL && !UNITY_EDITOR
+            FaseDownload(name, System.Convert.ToBase64String(png));
+#else
+            System.IO.File.WriteAllBytes(name, png);
+#endif
+        }
+
         /// <summary>Vibración corta (si el jugador la tiene activada y el móvil la admite).</summary>
         public static void Vibrate(int ms)
         {
             if (!Settings.Vibration) return;
+            Rumble.Pulse(ms / 1000f);
 #if UNITY_WEBGL && !UNITY_EDITOR
             FaseVibrate(ms);
 #elif UNITY_ANDROID || UNITY_IOS

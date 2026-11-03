@@ -24,6 +24,18 @@ mergeInto(LibraryManager.library, {
     }
   },
 
+  // Descarga una imagen PNG (en base64) como archivo.
+  FaseDownload: function (namePtr, dataPtr) {
+    try {
+      var a = document.createElement("a");
+      a.href = "data:image/png;base64," + UTF8ToString(dataPtr);
+      a.download = UTF8ToString(namePtr);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (e) {}
+  },
+
   FaseVibrate: function (ms) {
     try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {}
   },
