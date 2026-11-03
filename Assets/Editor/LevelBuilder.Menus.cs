@@ -24,6 +24,17 @@ public static partial class LevelBuilder
     [MenuItem("Fase/Abrir menú del juego")]
     static void OpenMenu() => OpenScene($"Assets/Scenes/{MenuSceneName}.unity");
 
+    /// <summary>Solo el menú (mucho más rápido que regenerar todos los niveles).</summary>
+    [MenuItem("Fase/Generar solo el menú")]
+    static void BuildMenuOnly()
+    {
+        var levels = Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f).Select(Parse).OrderBy(l => l.secret).ToList();
+        PrepareRendering();
+        BuildMenu(levels);
+        AssetDatabase.SaveAssets();
+        Debug.Log("Menú generado.");
+    }
+
     [MenuItem("Fase/Abrir jefe")]
     static void OpenBoss() => OpenScene($"{ScenesFolder}/12-la-gran-sombra.unity");
 
@@ -74,9 +85,12 @@ public static partial class LevelBuilder
         StaticCamera(new Vector3(20f, 5f, -19f));
         BuildAudio(Biomes[0]);
         // Lumi pasea por el fondo del menú.
-        var walker = BuildLumi(new Vector3(28f, 3f, 1.5f), null).AddComponent<MenuWalker>();
-        walker.minX = 24f;
-        walker.maxX = 33f;
+        // En el mismo plano que en los niveles (z = 0): más al fondo quedaba tapada por el borde del suelo.
+        var walkerModel = BuildLumi(new Vector3(25f, 3f, 0f), null);
+        walkerModel.transform.localScale *= 1.15f;
+        var walker = walkerModel.AddComponent<MenuWalker>();
+        walker.minX = 21.5f;
+        walker.maxX = 29f;
         // Música del capítulo por el que vas y día o noche según la hora real.
         var mood = Object.FindAnyObjectByType<MusicLayers>().gameObject.AddComponent<MenuMood>();
         mood.day = Biomes.Select(b => MusicClip(b.musicDay)).ToArray();
