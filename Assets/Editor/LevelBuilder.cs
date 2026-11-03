@@ -44,11 +44,30 @@ public static partial class LevelBuilder
         public int chapter = 1;
         public bool dayOnLeft = true;
         public float minLine = float.NaN, maxLine = float.NaN;
+        public float[] medals;   // cabecera "medallas: bronce plata oro luna" (segundos)
+        public bool secret;      // cabecera "secreto: si" — se abre con todos los fragmentos de su capítulo
+        public float line2 = float.NaN; // cabecera "linea2:" — segunda línea
+        public float energy;     // cabecera "energia:" — la línea gasta energía al moverse
+        public bool daily;       // desafío diario (Assets/Levels/Diarios)
         public string[] rows;
         public int Width => rows.Max(r => r.Length);
         public int Height => rows.Length;
         public Biome Biome => Biomes[Mathf.Clamp(chapter, 1, Biomes.Length) - 1];
         public int Fragments => rows.Sum(r => r.Count(c => c == '*' || c == 'K'));
+
+        /// <summary>
+        /// Tiempos de medalla. Si el nivel no los trae, se calculan por su largo (Lumi corre a 7
+        /// casillas/s; el oro deja tiempo para pensar la línea). Ajustar a mano tras probarlos.
+        /// </summary>
+        public float[] MedalTimes
+        {
+            get
+            {
+                if (medals != null && medals.Length == 4) return medals;
+                float gold = Mathf.Round(Width / 4.2f + 6f);
+                return new[] { Mathf.Round(gold * 2f), Mathf.Round(gold * 1.4f), gold, Mathf.Round(gold * 0.8f) };
+            }
+        }
 
         public char At(int col, int row) =>
             row < 0 || row >= rows.Length || col < 0 || col >= rows[row].Length ? ' ' : rows[row][col];
@@ -60,28 +79,62 @@ public static partial class LevelBuilder
     [MenuItem("Fase/Generar niveles")]
     public static void BuildAll()
     {
-        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+        // Sin preguntar por guardar: todas las escenas salen de aquí y el diálogo bloqueaba la generación automática.
         var files = Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f).ToArray();
         if (files.Length == 0) { Debug.LogWarning("No hay niveles en " + LevelsFolder); return; }
         if (!AssetDatabase.IsValidFolder(ScenesFolder)) AssetDatabase.CreateFolder("Assets/Scenes", "Niveles");
         PrepareRendering();
 
         // Orden del juego: Menu, Intro, niveles..., Final.
-        var levels = files.Select(Parse).ToList();
+        // Los secretos van al final (para que los números de la historia no cambien).
+        var levels = files.Select(Parse).OrderBy(l => l.secret).ToList();
         var scenes = new List<EditorBuildSettingsScene> { new EditorBuildSettingsScene(BuildMenu(levels), true) };
         string intro = BuildIntro();
         if (intro != null) scenes.Add(new EditorBuildSettingsScene(intro, true));
         for (int i = 0; i < levels.Count; i++)
         {
-            string next = i + 1 < levels.Count ? Path.GetFileNameWithoutExtension(levels[i + 1].file) : FinalScene;
+            // La historia termina en el final; un nivel secreto vuelve al menú.
+            string next = levels[i].secret ? MenuSceneName
+                : i + 1 < levels.Count && !levels[i + 1].secret ? Path.GetFileNameWithoutExtension(levels[i + 1].file) : FinalScene;
             string path = Build(levels[i], i + 1, next);
             scenes.Add(new EditorBuildSettingsScene(path, true));
         }
         scenes.Add(new EditorBuildSettingsScene(BuildFinal(levels), true));
+        // Desafíos diarios: escenas sueltas que vuelven al menú.
+        string dailyFolder = LevelsFolder + "/Diarios";
+        if (Directory.Exists(dailyFolder))
+            foreach (var file in Directory.GetFiles(dailyFolder, "*.txt").OrderBy(f => f))
+            {
+                var daily = Parse(file);
+                daily.daily = true;
+                scenes.Add(new EditorBuildSettingsScene(Build(daily, 0, MenuSceneName), true));
+            }
         EditorBuildSettings.scenes = scenes.ToArray();
+        WriteCatalog(levels);
         AssetDatabase.SaveAssets();
         EditorSceneManager.OpenScene(scenes[0].path);
         Debug.Log($"Generados {levels.Count} niveles en {ScenesFolder}.");
+    }
+
+    /// <summary>Resources/catalogo.json: la lista de niveles que leen logros, medallas y secretos.</summary>
+    static void WriteCatalog(List<Level> levels)
+    {
+        var catalog = new LevelCatalog
+        {
+            levels = levels.Select(l => new LevelCatalog.Entry
+            {
+                scene = Path.GetFileNameWithoutExtension(l.file),
+                name = l.name,
+                nameEn = l.nameEn,
+                chapter = l.chapter,
+                fragments = l.Fragments,
+                secret = l.secret,
+                medals = l.MedalTimes,
+            }).ToArray(),
+        };
+        Directory.CreateDirectory("Assets/Resources");
+        File.WriteAllText("Assets/Resources/catalogo.json", JsonUtility.ToJson(catalog, true));
+        AssetDatabase.ImportAsset("Assets/Resources/catalogo.json");
     }
 
     static Level Parse(string file)
@@ -105,6 +158,12 @@ public static partial class LevelBuilder
                 case "linea": level.line = float.Parse(value, inv); break;
                 case "capitulo": level.chapter = int.Parse(value, inv); break;
                 case "dia": level.dayOnLeft = value.ToLowerInvariant() != "derecha"; break;
+                case "medallas":
+                    level.medals = value.Split(new[] { ' ', ',' }, System.StringSplitOptions.RemoveEmptyEntries).Select(v => float.Parse(v, inv)).ToArray();
+                    break;
+                case "linea2": level.line2 = float.Parse(value, inv); break;
+                case "energia": level.energy = float.Parse(value, inv); break;
+                case "secreto": level.secret = value.ToLowerInvariant().StartsWith("s") || value == "1"; break;
                 case "limites":
                     var parts = value.Split(new[] { ' ', '-', ',' }, System.StringSplitOptions.RemoveEmptyEntries);
                     level.minLine = float.Parse(parts[0], inv);
@@ -130,6 +189,7 @@ public static partial class LevelBuilder
         var (start, fragments, _) = BuildWorld(level, nextScene);
 
         var body = BuildHero(start);
+        body.gameObject.AddComponent<Footprints>();
         BuildCamera(body, level.Width, level.Biome);
         BuildAudio(level.Biome);
         BuildFx();
@@ -158,11 +218,20 @@ public static partial class LevelBuilder
         line.maxX = float.IsNaN(level.maxLine) ? width - 0.5f : level.maxLine;
         if (!float.IsNaN(level.minLine)) BuildLimits(line.minX, line.maxX);
         BuildLineVisual();
+        if (!float.IsNaN(level.line2))
+        {
+            line.hasSecond = true;
+            line.x2 = level.line2;
+            BuildLineVisual(1);
+        }
+        if (level.energy > 0f) new GameObject("EnergiaLinea").AddComponent<LineEnergy>().max = level.energy;
         BuildSky(width, random, biome);
         BuildWeather(width, level.Height, biome);
 
         var root = new GameObject("Nivel").transform;
         var decor = new GameObject("Decoracion").transform;
+        // Lo que se mueve (plataformas, jefe) no puede ser estático.
+        var moving = new GameObject("Movil").transform;
         int fragments = 0;
         Vector3 start = new Vector3(1.5f, 2f, 0f);
 
@@ -194,11 +263,20 @@ public static partial class LevelBuilder
                     case '*': BuildFragment(cell, root); fragments++; break;
                     case 'K': BuildChest(cell, root); fragments++; break;
                     case 'C': BuildCheckpoint(cell, root); break;
+                    case 'O': BuildSunPlatform(cell, moving); break;
+                    case 'W': if (level.At(col, row + 1) != 'W') BuildAirCurrent(level, col, row, moving); break;
+                    case 'Y': BuildGlowTile(cell, moving); break;
+                    case 'J': BuildBoss(level, cell, moving); break;
                 }
                 if (c == '#' && level.At(col, row - 1) == ' ' && level.At(col, row - 2) == ' ')
                     Decorate(cell + Vector3.up, random, decor, biome);
             }
         }
+        LinkBossGoal(root, moving);
+        var wildlife = new GameObject("Fauna").AddComponent<Wildlife>();
+        wildlife.maxX = width;
+        wildlife.maxY = level.Height + 4f;
+        wildlife.minY = level.Height - 1f;
         MarkStatic(root);
         MarkStatic(decor);
         return (start, fragments, line);
@@ -466,16 +544,21 @@ public static partial class LevelBuilder
         if (animator == null) animator = visual.AddComponent<Animator>();
         animator.applyRootMotion = false;
         animator.runtimeAnimatorController = ClipController(HeroModel, HeroController,
-            new[] { "Idle", "Run", "Jump", "Jump_Idle", "Jump_Land", "Wave", "Death" });
+            new[] { "Idle", "Run", "Jump", "Jump_Idle", "Jump_Land", "Wave", "Death", "Yes", "No", "HitReact" });
 
         var neck = visual.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == "Neck");
         var hand = visual.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == "Fist.R");
+        // Colores de bufanda y farol elegidos en el menú (Wardrobe).
+        var style = visual.AddComponent<LumiStyle>();
         if (neck != null)
         {
             var scarfObject = new GameObject("Bufanda");
             scarfObject.transform.SetParent(visual.transform, false);
             var line = scarfObject.AddComponent<LineRenderer>();
-            line.sharedMaterial = ParticleMaterial("Bufanda", SoftBand(), new Color(1f, 0.45f, 0.18f), Both, false);
+            line.sharedMaterial = ParticleMaterial("Bufanda", SoftBand(), Color.white, Both, false);
+            line.startColor = new Color(1f, 0.45f, 0.18f);
+            line.endColor = new Color(0.95f, 0.3f, 0.12f);
+            style.scarf = line;
             line.widthCurve = new AnimationCurve(new Keyframe(0f, 0.32f), new Keyframe(1f, 0.16f));
             line.numCapVertices = 4;
             line.textureMode = LineTextureMode.Stretch;
@@ -494,6 +577,8 @@ public static partial class LevelBuilder
             flame.transform.SetParent(lantern, true);
             var glow = Glow("LuzFarol", lanternWorld + new Vector3(0f, 0f, -0.3f), 4.5f, new Color(1.2f, 0.8f, 0.35f, 0.75f), Both, lantern);
             glow.GetComponent<GlowSprite>().dayFactor = 0.25f;
+            style.flame = flame.GetComponent<Renderer>();
+            style.glow = glow.GetComponent<Renderer>();
         }
         return visual;
     }

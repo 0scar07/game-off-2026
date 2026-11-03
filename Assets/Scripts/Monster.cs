@@ -27,6 +27,7 @@ namespace Fase
         float direction = 1f;
         float startX;
         bool wasAwake = true;
+        float playerSide;
         PlayerController player;
 
         void Start()
@@ -42,10 +43,20 @@ namespace Fase
             if (awake != wasAwake && animator != null) animator.speed = awake ? 1f : 0f;
             wasAwake = awake;
 
-            var facing = Quaternion.Euler(0f, direction * 90f, 0f);
+            // Igual que Lumi: con giro 0 miran a la cámara, así que la derecha es -90.
+            var facing = Quaternion.Euler(0f, -direction * 90f, 0f);
             if (visual != null) visual.localRotation = Quaternion.Slerp(visual.localRotation, facing, Time.deltaTime * 10f);
             if (statue != null) statue.localRotation = visual != null ? visual.localRotation : facing;
             if (awake && player != null) CheckHit();
+
+            // Lumi pasó al lado de esta Sombra mientras dormía (logro "Piedra, papel...").
+            if (player != null)
+            {
+                float side = Mathf.Sign(player.transform.position.x - transform.position.x);
+                if (!awake && playerSide != 0f && side != playerSide && Mathf.Abs(player.transform.position.y - transform.position.y) < 3f)
+                    Achievements.PassedSleepingShadow();
+                playerSide = side;
+            }
         }
 
         void Patrol()

@@ -12,6 +12,23 @@ public static class WebBuild
 {
     public const string OutputFolder = "Builds/Web";
 
+    /// <summary>
+    /// Si existe Logs/auto-build.flag al abrir el editor, genera los niveles y exporta la web
+    /// una sola vez (borra el aviso). Sirve para lanzar todo sin tocar menús.
+    /// </summary>
+    [InitializeOnLoadMethod]
+    static void AutoBuild()
+    {
+        const string flag = "Logs/auto-build.flag";
+        if (!System.IO.File.Exists(flag)) return;
+        System.IO.File.Delete(flag);
+        EditorApplication.delayCall += () =>
+        {
+            LevelBuilder.BuildAll();
+            Build();
+        };
+    }
+
     [MenuItem("Fase/Exportar web")]
     public static void Build()
     {

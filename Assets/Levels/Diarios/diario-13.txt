@@ -1,0 +1,21 @@
+nombre: Desafío 13
+name: Challenge 13
+pista: Desafío diario: mañana habrá otro.
+hint: Daily challenge: there's a new one tomorrow.
+capitulo: 2
+linea: 3
+---
+
+
+
+
+
+
+
+                       N                                                              *
+                       N
+                       N
+  S         X    X     N                 C                                           ^^       G
+############################~~~~~~#########    O    #####    O    #####dddddd####################
+###########################################         #####         #####      ####################
+###########################################         #####         #####      ####################

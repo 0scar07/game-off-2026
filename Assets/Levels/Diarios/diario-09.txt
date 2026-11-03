@@ -1,0 +1,21 @@
+nombre: Desafío 9
+name: Challenge 9
+pista: Desafío diario: mañana habrá otro.
+hint: Daily challenge: there's a new one tomorrow.
+capitulo: 1
+linea: 3
+---
+
+
+
+
+
+
+
+                                                                                                *
+
+              nn                                                                nn
+  S       nn      nn                               C    ^^        X    X    nn      nn         ^^       G
+#########            #####dddddd#####nnnnnnn###############################            ####################
+#########            #####      #####       ###############################            ####################
+#########            #####      #####       ###############################            ####################

@@ -1,0 +1,24 @@
+nombre: Luciérnagas
+name: Fireflies
+pista: Donde bailan las luciérnagas hay un camino escondido.
+Solo lo ve tu farol, y solo de noche. La línea tiene poca energía.
+hint: Where fireflies dance, there's a hidden path.
+Only your lantern sees it, only at night. The line has little energy.
+capitulo: 2
+linea: 3
+energia: 45
+---
+
+
+
+
+
+
+                                                                          K                                  *
+                                                                         nnn
+
+                                                                      nn                                    nn
+  S                             C                  M                                    C               nn      nn        G
+#########YYYYYY######nnnnnn#######YYYYYYYYY###############YYYYYYY############dddddd#######YYYYYYYYYY###            ##########
+#########      ######      #######         ###############       ############      #######          ###            ##########
+#########      ######      #######         ###############       ############      #######          ###            ##########

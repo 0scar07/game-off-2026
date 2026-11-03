@@ -24,6 +24,9 @@ public static partial class LevelBuilder
     [MenuItem("Fase/Abrir menú del juego")]
     static void OpenMenu() => OpenScene($"Assets/Scenes/{MenuSceneName}.unity");
 
+    [MenuItem("Fase/Abrir jefe")]
+    static void OpenBoss() => OpenScene($"{ScenesFolder}/12-la-gran-sombra.unity");
+
     [MenuItem("Fase/Abrir final")]
     static void OpenFinal() => OpenScene($"Assets/Scenes/{FinalScene}.unity");
 
@@ -88,6 +91,8 @@ public static partial class LevelBuilder
         UnityEventTools.AddPersistentListener(UiButton(menu.mainPanel.transform, "options", new Vector2(560f, 110f), out _).onClick, menu.ShowOptions);
 
         BuildJourney(canvas, menu, levels);
+        // Lumi, Logros, Desafío diario, controles y niveles secretos (se montan al arrancar).
+        canvas.gameObject.AddComponent<MenuExtras>();
 
         // Opciones.
         menu.optionsPanel = Column(canvas, "Opciones", Vector2.zero, 24f, PanelColor);
@@ -156,7 +161,8 @@ public static partial class LevelBuilder
         title.rectTransform.pivot = new Vector2(0.5f, 1f);
         Localize(title, "journey");
 
-        int count = levels.Count;
+        // Nodos solo para la historia; los secretos (al final de la lista) los pinta MenuExtras.
+        int count = levels.Count(l => !l.secret);
         var positions = new Vector2[count];
         for (int i = 0; i < count; i++)
         {
@@ -200,13 +206,14 @@ public static partial class LevelBuilder
             node.transform.SetParent(panel.transform, false);
             var nr = (RectTransform)node.transform;
             nr.anchoredPosition = positions[i];
-            nr.sizeDelta = new Vector2(104f, 104f);
+            float nodeSize = count > 12 ? 88f : 104f;
+            nr.sizeDelta = new Vector2(nodeSize, nodeSize);
             var image = node.AddComponent<Image>();
             image.sprite = RoundedSprite();
             var button = node.AddComponent<Button>();
             button.transition = Selectable.Transition.None;
             UnityEventTools.AddIntPersistentListener(button.onClick, menu.SelectLevel, i + 1);
-            var number = Label(node.transform, "Numero", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(104f, 104f), 52, TextAnchor.MiddleCenter);
+            var number = Label(node.transform, "Numero", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(nodeSize, nodeSize), count > 12 ? 44 : 52, TextAnchor.MiddleCenter);
             number.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             number.text = (i + 1).ToString();
             number.color = new Color(0.12f, 0.08f, 0.3f);
@@ -217,10 +224,11 @@ public static partial class LevelBuilder
         // Marcador sobre el nivel elegido: un triángulo que apunta hacia abajo.
         var marker = new GameObject("Marcador", typeof(RectTransform));
         marker.transform.SetParent(panel.transform, false);
-        ((RectTransform)marker.transform).sizeDelta = new Vector2(46f, 46f);
+        ((RectTransform)marker.transform).sizeDelta = new Vector2(54f, 54f);
         marker.transform.localRotation = Quaternion.Euler(0f, 0f, -90f);
         var triangle = marker.AddComponent<UiTriangle>();
-        triangle.color = new Color(1f, 0.55f, 0.25f);
+        triangle.color = Color.white;
+        marker.AddComponent<Shadow>().effectDistance = new Vector2(0f, -4f);
         triangle.raycastTarget = false;
         menu.marker = (RectTransform)marker.transform;
 
@@ -349,8 +357,8 @@ public static partial class LevelBuilder
         BuildAudio(Biomes[0]);
 
         // Lumi mira el amanecer en mitad del paisaje.
-        var hero = BuildLumi(new Vector3(20f, 3f, 0f), null);
-        hero.transform.rotation = Quaternion.Euler(0f, 180f, 0f) * hero.transform.rotation;
+        // Mirando a la cámara (giro 0 en el modelo de Quaternius).
+        BuildLumi(new Vector3(20f, 3f, 0f), null);
 
         var canvas = NewCanvas("Final", 0).transform;
         new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
@@ -368,8 +376,8 @@ public static partial class LevelBuilder
         ending.line = line;
         ending.texts = group;
         ending.moonLabel = moon;
-        ending.levels = levels.Count;
-        ending.fragmentsTotal = levels.Sum(l => l.Fragments);
+        ending.levels = levels.Count(l => !l.secret);
+        ending.fragmentsTotal = levels.Where(l => !l.secret).Sum(l => l.Fragments);
         UnityEventTools.AddPersistentListener(UiButton(column.transform, "tomenu", new Vector2(560f, 110f), out _).onClick, ending.ToMenu);
 
         string path = $"Assets/Scenes/{FinalScene}.unity";

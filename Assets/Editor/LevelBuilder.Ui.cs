@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public static partial class LevelBuilder
 {
     const string FontPath = "Assets/Art/Fonts/Fredoka.ttf";
+    const string Own = "Assets/Audio/Sfx/Fase/";
     static readonly Color PillColor = new Color(0.04f, 0.03f, 0.14f, 0.5f);
 
     // ───────────────────────── Sonido ─────────────────────────
@@ -17,25 +18,35 @@ public static partial class LevelBuilder
         var audio = new GameObject("Sonido").AddComponent<GameAudio>();
         audio.stepsDay = Clips(biome.weather == 2 ? "footstep_snow_00" : "footstep_grass_00", 5);
         audio.stepsNight = Clips("footstep_snow_00", 5);
-        audio.jump = Clip(Sfx + "drop_002.ogg");
-        audio.land = Clips("impactSoft_medium_00", 3);
-        audio.die = Clip(Sfx + "error_004.ogg");
-        audio.lineGrab = Clip(Sfx + "maximize_003.ogg");
-        audio.lineRelease = Clip(Sfx + "minimize_003.ogg");
-        audio.lineTick = Clip(Sfx + "switch_005.ogg");
-        audio.appearDay = Clip(Sfx + "pluck_001.ogg");
-        audio.appearNight = Clip(Sfx + "glass_001.ogg");
-        audio.vanish = Clip(Sfx + "glass_004.ogg");
-        audio.goal = Clip("Assets/Audio/Jingles/jingles_PIZZI00.ogg");
-        audio.collect = Clip(Sfx + "confirmation_002.ogg");
-        audio.checkpoint = Clip(Sfx + "switch_002.ogg");
-        audio.bounce = Clip(Sfx + "drop_002.ogg");
+        // Efectos propios (Tools/efectos.py); los pasos siguen siendo de Kenney.
+        audio.jump = Clip(Own + "fase_salto.wav");
+        audio.land = new[] { Clip(Own + "fase_aterrizaje.wav") };
+        audio.die = Clip(Own + "fase_perder.wav");
+        audio.lineGrab = Clip(Own + "fase_linea_agarrar.wav");
+        audio.lineRelease = Clip(Own + "fase_linea_soltar.wav");
+        audio.lineTick = Clip(Own + "fase_linea_tic.wav");
+        audio.appearDay = Clip(Own + "fase_aparece_dia.wav");
+        audio.appearNight = Clip(Own + "fase_aparece_noche.wav");
+        audio.vanish = Clip(Own + "fase_desaparece.wav");
+        audio.goal = Clip(Own + "fase_meta.wav");
+        audio.collect = Clip(Own + "fase_fragmento.wav");
+        audio.checkpoint = Clip(Own + "fase_control.wav");
+        audio.bounce = Clip(Own + "fase_muelle.wav");
+        audio.voiceJump = Enumerable.Range(0, 3).Select(i => Clip(Own + $"fase_voz_salto_{i}.wav")).ToArray();
+        audio.voiceLand = Clip(Own + "fase_voz_aterrizaje.wav");
+        audio.voiceDie = Clip(Own + "fase_voz_perder.wav");
+        audio.voiceGoal = Clip(Own + "fase_voz_meta.wav");
+        audio.voiceCollect = Clip(Own + "fase_voz_fragmento.wav");
 
         var music = audio.gameObject.AddComponent<MusicLayers>();
         music.day = MusicClip(biome.musicDay);
         music.night = MusicClip(biome.musicNight);
         music.ambienceDay = MusicClip(biome.ambienceDay);
         music.ambienceNight = MusicClip(biome.ambienceNight);
+        // Capas que reaccionan al juego (Tools/musica_extra.py), en la tonalidad de cada capítulo.
+        int chapter = System.Array.IndexOf(Biomes, biome);
+        music.lineLayer = MusicClip(new[] { "linea_pradera", "linea_bosque", "linea_cumbre" }[Mathf.Clamp(chapter, 0, 2)]);
+        if (chapter == 2) music.bossLayer = MusicClip("jefe_tambores");
     }
 
     /// <summary>Música o ambiente de Assets/Audio/Music, comprimido en memoria (lo que mejor va en la web).</summary>
@@ -182,6 +193,8 @@ public static partial class LevelBuilder
         hud.hint = level.hint;
         hud.hintEn = level.hintEn;
         hud.fragmentsTotal = fragments;
+        hud.medalTimes = level.MedalTimes;
+        hud.daily = level.daily;
         hud.title = Label(canvas, "Titulo", new Vector2(0.5f, 0.5f), new Vector2(0f, 230f), new Vector2(1700f, 150f), 104, TextAnchor.MiddleCenter);
         hud.hintText = Label(canvas, "Pista", new Vector2(0.5f, 0.5f), new Vector2(0f, 110f), new Vector2(1500f, 150f), 46, TextAnchor.MiddleCenter);
         Pill(canvas, "FondoEsquina", new Vector2(0f, 1f), new Vector2(28f, -24f), new Vector2(620f, 76f));

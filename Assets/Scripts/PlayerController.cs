@@ -43,8 +43,10 @@ namespace Fase
         float coyoteLeft, bufferLeft;
         bool grounded;
         float facing = 1f;
-        float lastFallSpeed, stepLeft, landLeft;
+        float lastFallSpeed, stepLeft, landLeft, carried;
         bool celebrating;
+        float idleTime, boredLeft;
+        string boredState = "Yes";
         const float stepInterval = 0.3f;
         string currentState = "";
 
@@ -55,6 +57,12 @@ namespace Fase
             body.freezeRotation = true;
             body.interpolation = RigidbodyInterpolation2D.Interpolate;
             checkpoint = transform.position;
+            if (Settings.Assist)
+            {
+                jumpSpeed *= 1.1f;
+                coyoteTime *= 2f;
+                jumpBuffer *= 1.6f;
+            }
         }
 
         public void SetCheckpoint(Vector3 position) => checkpoint = position;
@@ -79,17 +87,25 @@ namespace Fase
         {
             Vector2 v = body.linearVelocity;
             if (visual != null && Mathf.Abs(v.x) > 0.3f && !celebrating) facing = Mathf.Sign(v.x);
-            float yaw = celebrating ? 180f : facing * 90f;
+            // El modelo de Quaternius mira hacia la cámara con giro 0: -90 es la derecha y +90 la izquierda.
+            float yaw = celebrating ? 0f : -facing * 90f;
             if (visual != null)
                 visual.localRotation = Quaternion.Slerp(visual.localRotation,
                     Quaternion.Euler(0f, yaw, 0f), Time.deltaTime * 14f);
 
             if (animator == null || animator.runtimeAnimatorController == null) return;
             landLeft -= Time.deltaTime;
+            bool still = grounded && Mathf.Abs(v.x) < 0.5f && landLeft <= 0f && !celebrating;
+            idleTime = still ? idleTime + Time.deltaTime : 0f;
+            // Parado mucho rato: mira alrededor (asiente o niega) cada pocos segundos.
+            if (idleTime > 7f) { idleTime = 2f; boredLeft = 1.6f; boredState = Random.value < 0.5f ? "Yes" : "No"; }
+            boredLeft = still ? boredLeft - Time.deltaTime : 0f;
             string state = celebrating ? "Wave"
                 : !grounded ? (v.y > 2f ? "Jump" : "Jump_Idle")
                 : landLeft > 0f && Mathf.Abs(v.x) < 0.5f ? "Jump_Land"
-                : Mathf.Abs(v.x) > 0.5f ? "Run" : "Idle";
+                : Mathf.Abs(v.x) > 0.5f ? "Run"
+                : still && AtEdge() ? "HitReact"
+                : boredLeft > 0f ? boredState : "Idle";
             if (state != currentState)
             {
                 animator.CrossFadeInFixedTime(state, 0.1f);
@@ -120,7 +136,12 @@ namespace Fase
                 stepLeft = stepInterval;
             }
             float accel = grounded ? acceleration : airAcceleration;
-            v.x = Mathf.MoveTowards(v.x, input * speed, accel * Time.fixedDeltaTime);
+            v.x = Mathf.MoveTowards(v.x - carried, input * speed, accel * Time.fixedDeltaTime);
+            // Encima de una plataforma que se mueve: Lumi viaja con ella.
+            carried = grounded ? PlatformSpeed() : Mathf.MoveTowards(carried, 0f, 20f * Time.fixedDeltaTime);
+            v.x += carried;
+            // Corrientes de aire de día: empujan hacia arriba.
+            v.y += AirCurrent.Lift(body.position) * Time.fixedDeltaTime;
 
             if (bufferLeft > 0f && coyoteLeft > 0f)
             {
@@ -155,6 +176,33 @@ namespace Fase
             GameEvents.RaiseDied();
         }
 
+        /// <summary>Velocidad horizontal de la plataforma móvil que hay bajo los pies (0 si no hay).</summary>
+        float PlatformSpeed()
+        {
+            Bounds b = capsule.bounds;
+            foreach (var hit in Physics2D.OverlapBoxAll(new Vector2(b.center.x, b.min.y), new Vector2(b.size.x * 0.85f, 0.15f), 0f, groundMask))
+            {
+                var platform = hit.GetComponentInParent<SunPlatform>();
+                if (platform != null) return platform.Velocity.x;
+            }
+            return 0f;
+        }
+
+        /// <summary>Hay vacío justo delante de los pies: Lumi se tambalea.</summary>
+        bool AtEdge()
+        {
+            Bounds b = capsule.bounds;
+            Vector2 front = new Vector2(b.center.x + facing * (b.extents.x + 0.15f), b.min.y + 0.05f);
+            return !Solid(Physics2D.RaycastAll(front, Vector2.down, 1.2f, groundMask));
+        }
+
+        bool Solid(RaycastHit2D[] hits)
+        {
+            foreach (var hit in hits)
+                if (!hit.collider.isTrigger && hit.rigidbody != body) return true;
+            return false;
+        }
+
         bool CheckGround()
         {
             Bounds b = capsule.bounds;
@@ -180,32 +228,27 @@ namespace Fase
         static float MoveInput()
         {
             float x = MobileInput.Move;
-            var kb = Keyboard.current;
-            if (kb != null)
-            {
-                if (kb.leftArrowKey.isPressed || kb.aKey.isPressed) x -= 1f;
-                if (kb.rightArrowKey.isPressed || kb.dKey.isPressed) x += 1f;
-            }
+            if (Settings.Held(Settings.Action.Left)) x -= 1f;
+            if (Settings.Held(Settings.Action.Right)) x += 1f;
             var pad = Gamepad.current;
             if (pad != null) x += pad.leftStick.x.ReadValue();
-            return Mathf.Clamp(x, -1f, 1f);
+            // En modo espejo "derecha" es la derecha de la pantalla, que en el mundo es la izquierda.
+            return Mathf.Clamp(x, -1f, 1f) * MirrorMode.Sign;
         }
 
         static bool JumpPressed()
         {
-            var kb = Keyboard.current;
             var pad = Gamepad.current;
             return MobileInput.ConsumeJump()
-                || (kb != null && (kb.spaceKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame || kb.upArrowKey.wasPressedThisFrame))
+                || Settings.Pressed(Settings.Action.Jump)
                 || (pad != null && pad.buttonSouth.wasPressedThisFrame);
         }
 
         static bool JumpHeld()
         {
-            var kb = Keyboard.current;
             var pad = Gamepad.current;
             return MobileInput.JumpHeld
-                || (kb != null && (kb.spaceKey.isPressed || kb.wKey.isPressed || kb.upArrowKey.isPressed))
+                || Settings.Held(Settings.Action.Jump)
                 || (pad != null && pad.buttonSouth.isPressed);
         }
     }

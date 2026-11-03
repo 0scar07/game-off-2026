@@ -33,7 +33,10 @@ namespace Fase
         /// <summary>Nivel terminado: desbloquea el siguiente y guarda el mejor número de fragmentos.</summary>
         public static void Complete(int level, int fragments)
         {
-            if (level + 1 > Unlocked) PlayerPrefs.SetInt(UnlockedKey, level + 1);
+            // Los niveles secretos van al final de la lista y no desbloquean nada.
+            var entry = LevelCatalog.Get.At(level);
+            bool secret = entry != null && entry.secret;
+            if (!secret && level + 1 > Unlocked) PlayerPrefs.SetInt(UnlockedKey, level + 1);
             if (fragments > Fragments(level)) PlayerPrefs.SetInt("fase_luna_" + level, fragments);
             PlayerPrefs.Save();
         }

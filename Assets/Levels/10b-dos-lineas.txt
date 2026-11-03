@@ -1,0 +1,24 @@
+nombre: Dos líneas
+name: Two Lines
+pista: Ahora hay DOS líneas: entre ellas, el otro mundo.
+Con el teclado se mueve la más cercana a ti.
+hint: Now there are TWO lines: between them, the other world.
+The keyboard moves the one closest to you.
+capitulo: 3
+linea: 3
+linea2: 24
+---
+
+
+
+
+
+
+                                                                                     K
+                                                                                    ddd
+                                                                                                                     *
+                                                                                 dd
+  S                        C                           M                     C
+#########ddddd###nnnnn#######dddddnnnnnddddd################ddddnnnndddd################                            nn
+#########     ###     #######               ################            ################                        nn      nn        G
+#########     ###     #######               ################            ################ddddddnnnnnndddddd#####            ##########

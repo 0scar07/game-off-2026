@@ -31,6 +31,14 @@ namespace Fase
         public AudioClip checkpoint;
         public AudioClip bounce;
 
+        [Header("Voz de Lumi (grititos, nunca palabras)")]
+        public AudioClip[] voiceJump;
+        public AudioClip voiceLand;
+        public AudioClip voiceDie;
+        public AudioClip voiceGoal;
+        public AudioClip voiceCollect;
+        [Range(0f, 1f)] public float voiceJumpChance = 0.35f;
+
         [Range(0f, 1f)] public float volume = 0.8f;
 
         const int Voices = 10;
@@ -84,16 +92,39 @@ namespace Fase
         }
 
         void OnStep(bool night) => Play(Pick(night ? stepsNight : stepsDay), 0.35f, 0.12f);
-        void OnJumped() => Play(jump, 0.45f, 0.08f, 1.15f);
-        void OnLanded(float speed) => Play(Pick(land), Mathf.Clamp01(speed / 18f) * 0.8f + 0.2f, 0.1f);
-        void OnDied() => Play(die, 0.8f, 0f);
+        void OnJumped()
+        {
+            Play(jump, 0.45f, 0.08f);
+            if (Random.value < voiceJumpChance) Play(Pick(voiceJump), 0.5f, 0.06f);
+        }
+
+        void OnLanded(float speed)
+        {
+            Play(Pick(land), Mathf.Clamp01(speed / 18f) * 0.8f + 0.2f, 0.1f);
+            if (speed > 14f) Play(voiceLand, 0.5f, 0.05f);
+        }
+
+        void OnDied()
+        {
+            Play(die, 0.8f, 0f);
+            Play(voiceDie, 0.55f, 0.04f);
+        }
         void OnLineGrabbed() => Play(lineGrab, 0.5f, 0.05f);
         void OnLineReleased() => Play(lineRelease, 0.45f, 0.05f);
         void OnLineTick() => Play(lineTick, 0.18f, 0.15f);
-        void OnGoal() => Play(goal, 0.9f, 0f);
-        void OnCollected() => Play(collect, 0.7f, 0.05f, 1.2f);
+        void OnGoal()
+        {
+            Play(goal, 0.9f, 0f);
+            Play(voiceGoal, 0.6f, 0f);
+        }
+
+        void OnCollected()
+        {
+            Play(collect, 0.7f, 0.03f);
+            Play(voiceCollect, 0.45f, 0.05f);
+        }
         void OnCheckpoint() => Play(checkpoint, 0.6f, 0f);
-        void OnBounced() => Play(bounce, 0.6f, 0.08f, 0.75f);
+        void OnBounced() => Play(bounce, 0.6f, 0.06f);
 
         // Muchas piezas pueden cambiar a la vez: como mucho un sonido cada 0,08 s.
         void OnPieceAppeared(Vector3 at, World world)

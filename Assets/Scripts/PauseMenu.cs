@@ -21,7 +21,7 @@ namespace Fase
         void OnDestroy()
         {
             Paused = false;
-            Time.timeScale = 1f;
+            TimeControl.Normal();
         }
 
         void Update()
@@ -57,7 +57,7 @@ namespace Fase
         void SetPaused(bool paused)
         {
             Paused = paused;
-            Time.timeScale = paused ? 0f : 1f;
+            TimeControl.Normal();
             if (panel != null) panel.SetActive(paused);
         }
     }

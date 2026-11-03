@@ -36,11 +36,25 @@ namespace Fase
             float half = fullSize.x * 0.5f * Mathf.Abs(scale);
             float left = center - half, right = center + half;
 
-            // Lado del mundo de esta pieza: [-inf, línea) o [línea, +inf).
-            float line = ShiftLine.X;
-            bool onLeft = (world == World.Day) == (ShiftLine.Instance == null || ShiftLine.Instance.dayOnLeft);
-            if (onLeft) right = Mathf.Min(right, line);
-            else left = Mathf.Max(left, line);
+            // Trozos del mundo de esta pieza entre las líneas; con dos líneas puede haber dos
+            // trozos sueltos y la colisión se queda con el más grande.
+            var lines = ShiftLine.Lines;
+            float bestLeft = 0f, bestRight = 0f;
+            float regionStart = float.NegativeInfinity;
+            for (int i = 0; i <= lines.Length; i++)
+            {
+                float regionEnd = i < lines.Length ? lines[i] : float.PositiveInfinity;
+                float probe = float.IsNegativeInfinity(regionStart) ? regionEnd - 1f : float.IsPositiveInfinity(regionEnd) ? regionStart + 1f : (regionStart + regionEnd) * 0.5f;
+                bool day = ShiftLine.IsDay(probe);
+                if (day == (world == World.Day))
+                {
+                    float a = Mathf.Max(left, regionStart), b = Mathf.Min(right, regionEnd);
+                    if (b - a > bestRight - bestLeft) { bestLeft = a; bestRight = b; }
+                }
+                regionStart = regionEnd;
+            }
+            left = bestLeft;
+            right = bestRight;
 
             bool exists = right - left > 0.01f;
             if (exists != box.enabled && clippedOnce)

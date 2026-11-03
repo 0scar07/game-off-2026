@@ -3,7 +3,9 @@
 //   _World = 1 (Noche) solo se dibuja en el lado de noche
 //   _World = 2 (Ambos) siempre se dibuja, pero se tiñe de noche en el lado de noche
 // La línea llega en las variables globales _ShiftScreenX (posición en pantalla, 0..1),
-// _ShiftX (posición en el mundo, para las sombras) y _DayOnLeft (ver ShiftLine.cs).
+// _ShiftX (posición en el mundo, para las sombras), _DayOnLeft (lado del día en pantalla),
+// _WorldDayOnLeft (lado del día en el mundo; distinto en modo espejo) y _HighContrast (ver ShiftLine.cs
+// y Settings.cs): con alto contraste las piezas que solo existen de noche llevan rayas.
 Shader "Fase/World"
 {
     Properties
@@ -28,15 +30,20 @@ Shader "Fase/World"
             float _World;
         CBUFFER_END
 
-        float _ShiftX;
-        float _ShiftScreenX;
+        float _ShiftX, _ShiftX2;
+        float _ShiftScreenX, _ShiftScreenX2;
+        float _LineCount;
         float _DayOnLeft;
+        float _WorldDayOnLeft;
+        float _HighContrast;
 
-        // true si `position` queda en el lado de noche de `lineX`.
-        bool IsNight(float position, float lineX)
+        // true si `position` queda en el lado de noche. Cada línea cruzada cambia de mundo
+        // (con dos líneas: día | noche | día, o al revés).
+        bool IsNight(float position, float line1, float line2, float dayOnLeft)
         {
-            bool left = position < lineX;
-            return _DayOnLeft > 0.5 ? !left : left;
+            float crossed = step(line1, position) + (_LineCount > 1.5 ? step(line2, position) : 0.0);
+            bool odd = fmod(crossed, 2.0) > 0.5;
+            return dayOnLeft > 0.5 ? odd : !odd;
         }
 
         // Descarta el píxel si no pertenece al mundo de este material.
@@ -49,7 +56,7 @@ Shader "Fase/World"
         // Corte en pantalla: vertical y en el mismo sitio para lo cercano y para el fondo.
         bool IsNightOnScreen(float4 positionCS)
         {
-            return IsNight(GetNormalizedScreenSpaceUV(positionCS).x, _ShiftScreenX);
+            return IsNight(GetNormalizedScreenSpaceUV(positionCS).x, min(_ShiftScreenX, _ShiftScreenX2), max(_ShiftScreenX, _ShiftScreenX2), _DayOnLeft);
         }
         ENDHLSL
 
@@ -109,8 +116,17 @@ Shader "Fase/World"
 
                 // Borde brillante junto a la línea.
                 float2 uv = GetNormalizedScreenSpaceUV(input.positionCS);
-                half edge = pow(saturate(1.0 - abs(uv.x - _ShiftScreenX) * _ScreenParams.x / 30.0), 3.0);
+                float nearest = _LineCount > 1.5 ? min(abs(uv.x - _ShiftScreenX), abs(uv.x - _ShiftScreenX2)) : abs(uv.x - _ShiftScreenX);
+                half edge = pow(saturate(1.0 - nearest * _ScreenParams.x / 30.0), 3.0);
                 color += edge * (night ? half3(0.45, 0.55, 1.0) : half3(1.0, 0.9, 0.7)) * 0.45;
+
+                // Alto contraste: rayas diagonales en lo que solo existe de noche, para distinguirlo sin color.
+                if (_HighContrast > 0.5 && _World > 0.5 && _World < 1.5)
+                {
+                    float2 pixel = uv * _ScreenParams.xy;
+                    half stripe = step(0.5, frac((pixel.x + pixel.y) / 22.0));
+                    color = lerp(color, half3(0.85, 0.95, 1.0), stripe * 0.35);
+                }
 
                 return half4(MixFog(color, input.fog), 1);
             }
@@ -145,7 +161,7 @@ Shader "Fase/World"
 
             half4 frag(Varyings input) : SV_Target
             {
-                ClipWorld(IsNight(input.positionWS.x, _ShiftX));
+                ClipWorld(IsNight(input.positionWS.x, min(_ShiftX, _ShiftX2), max(_ShiftX, _ShiftX2), _WorldDayOnLeft));
                 return 0;
             }
             ENDHLSL

@@ -1,0 +1,256 @@
+{
+    "levels": [
+        {
+            "scene": "01-amanecer",
+            "name": "Amanecer",
+            "nameEn": "Daybreak",
+            "chapter": 1,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                64.0,
+                45.0,
+                32.0,
+                26.0
+            ]
+        },
+        {
+            "scene": "02-noche-estrellada",
+            "name": "Noche estrellada",
+            "nameEn": "Starry Night",
+            "chapter": 1,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                62.0,
+                43.0,
+                31.0,
+                25.0
+            ]
+        },
+        {
+            "scene": "03-las-dos-mitades",
+            "name": "Las dos mitades",
+            "nameEn": "Two Halves",
+            "chapter": 1,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                66.0,
+                46.0,
+                33.0,
+                26.0
+            ]
+        },
+        {
+            "scene": "04b-relojes-de-sol",
+            "name": "Relojes de sol",
+            "nameEn": "Sundials",
+            "chapter": 1,
+            "fragments": 1,
+            "secret": false,
+            "medals": [
+                62.0,
+                43.0,
+                31.0,
+                25.0
+            ]
+        },
+        {
+            "scene": "04-lago-helado",
+            "name": "Lago helado",
+            "nameEn": "Frozen Lake",
+            "chapter": 1,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                62.0,
+                43.0,
+                31.0,
+                25.0
+            ]
+        },
+        {
+            "scene": "05-criaturas",
+            "name": "Criaturas",
+            "nameEn": "Creatures",
+            "chapter": 2,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                70.0,
+                49.0,
+                35.0,
+                28.0
+            ]
+        },
+        {
+            "scene": "06-alas-en-la-noche",
+            "name": "Alas en la noche",
+            "nameEn": "Wings at Night",
+            "chapter": 2,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                66.0,
+                46.0,
+                33.0,
+                26.0
+            ]
+        },
+        {
+            "scene": "07-al-reves",
+            "name": "Al revés",
+            "nameEn": "Upside Down",
+            "chapter": 2,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                66.0,
+                46.0,
+                33.0,
+                26.0
+            ]
+        },
+        {
+            "scene": "08b-luciernagas",
+            "name": "Luciérnagas",
+            "nameEn": "Fireflies",
+            "chapter": 2,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                72.0,
+                50.0,
+                36.0,
+                29.0
+            ]
+        },
+        {
+            "scene": "08-sierras",
+            "name": "Sierras del bosque",
+            "nameEn": "Forest Saws",
+            "chapter": 2,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                68.0,
+                48.0,
+                34.0,
+                27.0
+            ]
+        },
+        {
+            "scene": "09-la-torre",
+            "name": "La torre",
+            "nameEn": "The Tower",
+            "chapter": 3,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                32.0,
+                22.0,
+                16.0,
+                13.0
+            ]
+        },
+        {
+            "scene": "10b-dos-lineas",
+            "name": "Dos líneas",
+            "nameEn": "Two Lines",
+            "chapter": 3,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                76.0,
+                53.0,
+                38.0,
+                30.0
+            ]
+        },
+        {
+            "scene": "10-rio-nocturno",
+            "name": "Río nocturno",
+            "nameEn": "Night River",
+            "chapter": 3,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                58.0,
+                41.0,
+                29.0,
+                23.0
+            ]
+        },
+        {
+            "scene": "11-eclipse",
+            "name": "Eclipse",
+            "nameEn": "Eclipse",
+            "chapter": 3,
+            "fragments": 3,
+            "secret": false,
+            "medals": [
+                90.0,
+                63.0,
+                45.0,
+                36.0
+            ]
+        },
+        {
+            "scene": "12-la-gran-sombra",
+            "name": "La Gran Sombra",
+            "nameEn": "The Great Shadow",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": false,
+            "medals": [
+                36.0,
+                25.0,
+                18.0,
+                14.0
+            ]
+        },
+        {
+            "scene": "90-secreto-jardin-del-viento",
+            "name": "Jardín del viento",
+            "nameEn": "Wind Garden",
+            "chapter": 1,
+            "fragments": 0,
+            "secret": true,
+            "medals": [
+                50.0,
+                35.0,
+                25.0,
+                20.0
+            ]
+        },
+        {
+            "scene": "91-secreto-bosque-oscuro",
+            "name": "Bosque oscuro",
+            "nameEn": "Dark Wood",
+            "chapter": 2,
+            "fragments": 1,
+            "secret": true,
+            "medals": [
+                50.0,
+                35.0,
+                25.0,
+                20.0
+            ]
+        },
+        {
+            "scene": "92-secreto-aurora",
+            "name": "Aurora",
+            "nameEn": "Aurora",
+            "chapter": 3,
+            "fragments": 1,
+            "secret": true,
+            "medals": [
+                66.0,
+                46.0,
+                33.0,
+                26.0
+            ]
+        }
+    ]
+}

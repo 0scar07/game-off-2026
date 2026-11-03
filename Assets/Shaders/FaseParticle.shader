@@ -40,7 +40,8 @@ Shader "Fase/Particle"
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
 
-            float _ShiftScreenX;
+            float _ShiftScreenX, _ShiftScreenX2;
+            float _LineCount;
             float _DayOnLeft;
 
             struct Attributes { float4 positionOS : POSITION; float4 color : COLOR; float2 uv : TEXCOORD0; };
@@ -59,8 +60,11 @@ Shader "Fase/Particle"
             {
                 if (_World < 1.5)
                 {
-                    bool left = GetNormalizedScreenSpaceUV(input.positionCS).x < _ShiftScreenX;
-                    bool night = _DayOnLeft > 0.5 ? !left : left;
+                    // Igual que en Fase/World: cada línea cruzada cambia de mundo.
+                    float u = GetNormalizedScreenSpaceUV(input.positionCS).x;
+                    float crossed = step(_ShiftScreenX, u) + (_LineCount > 1.5 ? step(_ShiftScreenX2, u) : 0.0);
+                    bool odd = fmod(crossed, 2.0) > 0.5;
+                    bool night = _DayOnLeft > 0.5 ? odd : !odd;
                     clip((_World < 0.5) != night ? 1 : -1);
                 }
                 half4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv) * input.color;

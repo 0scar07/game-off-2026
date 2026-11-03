@@ -21,6 +21,7 @@ namespace Fase
             opened = true;
             if (animator != null) animator.Play("Chest_Open");
             GameEvents.RaiseCollected();
+            GameEvents.RaiseChestOpened();
             if (reward != null) StartCoroutine(RiseAndVanish());
         }
 

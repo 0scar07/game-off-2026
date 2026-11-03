@@ -14,13 +14,19 @@ namespace Fase
         public AudioClip night;
         public AudioClip ambienceDay;
         public AudioClip ambienceNight;
+        [Tooltip("Brillo de campanas que entra cuando Lumi está justo en la línea.")]
+        public AudioClip lineLayer;
+        [Tooltip("Tambores que suenan mientras la Gran Sombra sigue en pie.")]
+        public AudioClip bossLayer;
         [Range(0f, 1f)] public float volume = 0.55f;
         [Range(0f, 1f)] public float ambienceVolume = 0.3f;
         [Tooltip("Lo rápido que sigue el volumen a la línea.")]
         public float smoothing = 6f;
 
-        AudioSource daySource, nightSource, ambienceDaySource, ambienceNightSource;
-        float nightAmount;
+        AudioSource daySource, nightSource, ambienceDaySource, ambienceNightSource, lineSource, bossSource;
+        float nightAmount, onLine, bossAmount;
+        Transform player;
+        Boss boss;
 
         void Start()
         {
@@ -28,6 +34,11 @@ namespace Fase
             nightSource = CreateSource(night);
             ambienceDaySource = CreateSource(ambienceDay);
             ambienceNightSource = CreateSource(ambienceNight);
+            lineSource = CreateSource(lineLayer);
+            bossSource = CreateSource(bossLayer);
+            var hero = FindAnyObjectByType<PlayerController>();
+            if (hero != null) player = hero.transform;
+            boss = FindAnyObjectByType<Boss>();
             nightAmount = NightOnScreen();
             Apply();
             // Las dos arrancan en el mismo instante para que vayan al compás.
@@ -36,6 +47,8 @@ namespace Fase
             nightSource.PlayScheduled(start);
             if (ambienceDay != null) ambienceDaySource.PlayScheduled(start);
             if (ambienceNight != null) ambienceNightSource.PlayScheduled(start);
+            if (lineLayer != null && player != null) lineSource.PlayScheduled(start);
+            if (bossLayer != null && boss != null) bossSource.PlayScheduled(start);
         }
 
         AudioSource CreateSource(AudioClip clip)
@@ -50,7 +63,12 @@ namespace Fase
 
         void Update()
         {
-            nightAmount = Mathf.Lerp(nightAmount, NightOnScreen(), 1f - Mathf.Exp(-smoothing * Time.unscaledDeltaTime));
+            float k = 1f - Mathf.Exp(-smoothing * Time.unscaledDeltaTime);
+            nightAmount = Mathf.Lerp(nightAmount, NightOnScreen(), k);
+            // Cuanto más cerca de la línea está Lumi, más suena la capa de la línea.
+            float near = player != null && ShiftLine.Instance != null ? 1f - Mathf.Clamp01((Mathf.Abs(player.position.x - ShiftLine.X) - 0.5f) / 2.5f) : 0f;
+            onLine = Mathf.Lerp(onLine, near, k * 0.5f);
+            bossAmount = Mathf.Lerp(bossAmount, boss != null && boss.isActiveAndEnabled && !boss.Defeated ? 1f : 0f, k * 0.3f);
             Apply();
         }
 
@@ -72,6 +90,8 @@ namespace Fase
             nightSource.volume = nightGain * master;
             ambienceDaySource.volume = dayGain * ambience;
             ambienceNightSource.volume = nightGain * ambience;
+            lineSource.volume = onLine * master * 0.7f;
+            bossSource.volume = bossAmount * master;
         }
     }
 }

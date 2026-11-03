@@ -168,9 +168,52 @@ class Level:
         self.put("K", x + 6, t - 5)
         return self
 
+    # ───────────── Tramos de la segunda tanda ─────────────
+
+    def sun_gap(self, w=9):
+        """Hueco con un reloj de sol: la plataforma solo se mueve mientras le da el día."""
+        self.put("O", self.x + w // 2, self.top)
+        self.x += w
+        return self.flat(3)
+
+    def updraft(self, height=6):
+        """Corriente de aire (de día) junto a un muro alto: sube flotando y sigue arriba."""
+        t, x = self.top, self.x
+        self.ground(x, x + 3, t)
+        self.fill("W", [x + 1], range(t - height - 1, t))
+        self.top = t - height
+        self.x += 3
+        return self.flat(5)
+
+    def firefly_gap(self, w=8):
+        """Hueco con losas escondidas: aparecen de noche cuando el farol se acerca."""
+        self.fill("Y", range(self.x, self.x + w), [self.top])
+        self.x += w
+        return self.flat(3)
+
+    def triple_bridge(self, w=5):
+        """Madera, hielo y madera seguidos: hace falta día | noche | día (dos líneas)."""
+        self.fill("d", range(self.x, self.x + w), [self.top])
+        self.fill("n", range(self.x + w, self.x + 2 * w), [self.top])
+        self.fill("d", range(self.x + 2 * w, self.x + 3 * w), [self.top])
+        self.x += 3 * w
+        return self.flat(3)
+
+    def boss_arena(self):
+        """Arena de la Gran Sombra: escalera de cajas (de día) para subir a su cabeza."""
+        t, x = self.top, self.x
+        self.ground(x, x + 30, t)
+        self.put("G", x + 4, t - 1)
+        self.put("D", x + 12, t - 1)
+        self.fill("D", [x + 13], [t - 1, t - 2])
+        self.fill("D", [x + 14], [t - 1, t - 2, t - 3])
+        self.put("J", x + 18, t - 1)
+        self.x += 30
+        return self
+
 
 def save(file, chapter, name, name_en, hint, hint_en, line, level, extra=""):
-    os.makedirs(OUT, exist_ok=True)
+    os.makedirs(os.path.dirname(os.path.join(OUT, file)), exist_ok=True)
     body = (f"nombre: {name}\nname: {name_en}\npista: {hint}\nhint: {hint_en}\n"
             f"capitulo: {chapter}\nlinea: {line}\n{extra}---\n{level.text()}\n")
     with open(os.path.join(OUT, file), "w", encoding="utf-8", newline="\n") as f:
@@ -180,9 +223,12 @@ def save(file, chapter, name, name_en, hint, hint_en, line, level, extra=""):
 
 
 def clean():
-    for f in os.listdir(OUT):
-        if f.endswith(".txt"):
-            os.remove(os.path.join(OUT, f))
+    for folder in (OUT, os.path.join(OUT, "Diarios")):
+        if not os.path.isdir(folder):
+            continue
+        for f in os.listdir(folder):
+            if f.endswith(".txt"):
+                os.remove(os.path.join(folder, f))
 
 
 clean()
@@ -260,3 +306,72 @@ L.night_wall().spring_wall(3).bee_over_ice(7).check().secret_ledge("n").drop(5).
 L.lake(8).creature(12).bridge(6).goal()
 save("11-eclipse.txt", 3, "Eclipse", "Eclipse",
      "El último paso. Usa todo lo que has aprendido.", "The final step. Use everything you've learned.", 3, L)
+
+# ───────────────────────── Niveles de la segunda tanda ─────────────────────────
+
+L = Level().start().flat(3).sun_gap().flat(2).sun_gap(11).check().updraft(5).flat(2).bridge(5)
+L.sun_gap().flat(2).updraft(6).secret_ledge().drop(6).spikes(star=True).goal()
+save("04b-relojes-de-sol.txt", 1, "Relojes de sol", "Sundials",
+     "Las plataformas con engranaje solo se mueven de día.\nEl aire de día te eleva.",
+     "Geared platforms only move by day.\nDaytime air lifts you up.", 3, L)
+
+L = Level().start().flat(3).firefly_gap(6).flat(3).ice_bridge(6).check().firefly_gap(9).creature(10)
+L.flat(2).firefly_gap(7).secret_ledge("n").bridge(6).check().firefly_gap(10).ice_steps(star=True).goal()
+save("08b-luciernagas.txt", 2, "Luciérnagas", "Fireflies",
+     "Donde bailan las luciérnagas hay un camino escondido.\nSolo lo ve tu farol, y solo de noche. La línea tiene poca energía.",
+     "Where fireflies dance, there's a hidden path.\nOnly your lantern sees it, only at night. The line has little energy.", 3, L,
+     "energia: 45\n")
+
+L = Level().start().flat(3).bridge(5).ice_bridge(5).check().triple_bridge(5).flat(3).creature(10)
+L.triple_bridge(4).check().secret_ledge().drop(2).triple_bridge(6).flat(2).ice_steps(star=True).goal()
+save("10b-dos-lineas.txt", 3, "Dos líneas", "Two Lines",
+     "Ahora hay DOS líneas: entre ellas, el otro mundo.\nCon el teclado se mueve la más cercana a ti.",
+     "Now there are TWO lines: between them, the other world.\nThe keyboard moves the one closest to you.", 3, L,
+     "linea2: 24\n")
+
+L = Level().start().flat(4).check().flat(6).boss_arena()
+save("12-la-gran-sombra.txt", 3, "La Gran Sombra", "The Great Shadow",
+     "Dale luz de día para volverla piedra.\nSube a su cabeza y toca el fragmento. Tres veces.",
+     "Give it daylight to turn it to stone.\nClimb to its head and touch the fragment. Three times.", 8, L)
+
+# ───────────────────────── Niveles secretos ─────────────────────────
+
+L = Level().start().updraft(6).sun_gap(11).bridge(7).updraft(4).sun_gap(13).spikes(star=True).flat(3).goal()
+save("90-secreto-jardin-del-viento.txt", 1, "Jardín del viento", "Wind Garden",
+     "Nivel secreto. Todo el viento de la pradera.", "Secret level. All the meadow's wind.", 3, L, "secreto: si\n")
+
+L = Level().start().firefly_gap(8).creature(8).firefly_gap(10).bee_over_ice(8).firefly_gap(12).spikes(star=True).goal()
+save("91-secreto-bosque-oscuro.txt", 2, "Bosque oscuro", "Dark Wood",
+     "Nivel secreto. Muy poca energía: piensa antes de mover la línea.", "Secret level. Very little energy: think before you move the line.", 3, L,
+     "secreto: si\nenergia: 30\n")
+
+L = Level().start().triple_bridge(5).sun_gap().triple_bridge(6).updraft(5).firefly_gap(6).triple_bridge(7).spikes(star=True).goal()
+save("92-secreto-aurora.txt", 3, "Aurora", "Aurora",
+     "Nivel secreto. Dos líneas, viento y luciérnagas.", "Secret level. Two lines, wind and fireflies.", 3, L,
+     "secreto: si\nlinea2: 20\n")
+
+# ───────────────────────── Desafíos diarios ─────────────────────────
+# Cortos y distintos cada día: tramos al azar con una semilla fija por número.
+
+import random
+
+TRAMOS = [
+    lambda L: L.bridge(random.choice([5, 6, 7])), lambda L: L.ice_bridge(random.choice([5, 6, 7])),
+    lambda L: L.ice_steps(), lambda L: L.crate_steps(), lambda L: L.lake(random.choice([6, 8])),
+    lambda L: L.spring_wall(4), lambda L: L.creature(10), lambda L: L.saws(10), lambda L: L.spikes(),
+    lambda L: L.sun_gap(), lambda L: L.updraft(5), lambda L: L.firefly_gap(6), lambda L: L.night_wall(),
+]
+
+for n in range(1, 15):
+    random.seed(1000 + n)
+    L = Level().start().flat(3)
+    for i in range(6):
+        random.choice(TRAMOS)(L)
+        if L.top < 4:
+            L.drop(4)
+        L.flat(2)
+        if i == 2:
+            L.check()
+    L.spikes(star=True).goal()
+    save(f"Diarios/diario-{n:02}.txt", 1 + (n % 3), f"Desafío {n}", f"Challenge {n}",
+         "Desafío diario: mañana habrá otro.", "Daily challenge: there's a new one tomorrow.", 3, L)

@@ -260,11 +260,11 @@ public static partial class LevelBuilder
     static System.Random rand = new System.Random(1);
     static float R(float a, float b) => a + (float)rand.NextDouble() * (b - a);
 
-    static void BuildLineVisual()
+    static void BuildLineVisual(int index = 0)
     {
-        var line = new GameObject("DibujoLinea");
+        var line = new GameObject(index == 0 ? "DibujoLinea" : "DibujoLinea2");
         line.transform.position = new Vector3(0f, 5f, -1.6f);
-        line.AddComponent<LineVisual>();
+        line.AddComponent<LineVisual>().index = index;
         var core = Primitive(PrimitiveType.Cube, "Nucleo", new Vector3(0f, 5f, -1.6f), new Vector3(0.07f, 80f, 0.07f), Flat("Linea", Both, new Color(2.6f, 2.4f, 2f)));
         core.transform.SetParent(line.transform, true);
         var glow = Quad("Halo", new Vector3(0f, 5f, -1.65f), new Vector2(2.2f, 80f), ParticleMaterial("LineaHalo", Ray(true), new Color(1f, 0.95f, 0.85f, 0.35f), Both, true), line.transform);

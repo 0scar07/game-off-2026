@@ -34,6 +34,7 @@ namespace Fase
         static readonly Color Locked = new Color(0.25f, 0.24f, 0.4f, 0.85f);
 
         int selected = 1;
+        Vector2 markerBase;
 
         void Start()
         {
@@ -46,7 +47,8 @@ namespace Fase
         void OnEnable() => Loc.Changed += Refresh;
         void OnDisable() => Loc.Changed -= Refresh;
 
-        int Unlocked => Mathf.Clamp(Progress.Unlocked, 1, scenes.Length);
+        // Los niveles secretos van al final de `scenes` y no cuentan para "Continuar".
+        int Unlocked => Mathf.Clamp(Progress.Unlocked, 1, Mathf.Max(1, nodes.Length));
 
         /// <summary>Jugar: la primera vez cuenta la historia; después, sigue por donde ibas.</summary>
         public void Play()
@@ -81,7 +83,7 @@ namespace Fase
                 infoDetail.text = $"{Loc.Get("best")} {Hud.FormatTime(Progress.BestTime(level))}    ·    {moon}";
             }
             infoPlay.interactable = open;
-            if (marker != null) marker.position = nodes[level - 1].transform.position + Vector3.up * 70f * marker.lossyScale.y;
+            if (marker != null) markerBase = ((RectTransform)nodes[level - 1].transform).anchoredPosition + Vector2.up * 92f;
         }
 
         public void PlaySelected() => LoadLevel(selected);
@@ -99,7 +101,12 @@ namespace Fase
                 float pulse = level == unlocked ? 1f + 0.08f * Mathf.Sin(Time.time * 4f) : 1f;
                 nodes[i].transform.localScale = Vector3.one * pulse;
             }
-            if (marker != null) marker.localRotation = Quaternion.Euler(0f, 0f, Mathf.Sin(Time.time * 3f) * 6f);
+            // Triángulo que apunta hacia abajo (-90) y bota encima del nivel elegido.
+            if (marker != null)
+            {
+                marker.anchoredPosition = markerBase + Vector2.up * Mathf.Abs(Mathf.Sin(Time.time * 4f)) * 14f;
+                marker.localRotation = Quaternion.Euler(0f, 0f, -90f);
+            }
         }
 
         public void OnMusicChanged(float value) => Progress.MusicVolume = value;
@@ -118,13 +125,26 @@ namespace Fase
             Refresh();
         }
 
-        void Show(GameObject panel)
+        readonly System.Collections.Generic.List<GameObject> extraPanels = new System.Collections.Generic.List<GameObject>();
+
+        /// <summary>Paneles que añade MenuExtras (logros, Lumi, accesibilidad...).</summary>
+        public void AddPanel(GameObject panel)
+        {
+            extraPanels.Add(panel);
+            panel.SetActive(false);
+        }
+
+        public void Show(GameObject panel)
         {
             mainPanel.SetActive(panel == mainPanel);
             journeyPanel.SetActive(panel == journeyPanel);
             optionsPanel.SetActive(panel == optionsPanel);
+            foreach (var extra in extraPanels) extra.SetActive(panel == extra);
             Refresh();
+            Shown?.Invoke(panel);
         }
+
+        public event System.Action<GameObject> Shown;
 
         void Refresh()
         {

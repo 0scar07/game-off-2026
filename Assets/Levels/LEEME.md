@@ -17,6 +17,12 @@ linea: 4
 Opcionales:
 - `dia: derecha` — el mundo al revés: de día a la derecha de la línea y de noche a la izquierda.
 - `limites: 10 30` — la línea solo puede moverse entre esas columnas (se marcan con postes rojos).
+- `linea2: 24` — segunda línea: entre las dos, el otro mundo.
+- `energia: 40` — mover la línea gasta energía; los puntos de control la rellenan.
+- `medallas: 90 65 48 39` — tiempos de bronce, plata, oro y luna (si no, se calculan por el largo).
+- `secreto: si` — nivel secreto (se abre con todos los fragmentos de su capítulo).
+
+Los desafíos diarios están en `Diarios/`.
 
 ## Mapa
 
@@ -38,6 +44,10 @@ Cada letra es una casilla de 1×1. El personaje mide 2 casillas de alto, salta u
 | `K` | cofre secreto: da un fragmento de luna | los dos |
 | `*` | fragmento de luna (coleccionable) | los dos |
 | `C` | punto de control | los dos |
+| `O` | reloj de sol: plataforma que se mueve de día y se para de noche | los dos |
+| `W` | corriente de aire (columna): de día empuja hacia arriba | día |
+| `Y` | losa de luciérnagas: aparece de noche junto al farol | noche |
+| `J` | la Gran Sombra (jefe); la meta aparece al vencerla | los dos |
 | `S` | salida del personaje | — |
 | `G` | meta | los dos |
 | espacio | aire | — |

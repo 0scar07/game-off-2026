@@ -16,6 +16,10 @@ namespace Fase
         public string levelName = "", levelNameEn = "";
         [TextArea] public string hint = "", hintEn = "";
         public int fragmentsTotal;
+        [Tooltip("Tiempos de medalla en segundos: bronce, plata, oro, luna.")]
+        public float[] medalTimes = new float[4];
+        [Tooltip("Nivel del desafío diario (no guarda récords ni medallas).")]
+        public bool daily;
 
         public Text title;
         public Text hintText;
@@ -30,6 +34,10 @@ namespace Fase
 
         public int Fragments => fragments;
         public float Elapsed => elapsed;
+        public bool IsRecord { get; private set; }
+        public bool Daily => daily;
+        /// <summary>El nivel se está jugando en modo espejo (el mundo dado la vuelta).</summary>
+        public bool Mirror => MirrorMode.Active;
 
         void Awake() => Instance = this;
 
@@ -47,7 +55,7 @@ namespace Fase
 
         void Start()
         {
-            string name = $"{levelNumber}. {Loc.Pick(levelName, levelNameEn)}";
+            string name = daily ? $"{Loc.Get("daily")} · {Loc.Pick(levelName, levelNameEn)}" : $"{levelNumber}. {Loc.Pick(levelName, levelNameEn)}";
             title.text = name;
             hintText.text = Loc.Pick(hint, hintEn);
             corner.text = name;

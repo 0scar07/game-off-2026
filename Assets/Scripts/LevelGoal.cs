@@ -1,12 +1,10 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Fase
 {
     /// <summary>
-    /// Meta del nivel: al tocarla suena la melodía y, tras una pausa, carga la siguiente escena
-    /// (o reinicia si no hay).
+    /// Meta del nivel: al tocarla suena la melodía, Lumi celebra y, tras una pausa, sale la
+    /// pantalla de resultados (ResultsScreen), que lleva a la escena siguiente.
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
     public class LevelGoal : MonoBehaviour
@@ -25,16 +23,11 @@ namespace Fase
             if (reached || other.GetComponent<PlayerController>() == null) return;
             reached = true;
             other.GetComponent<PlayerController>().Celebrate();
-            if (Hud.Instance != null) Progress.Complete(Hud.Instance.levelNumber, Hud.Instance.Fragments);
+            var hud = Hud.Instance;
+            if (hud != null && !hud.Daily) Progress.Complete(hud.levelNumber, hud.Fragments);
             GameEvents.RaiseGoalReached();
-            StartCoroutine(Finish());
-        }
-
-        IEnumerator Finish()
-        {
-            yield return new WaitForSeconds(delay);
-            string scene = string.IsNullOrEmpty(nextScene) ? SceneManager.GetActiveScene().name : nextScene;
-            SceneFader.Load(scene);
+            Share.Vibrate(60);
+            ResultsScreen.Show(nextScene, delay);
         }
     }
 }
