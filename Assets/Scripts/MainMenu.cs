@@ -28,6 +28,8 @@ namespace Fase
         [Header("Opciones")]
         public Slider music, sfx;
         public Text playLabel;
+        [Tooltip("Debajo de Continuar: nivel por el que vas y luna reunida.")]
+        public Text playInfo;
 
         static readonly Color Done = new Color(1f, 0.78f, 0.35f);
         static readonly Color Current = new Color(1f, 1f, 1f);
@@ -148,7 +150,13 @@ namespace Fase
 
         void Refresh()
         {
-            if (playLabel != null) playLabel.text = Loc.Get(Progress.Unlocked > 1 ? "continue" : "play");
+            if (playLabel != null) playLabel.text = "▶  " + Loc.Get(Progress.Unlocked > 1 ? "continue" : "play");
+            if (playInfo != null)
+            {
+                int level = Unlocked, moon = 0, total = 0;
+                for (int i = 0; i < nodes.Length; i++) { moon += Progress.Fragments(i + 1); total += fragmentsTotal[i]; }
+                playInfo.text = $"{Loc.Pick("Nivel", "Level")} {level} · {Loc.Pick(names[level - 1], namesEn[level - 1])}   ·   ☾ {moon}/{total}";
+            }
             if (journeyPanel.activeSelf) SelectLevel(selected);
         }
     }

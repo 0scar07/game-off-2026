@@ -6,8 +6,7 @@ using UnityEngine.UI;
 namespace Fase
 {
     /// <summary>
-    /// Partes del menú que se montan al arrancar: la fila Lumi · Logros · Desafío diario, la
-    /// pantalla de logros, el armario de Lumi, "Accesibilidad y controles", el modo espejo y los
+    /// Partes del menú que se montan al arrancar: la barra de iconos de abajo, la pantalla de logros, el armario de Lumi, "Accesibilidad y controles", el modo espejo y los
     /// niveles secretos del mapa de viaje.
     /// </summary>
     [RequireComponent(typeof(MainMenu))]
@@ -43,32 +42,38 @@ namespace Fase
 
         // ───────── Fila del menú principal ─────────
 
+        /// <summary>Barra de abajo con iconos: todo lo que no es jugar o el viaje.</summary>
         void BuildMainRow()
         {
-            var row = new GameObject("FilaExtra", typeof(RectTransform));
-            row.transform.SetParent(menu.mainPanel.transform, false);
-            // Justo debajo de "El viaje", antes de Opciones.
-            row.transform.SetSiblingIndex(Mathf.Max(0, menu.mainPanel.transform.childCount - 2));
-            var element = row.AddComponent<LayoutElement>();
-            element.preferredWidth = 640f;
-            element.preferredHeight = 96f;
-            var layout = row.AddComponent<HorizontalLayoutGroup>();
-            layout.spacing = 14f;
-            layout.childControlWidth = layout.childControlHeight = true;
-            layout.childForceExpandWidth = true;
-            AddRowButton(row.transform, "wardrobe", () => menu.Show(wardrobePanel));
-            AddRowButton(row.transform, "achievements", () => menu.Show(achievementsPanel));
-            AddRowButton(row.transform, "diary", () => menu.Show(diaryPanel));
-            AddRowButton(row.transform, "daily", () => SceneFader.Load(DailyChallenge.SceneName));
-
-            // Segunda fila: Taller (editor de niveles), Sin fin y Tienda.
-            var row2 = Object.Instantiate(row, row.transform.parent);
-            foreach (Transform child in row2.transform) Destroy(child.gameObject);
-            row2.name = "FilaExtra2";
-            row2.transform.SetSiblingIndex(row.transform.GetSiblingIndex() + 1);
-            AddRowButton(row2.transform, "workshop", () => SceneFader.Load("Taller"));
-            AddRowButton(row2.transform, "endless", () => SceneFader.Load("SinFin"));
-            AddRowButton(row2.transform, "shop", () => menu.Show(shopPanel));
+            var dock = UiKit.Box(menu.mainPanel.transform.parent, "Barra", new Vector2(0.5f, 0f), new Vector2(0f, 26f), new Vector2(1640f, 128f), new Color(0.04f, 0.03f, 0.14f, 0.78f));
+            dock.rectTransform.pivot = new Vector2(0.5f, 0f);
+            // La barra va con el menú principal: se esconde cuando se abre otro panel.
+            menu.Shown += panel => dock.gameObject.SetActive(panel == menu.mainPanel);
+            var items = new (string icon, string key, UnityEngine.Events.UnityAction action)[]
+            {
+                ("☺", "wardrobe", () => menu.Show(wardrobePanel)),
+                ("★", "achievements", () => menu.Show(achievementsPanel)),
+                ("✎", "diary", () => menu.Show(diaryPanel)),
+                ("☀", "daily", () => SceneFader.Load(DailyChallenge.SceneName)),
+                ("▦", "workshop", () => SceneFader.Load("Taller")),
+                ("∞", "endless", () => SceneFader.Load("SinFin")),
+                ("☾", "shop", () => menu.Show(shopPanel)),
+                ("⚙", "options", menu.ShowOptions),
+            };
+            for (int i = 0; i < items.Length; i++)
+            {
+                var (icon, key, action) = items[i];
+                float x = (i - (items.Length - 1) * 0.5f) * 200f;
+                var button = UiKit.Button(dock.transform, key, "", new Vector2(0.5f, 0.5f), new Vector2(x, 0f), new Vector2(186f, 112f), action, 26);
+                var image = button.GetComponent<Image>();
+                image.color = new Color(1f, 1f, 1f, 0.02f);
+                var label = button.GetComponentInChildren<Text>();
+                label.rectTransform.anchoredPosition = new Vector2(0f, -26f);
+                var glyph = UiKit.Text(button.transform, "Icono", icon, new Vector2(0.5f, 0.5f), new Vector2(0f, 16f), new Vector2(186f, 60f), 46, TextAnchor.MiddleCenter, UiKit.Gold);
+                glyph.fontStyle = FontStyle.Normal;
+                string k = key;
+                refreshers.Add(() => label.text = k == "daily" ? Loc.Pick("Desafío", "Daily") : Loc.Get(k));
+            }
         }
 
         // ───────── Tienda ─────────
@@ -98,13 +103,6 @@ namespace Fase
                 });
             }
             return panel;
-        }
-
-        void AddRowButton(Transform parent, string key, UnityEngine.Events.UnityAction action)
-        {
-            var button = UiKit.Button(parent, key, Loc.Get(key), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(150f, 96f), action, 28);
-            var label = button.GetComponentInChildren<Text>();
-            refreshers.Add(() => label.text = Loc.Get(key));
         }
 
         // ───────── Panel base ─────────
@@ -285,7 +283,7 @@ namespace Fase
                 bool can = available == null || available();
                 button.interactable = can;
                 string value = valueText != null ? valueText(get()) : Loc.Get(get() ? "on" : "off");
-                text.text = $"{Loc.Get(key)}:  {(can ? value : "🔒")}";
+                text.text = $"{Loc.Get(key)}:  {(can ? value : "—")}";
             });
         }
 

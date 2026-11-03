@@ -74,7 +74,9 @@ public static partial class LevelBuilder
         StaticCamera(new Vector3(20f, 5f, -19f));
         BuildAudio(Biomes[0]);
         // Lumi pasea por el fondo del menú.
-        BuildLumi(new Vector3(12f, 3f, 1.5f), null).AddComponent<MenuWalker>();
+        var walker = BuildLumi(new Vector3(28f, 3f, 1.5f), null).AddComponent<MenuWalker>();
+        walker.minX = 24f;
+        walker.maxX = 33f;
         // Música del capítulo por el que vas y día o noche según la hora real.
         var mood = Object.FindAnyObjectByType<MusicLayers>().gameObject.AddComponent<MenuMood>();
         mood.day = Biomes.Select(b => MusicClip(b.musicDay)).ToArray();
@@ -87,19 +89,48 @@ public static partial class LevelBuilder
         new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
         menu.introScene = IntroScene;
 
-        // Principal: logo partido, lema y botones.
-        menu.mainPanel = Column(canvas, "Principal", new Vector2(0f, 10f), 14f);
+        // Sombra suave a la izquierda para que se lea el texto sobre el paisaje.
+        var shade = new GameObject("SombraIzquierda", typeof(RectTransform));
+        shade.transform.SetParent(canvas, false);
+        var shadeRect = (RectTransform)shade.transform;
+        shadeRect.anchorMin = new Vector2(0f, 0f);
+        shadeRect.anchorMax = new Vector2(0.62f, 1f);
+        shadeRect.offsetMin = shadeRect.offsetMax = Vector2.zero;
+        var shadeImage = shade.AddComponent<RawImage>();
+        shadeImage.texture = GeneratedTexture("sombra_menu", 256, 4, (u, v) => new Color(0.02f, 0.02f, 0.09f, 0.78f * Mathf.Pow(1f - u, 1.6f)));
+        shadeImage.raycastTarget = false;
+
+        // Principal, a la izquierda: logo partido, lema, Continuar (con dónde vas) y El viaje.
+        menu.mainPanel = Column(canvas, "Principal", Vector2.zero, 14f);
+        var mainRect = (RectTransform)menu.mainPanel.transform;
+        mainRect.anchorMin = mainRect.anchorMax = mainRect.pivot = new Vector2(0f, 0.5f);
+        mainRect.anchoredPosition = new Vector2(70f, 70f);
+        var mainLayout = menu.mainPanel.GetComponent<VerticalLayoutGroup>();
+        mainLayout.childAlignment = TextAnchor.MiddleLeft;
+        mainLayout.padding = new RectOffset(40, 40, 40, 40);
         BuildLogo(menu.mainPanel.transform);
-        var tagline = Label(menu.mainPanel.transform, "Lema", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1400f, 60f), 42, TextAnchor.MiddleCenter);
+        var tagline = Label(menu.mainPanel.transform, "Lema", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 60f), 40, TextAnchor.MiddleLeft);
         Localize(tagline, "tagline");
-        tagline.gameObject.AddComponent<LayoutElement>().preferredHeight = 64f;
-        var play = UiButton(menu.mainPanel.transform, "play", new Vector2(560f, 106f), out menu.playLabel, 52);
+        var taglineElement = tagline.gameObject.AddComponent<LayoutElement>();
+        taglineElement.preferredHeight = 80f;
+        taglineElement.preferredWidth = 760f;
+        var play = UiButton(menu.mainPanel.transform, "play", new Vector2(560f, 116f), out menu.playLabel, 56);
+        play.GetComponent<Image>().color = new Color(1f, 0.74f, 0.35f, 0.97f);
+        menu.playLabel.color = new Color(0.17f, 0.1f, 0f);
+        menu.playLabel.GetComponent<Shadow>().enabled = false;
+        // El texto lo pone MainMenu (lleva el ▶ delante), no el traductor automático.
+        Object.DestroyImmediate(menu.playLabel.GetComponent<LocText>());
         UnityEventTools.AddPersistentListener(play.onClick, menu.Play);
-        UnityEventTools.AddPersistentListener(UiButton(menu.mainPanel.transform, "journey", new Vector2(560f, 96f), out _).onClick, menu.ShowJourney);
-        UnityEventTools.AddPersistentListener(UiButton(menu.mainPanel.transform, "options", new Vector2(560f, 96f), out _).onClick, menu.ShowOptions);
+        menu.playInfo = Label(menu.mainPanel.transform, "DondeVas", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(560f, 40f), 28, TextAnchor.MiddleCenter);
+        menu.playInfo.color = new Color(0.8f, 0.84f, 1f);
+        var infoElement = menu.playInfo.gameObject.AddComponent<LayoutElement>();
+        infoElement.preferredHeight = 44f;
+        infoElement.preferredWidth = 560f;
+        UnityEventTools.AddPersistentListener(UiButton(menu.mainPanel.transform, "journey", new Vector2(560f, 92f), out _, 44).onClick, menu.ShowJourney);
 
         BuildJourney(canvas, menu, levels);
-        // Lumi, Logros, Desafío diario, controles y niveles secretos (se montan al arrancar).
+        // Barra de abajo (Lumi, Logros, Diario, Desafío, Taller, Sin fin, Tienda, Opciones),
+        // controles y niveles secretos: se montan al arrancar (MenuExtras).
         canvas.gameObject.AddComponent<MenuExtras>();
 
         // Opciones.
@@ -114,7 +145,8 @@ public static partial class LevelBuilder
         UnityEventTools.AddPersistentListener(UiButton(menu.optionsPanel.transform, "reset", new Vector2(620f, 86f), out _, 34).onClick, menu.ResetProgress);
         UnityEventTools.AddPersistentListener(UiButton(menu.optionsPanel.transform, "back", new Vector2(420f, 100f), out _).onClick, menu.ShowMain);
 
-        var credit = Label(canvas, "Credito", new Vector2(0.5f, 0f), new Vector2(0f, 24f), new Vector2(1800f, 50f), 28, TextAnchor.LowerCenter);
+        var credit = Label(canvas, "Credito", new Vector2(1f, 1f), new Vector2(-30f, -24f), new Vector2(1000f, 40f), 24, TextAnchor.UpperRight);
+        credit.color = new Color(0.85f, 0.87f, 1f, 0.85f);
         Localize(credit, "credit");
 
         string path = $"Assets/Scenes/{MenuSceneName}.unity";
@@ -127,11 +159,11 @@ public static partial class LevelBuilder
     {
         var logo = new GameObject("Logo", typeof(RectTransform));
         logo.transform.SetParent(parent, false);
-        ((RectTransform)logo.transform).sizeDelta = new Vector2(900f, 210f);
+        ((RectTransform)logo.transform).sizeDelta = new Vector2(760f, 210f);
         var element = logo.AddComponent<LayoutElement>();
-        element.preferredWidth = 900f;
+        element.preferredWidth = 760f;
         element.preferredHeight = 210f;
-        var day = Label(logo.transform, "Dia", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(900f, 250f), 230, TextAnchor.MiddleCenter);
+        var day = Label(logo.transform, "Dia", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 250f), 230, TextAnchor.MiddleLeft);
         day.rectTransform.pivot = new Vector2(0.5f, 0.5f);
         day.text = "FASE";
         day.color = DayText;
@@ -142,7 +174,7 @@ public static partial class LevelBuilder
         maskRect.anchorMax = Vector2.one;
         maskRect.offsetMin = maskRect.offsetMax = Vector2.zero;
         var mask = maskObject.AddComponent<RectMask2D>();
-        var night = Label(maskObject.transform, "Noche", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(900f, 250f), 230, TextAnchor.MiddleCenter);
+        var night = Label(maskObject.transform, "Noche", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 250f), 230, TextAnchor.MiddleLeft);
         night.rectTransform.pivot = new Vector2(0.5f, 0.5f);
         night.text = "FASE";
         night.color = NightText;

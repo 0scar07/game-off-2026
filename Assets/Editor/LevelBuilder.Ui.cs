@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// <summary>Interfaz (HUD, controles táctiles), sonido y música de cada escena.</summary>
 public static partial class LevelBuilder
 {
-    const string FontPath = "Assets/Art/Fonts/Fredoka.ttf";
+    const string FontPath = "Assets/Art/Fonts/FredokaFase.ttf";   // Fredoka con los símbolos de la interfaz (Tools/fuente_simbolos.py)
     const string Own = "Assets/Audio/Sfx/Fase/";
     static readonly Color PillColor = new Color(0.04f, 0.03f, 0.14f, 0.5f);
 
