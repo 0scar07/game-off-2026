@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+@font-face { font-family: Fredoka; src: url("../Assets/Art/Fonts/Fredoka.ttf"); font-weight: 300 700; }
+html, body { margin: 0; width: 1920px; height: 1080px; background: transparent; overflow: hidden; }
+body { display: flex; align-items: center; justify-content: center; font-family: Fredoka, sans-serif; color: #fff; }
+.caption { position: absolute; left: 0; bottom: 150px; width: 100%; text-align: center; }
+.caption span { font-size: 64px; font-weight: 500; letter-spacing: 1px;
+  text-shadow: 0 0 24px rgba(255, 220, 160, .55), 0 4px 18px rgba(0, 0, 20, .8); }
+.caption i { display: block; margin: 22px auto 0; width: 140px; height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, #ffd27a, #fff, #8fb4ff); box-shadow: 0 0 14px #fff; }
+.big { font-size: 190px; font-weight: 700; letter-spacing: 10px; text-align: center; line-height: 1;
+  background: linear-gradient(90deg, #ffe39a 0%, #fff 49.6%, #fff 50.4%, #9fc0ff 100%);
+  -webkit-background-clip: text; color: transparent; filter: drop-shadow(0 0 30px rgba(255,255,255,.45)); }
+.logo { position: relative; text-align: center; }
+.logo .word { font-size: 330px; font-weight: 700; letter-spacing: 24px; line-height: 1;
+  background: linear-gradient(90deg, #ffd884 0%, #fff4d6 48%, #e3ecff 52%, #8fb0ff 100%);
+  -webkit-background-clip: text; color: transparent; filter: drop-shadow(0 0 40px rgba(255, 240, 210, .55)); }
+.logo .beam { position: absolute; left: 50%; top: -60px; bottom: -60px; width: 6px; margin-left: -3px; background: #fff;
+  box-shadow: 0 0 30px 10px rgba(255,255,255,.6), 0 0 120px 40px rgba(200,210,255,.25); border-radius: 3px; }
+.logo .tag { margin-top: 26px; font-size: 52px; font-weight: 400; letter-spacing: 6px; color: #f3f0ff;
+  text-shadow: 0 0 20px rgba(0,0,30,.8); }
+.end { text-align: center; }
+.end .jam { font-size: 44px; letter-spacing: 8px; color: #ffd98a; text-transform: uppercase; }
+.end .play { font-size: 82px; font-weight: 600; margin: 26px 0; text-shadow: 0 0 30px rgba(255,255,255,.4); }
+.end .url { display: inline-block; font-size: 46px; padding: 16px 44px; border-radius: 60px;
+  background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.35); }
+</style></head>
+<body><div id="root"></div>
+<script>
+const T = {
+  c1: ["Una línea parte el mundo en dos.", "One line splits the world in two."],
+  c2: ["De un lado, el día.", "On one side, day."],
+  c3: ["Del otro, la noche.", "On the other, night."],
+  m1: ["El agua se vuelve hielo", "Water turns to ice"],
+  m2: ["Las Sombras, piedra", "Shadows turn to stone"],
+  m3: ["El sol mueve las máquinas", "The sun drives the machines"],
+  m4: ["La noche revela caminos", "Night reveals hidden paths"],
+  m5: ["Ahora, dos líneas", "Now, two lines"],
+  m6: ["15 niveles · 3 capítulos", "15 levels · 3 chapters"],
+  m7: ["Abejas de la noche", "Night bees"],
+  m8: ["Sube hasta el cielo", "Climb to the sky"],
+  boss: ["Y algo despierta...", "And something awakens..."],
+};
+const p = new URLSearchParams(location.search), c = p.get("c"), en = p.get("l") === "en" ? 1 : 0;
+const root = document.getElementById("root");
+if (c === "title") root.innerHTML = `<div class="big">${en ? "SHIFT THE LINE" : "MUEVE LA LÍNEA"}</div>`;
+else if (c === "logo") root.innerHTML = `<div class="logo"><div class="beam"></div><div class="word">FASE</div><div class="tag">${en ? "Shift the line. Change the world." : "Mueve la línea. Cambia el mundo."}</div></div>`;
+else if (c === "end") root.innerHTML = `<div class="end"><div class="jam">GitHub Game Off 2026</div><div class="play">${en ? "Play free · browser &amp; mobile" : "Juega gratis · navegador y móvil"}</div><div class="url">0scar07.itch.io/game-off-2026</div></div>`;
+else root.innerHTML = `<div class="caption"><span>${T[c][en]}</span><i></i></div>`;
+document.fonts.ready.then(() => document.title = "listo");
+</script></body></html>

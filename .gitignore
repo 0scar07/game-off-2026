@@ -30,3 +30,6 @@
 *.aab
 crashlytics-buildid.txt
 .DS_Store
+Trailer/planos/
+Trailer/tmp/
+Trailer/*.mp4

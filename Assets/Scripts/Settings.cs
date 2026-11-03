@@ -51,6 +51,20 @@ namespace Fase
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void Init()
+        {
+            ApplyShader();
+            // La web usa el perfil "Mobile" (80 % de resolución, sombras pequeñas). En un ordenador
+            // sobra potencia: resolución completa y sombras nítidas. (En el editor no, que
+            // cambiaría el archivo del perfil.)
+            if (!Application.isEditor && !Application.isMobilePlatform
+                && UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline is UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset urp)
+            {
+                urp.renderScale = 1f;
+                urp.mainLightShadowmapResolution = 2048;
+            }
+        }
+
         static void ApplyShader() => Shader.SetGlobalFloat(HighContrastId, HighContrast ? 1f : 0f);
 
         public static Key GetKey(Action action) => (Key)PlayerPrefs.GetInt("fase_tecla_" + action, (int)Defaults[(int)action]);
