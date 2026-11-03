@@ -102,9 +102,16 @@ docs/            capturas para este README
 
 - Diseño, niveles y programación: **[0scar07](https://github.com/0scar07)**
 - Modelos 3D: **[Quaternius](https://quaternius.com)** y **[Kenney](https://kenney.nl)** (CC0)
-- Fuente: **Fredoka** (SIL Open Font License)
+- Fuente: **Fredoka** (SIL Open Font License), con símbolos añadidos para el juego (*Fredoka Fase*)
 - Música, efectos y voz: generados para este juego (Python y voces del sistema)
 - Hecho con ayuda de IA (Claude, de Anthropic) para el código, las herramientas y los textos;
   las ideas, el diseño y las pruebas son del autor.
 
 Hecho para el [GitHub Game Off 2026](https://itch.io/jam/game-off-2026).
+
+## Licencia · License
+
+- **Código** (scripts, shaders, herramientas): [MIT](LICENSE).
+- **Modelos** de Quaternius y Kenney: CC0 (dominio público).
+- **Fuente** Fredoka y su versión *Fredoka Fase*: [SIL Open Font License 1.1](Assets/Art/Fonts/OFL-Fredoka.txt).
+- **Música, efectos, voz, ilustraciones y niveles** hechos para FASE: © 2026 0scar07.
