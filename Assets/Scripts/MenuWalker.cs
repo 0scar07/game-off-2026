@@ -10,7 +10,13 @@ namespace Fase
         float direction = 1f, pause;
         string state = "";
 
-        void Start() => animator = GetComponentInChildren<Animator>();
+        void Start()
+        {
+            animator = GetComponentInChildren<Animator>();
+            var p = transform.position;
+            var hit = Physics2D.Raycast(new Vector2(p.x, p.y + 6f), Vector2.down, 20f);
+            if (hit.collider != null) transform.position = new Vector3(p.x, hit.point.y, p.z);
+        }
 
         void Update()
         {
@@ -27,6 +33,9 @@ namespace Fase
                 direction = -direction;
                 pause = Random.value < 0.5f ? 3.2f : 1.2f;
             }
+            // Los pies siempre sobre el suelo (el del menú no es plano).
+            var hit = Physics2D.Raycast(new Vector2(p.x, p.y + 6f), Vector2.down, 20f);
+            if (hit.collider != null) p.y = Mathf.Lerp(p.y, hit.point.y, Time.deltaTime * 12f);
             transform.position = p;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, -direction * 90f, 0f), Time.deltaTime * 6f);
             Play("Run");

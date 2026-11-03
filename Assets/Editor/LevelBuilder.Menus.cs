@@ -88,15 +88,15 @@ public static partial class LevelBuilder
         menu.introScene = IntroScene;
 
         // Principal: logo partido, lema y botones.
-        menu.mainPanel = Column(canvas, "Principal", new Vector2(0f, -40f), 22f);
+        menu.mainPanel = Column(canvas, "Principal", new Vector2(0f, 10f), 14f);
         BuildLogo(menu.mainPanel.transform);
         var tagline = Label(menu.mainPanel.transform, "Lema", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1400f, 60f), 42, TextAnchor.MiddleCenter);
         Localize(tagline, "tagline");
-        tagline.gameObject.AddComponent<LayoutElement>().preferredHeight = 90f;
-        var play = UiButton(menu.mainPanel.transform, "play", new Vector2(560f, 120f), out menu.playLabel, 54);
+        tagline.gameObject.AddComponent<LayoutElement>().preferredHeight = 64f;
+        var play = UiButton(menu.mainPanel.transform, "play", new Vector2(560f, 106f), out menu.playLabel, 52);
         UnityEventTools.AddPersistentListener(play.onClick, menu.Play);
-        UnityEventTools.AddPersistentListener(UiButton(menu.mainPanel.transform, "journey", new Vector2(560f, 110f), out _).onClick, menu.ShowJourney);
-        UnityEventTools.AddPersistentListener(UiButton(menu.mainPanel.transform, "options", new Vector2(560f, 110f), out _).onClick, menu.ShowOptions);
+        UnityEventTools.AddPersistentListener(UiButton(menu.mainPanel.transform, "journey", new Vector2(560f, 96f), out _).onClick, menu.ShowJourney);
+        UnityEventTools.AddPersistentListener(UiButton(menu.mainPanel.transform, "options", new Vector2(560f, 96f), out _).onClick, menu.ShowOptions);
 
         BuildJourney(canvas, menu, levels);
         // Lumi, Logros, Desafío diario, controles y niveles secretos (se montan al arrancar).
@@ -127,10 +127,10 @@ public static partial class LevelBuilder
     {
         var logo = new GameObject("Logo", typeof(RectTransform));
         logo.transform.SetParent(parent, false);
-        ((RectTransform)logo.transform).sizeDelta = new Vector2(900f, 250f);
+        ((RectTransform)logo.transform).sizeDelta = new Vector2(900f, 210f);
         var element = logo.AddComponent<LayoutElement>();
         element.preferredWidth = 900f;
-        element.preferredHeight = 250f;
+        element.preferredHeight = 210f;
         var day = Label(logo.transform, "Dia", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(900f, 250f), 230, TextAnchor.MiddleCenter);
         day.rectTransform.pivot = new Vector2(0.5f, 0.5f);
         day.text = "FASE";

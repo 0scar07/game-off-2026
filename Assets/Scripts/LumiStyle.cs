@@ -48,9 +48,59 @@ namespace Fase
                 }
         }
 
+        GameObject hat;
+        TrailRenderer trail;
+
+        /// <summary>Cosas de la tienda: gorro en la cabeza, estela de estrellas y farol de cristal.</summary>
+        void ApplyShop()
+        {
+            if (hat == null)
+            {
+                Transform head = null;
+                foreach (var t in GetComponentsInChildren<Transform>()) if (t.name == "Head") head = t;
+                if (head != null)
+                {
+                    hat = new GameObject("Gorro");
+                    hat.transform.SetParent(head, false);
+                    var cone = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                    Destroy(cone.GetComponent<Collider>());
+                    cone.transform.SetParent(hat.transform, false);
+                    cone.transform.localPosition = new Vector3(0f, 0.55f, 0f);
+                    cone.transform.localScale = new Vector3(0.62f, 0.22f, 0.62f);
+                    var pompom = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    Destroy(pompom.GetComponent<Collider>());
+                    pompom.transform.SetParent(hat.transform, false);
+                    pompom.transform.localPosition = new Vector3(0f, 0.85f, 0f);
+                    pompom.transform.localScale = Vector3.one * 0.22f;
+                    var source = flame != null ? flame.sharedMaterial : null;
+                    foreach (var r in hat.GetComponentsInChildren<Renderer>())
+                    {
+                        if (source != null) r.sharedMaterial = source;
+                        var block = new MaterialPropertyBlock();
+                        block.SetColor(BaseColorId, Shop.Items[0].color);
+                        block.SetColor(EmissionId, Shop.Items[0].color * 0.25f);
+                        r.SetPropertyBlock(block);
+                    }
+                }
+            }
+            if (hat != null) hat.SetActive(Shop.Worn("gorro"));
+
+            if (trail == null)
+            {
+                trail = gameObject.AddComponent<TrailRenderer>();
+                trail.time = 0.5f;
+                trail.widthCurve = new AnimationCurve(new Keyframe(0f, 0.35f), new Keyframe(1f, 0f));
+                trail.sharedMaterial = scarf != null ? scarf.sharedMaterial : null;
+                trail.startColor = new Color(1f, 0.9f, 0.5f, 0.8f);
+                trail.endColor = new Color(1f, 0.7f, 0.3f, 0f);
+            }
+            trail.emitting = Shop.Worn("estela");
+        }
+
         public void Apply()
         {
             ApplyBody();
+            ApplyShop();
             var s = Wardrobe.Scarf;
             if (scarf != null)
             {
@@ -58,6 +108,7 @@ namespace Fase
                 scarf.endColor = s.color2;
             }
             var l = Wardrobe.Lantern;
+            if (Shop.Worn("cristal")) l = new Wardrobe.Item { color = new Color(0.8f, 1.3f, 1.6f) };
             var block = new MaterialPropertyBlock();
             if (flame != null)
             {

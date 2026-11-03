@@ -21,6 +21,16 @@ namespace Fase
         {
             baseScale = transform.localScale;
             cam = Camera.main;
+            // Línea dorada de la tienda.
+            if (Shop.Worn("lineadorada"))
+                foreach (var r in GetComponentsInChildren<Renderer>())
+                {
+                    if (r.name != "Nucleo" && r.name != "Halo") continue;
+                    var block = new MaterialPropertyBlock();
+                    block.SetColor("_Emission", new Color(2.6f, 1.9f, 0.6f));
+                    block.SetColor("_Color", new Color(1f, 0.8f, 0.4f, 0.4f));
+                    r.SetPropertyBlock(block);
+                }
         }
 
         void LateUpdate()

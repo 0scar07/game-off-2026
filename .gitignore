@@ -33,3 +33,6 @@ crashlytics-buildid.txt
 Trailer/planos/
 Trailer/tmp/
 Trailer/*.mp4
+
+# Archivos que genera Unity al compilar para la web
+/Data/

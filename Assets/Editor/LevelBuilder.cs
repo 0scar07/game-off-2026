@@ -50,6 +50,7 @@ public static partial class LevelBuilder
         public float energy;     // cabecera "energia:" — la línea gasta energía al moverse
         public float angle;      // cabecera "angulo:" — 0 vertical, 90 tumbada (entonces "linea" es la altura)
         public bool daily;       // desafío diario (Assets/Levels/Diarios)
+        public bool sandbox;     // Taller o Sin fin (se montan mientras se juega)
         public string[] rows;
         public int Width => rows.Max(r => r.Length);
         public int Height => rows.Length;
@@ -101,6 +102,10 @@ public static partial class LevelBuilder
             scenes.Add(new EditorBuildSettingsScene(path, true));
         }
         scenes.Add(new EditorBuildSettingsScene(BuildFinal(levels), true));
+        // Piezas sueltas y escenas del Taller (editor de niveles) y del modo sin fin.
+        BuildPieces(Biomes[0]);
+        scenes.Add(new EditorBuildSettingsScene(BuildRuntimeScene("Taller", 64, false), true));
+        scenes.Add(new EditorBuildSettingsScene(BuildRuntimeScene("SinFin", 600, true), true));
         // Desafíos diarios: escenas sueltas que vuelven al menú.
         string dailyFolder = LevelsFolder + "/Diarios";
         if (Directory.Exists(dailyFolder))

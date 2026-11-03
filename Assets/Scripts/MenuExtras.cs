@@ -14,7 +14,7 @@ namespace Fase
     public class MenuExtras : MonoBehaviour
     {
         MainMenu menu;
-        GameObject achievementsPanel, wardrobePanel, accessPanel, diaryPanel;
+        GameObject achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel;
         readonly List<System.Action> refreshers = new List<System.Action>();
         Settings.Action? rebinding;
         Text rebindLabel;
@@ -27,8 +27,9 @@ namespace Fase
             wardrobePanel = BuildWardrobe();
             accessPanel = BuildAccess();
             diaryPanel = BuildDiary();
+            shopPanel = BuildShop();
             BuildJourneyExtras();
-            foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, diaryPanel }) menu.AddPanel(panel);
+            foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel }) menu.AddPanel(panel);
             menu.Shown += _ => Refresh();
             Loc.Changed += Refresh;
         }
@@ -59,6 +60,44 @@ namespace Fase
             AddRowButton(row.transform, "achievements", () => menu.Show(achievementsPanel));
             AddRowButton(row.transform, "diary", () => menu.Show(diaryPanel));
             AddRowButton(row.transform, "daily", () => SceneFader.Load(DailyChallenge.SceneName));
+
+            // Segunda fila: Taller (editor de niveles), Sin fin y Tienda.
+            var row2 = Object.Instantiate(row, row.transform.parent);
+            foreach (Transform child in row2.transform) Destroy(child.gameObject);
+            row2.name = "FilaExtra2";
+            row2.transform.SetSiblingIndex(row.transform.GetSiblingIndex() + 1);
+            AddRowButton(row2.transform, "workshop", () => SceneFader.Load("Taller"));
+            AddRowButton(row2.transform, "endless", () => SceneFader.Load("SinFin"));
+            AddRowButton(row2.transform, "shop", () => menu.Show(shopPanel));
+        }
+
+        // ───────── Tienda ─────────
+
+        GameObject BuildShop()
+        {
+            var panel = Panel("Tienda", "shop", out var content);
+            var balance = UiKit.Text(content, "Saldo", "", new Vector2(0.5f, 1f), new Vector2(0f, 20f), new Vector2(800f, 50f), 34, TextAnchor.MiddleCenter, UiKit.Gold);
+            refreshers.Add(() => balance.text = Loc.Pick($"☾ {Shop.Balance} fragmentos para gastar", $"☾ {Shop.Balance} fragments to spend"));
+            for (int i = 0; i < Shop.Items.Length; i++)
+            {
+                var item = Shop.Items[i];
+                float y = 190f - i * 130f;
+                var card = UiKit.Box(content, item.id, new Vector2(0.5f, 0.5f), new Vector2(0f, y), new Vector2(1000f, 110f), new Color(1f, 1f, 1f, 0.07f));
+                UiKit.Box(card.transform, "Color", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(70f, 70f), item.color);
+                UiKit.Text(card.transform, "Nombre", item.Name, new Vector2(0f, 0.5f), new Vector2(130f, 14f), new Vector2(500f, 50f), 36, TextAnchor.MiddleLeft).rectTransform.pivot = new Vector2(0f, 0.5f);
+                UiKit.Text(card.transform, "Precio", $"☾ {item.price}", new Vector2(0f, 0.5f), new Vector2(130f, -26f), new Vector2(300f, 36f), 26, TextAnchor.MiddleLeft, UiKit.Gold).rectTransform.pivot = new Vector2(0f, 0.5f);
+                var button = UiKit.Button(card.transform, "Accion", "", new Vector2(1f, 0.5f), new Vector2(-30f, 0f), new Vector2(280f, 80f), null, 30);
+                ((RectTransform)button.transform).pivot = new Vector2(1f, 0.5f);
+                var label = button.GetComponentInChildren<Text>();
+                button.onClick.AddListener(() => { if (Shop.Owned(item.id)) Shop.Toggle(item); else Shop.Buy(item); Refresh(); });
+                refreshers.Add(() =>
+                {
+                    bool owned = Shop.Owned(item.id);
+                    label.text = !owned ? Loc.Pick("Comprar", "Buy") : Shop.Worn(item.id) ? Loc.Pick("Quitar", "Remove") : Loc.Pick("Ponérselo", "Wear");
+                    button.interactable = owned || Shop.Balance >= item.price;
+                });
+            }
+            return panel;
         }
 
         void AddRowButton(Transform parent, string key, UnityEngine.Events.UnityAction action)

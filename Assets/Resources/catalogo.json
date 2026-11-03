@@ -22,10 +22,10 @@
             "fragments": 2,
             "secret": false,
             "medals": [
-                62.0,
-                43.0,
-                31.0,
-                25.0
+                64.0,
+                45.0,
+                32.0,
+                26.0
             ]
         },
         {
@@ -47,13 +47,27 @@
             "name": "Relojes de sol",
             "nameEn": "Sundials",
             "chapter": 1,
-            "fragments": 1,
+            "fragments": 0,
             "secret": false,
             "medals": [
-                62.0,
-                43.0,
+                70.0,
+                49.0,
+                35.0,
+                28.0
+            ]
+        },
+        {
+            "scene": "04c-garra-del-alba",
+            "name": "Garra del Alba",
+            "nameEn": "Dawn Talon",
+            "chapter": 1,
+            "fragments": 0,
+            "secret": false,
+            "medals": [
+                44.0,
                 31.0,
-                25.0
+                22.0,
+                18.0
             ]
         },
         {
@@ -92,10 +106,10 @@
             "fragments": 2,
             "secret": false,
             "medals": [
-                66.0,
-                46.0,
-                33.0,
-                26.0
+                70.0,
+                49.0,
+                35.0,
+                28.0
             ]
         },
         {
@@ -124,6 +138,20 @@
                 50.0,
                 36.0,
                 29.0
+            ]
+        },
+        {
+            "scene": "08c-reina-de-escarcha",
+            "name": "Reina de Escarcha",
+            "nameEn": "Frost Queen",
+            "chapter": 2,
+            "fragments": 0,
+            "secret": false,
+            "medals": [
+                36.0,
+                25.0,
+                18.0,
+                14.0
             ]
         },
         {
@@ -169,6 +197,20 @@
             ]
         },
         {
+            "scene": "10c-la-subida",
+            "name": "La subida",
+            "nameEn": "The Climb",
+            "chapter": 3,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                24.0,
+                17.0,
+                12.0,
+                10.0
+            ]
+        },
+        {
             "scene": "10-rio-nocturno",
             "name": "Río nocturno",
             "nameEn": "Night River",
@@ -176,10 +218,24 @@
             "fragments": 2,
             "secret": false,
             "medals": [
-                58.0,
-                41.0,
-                29.0,
-                23.0
+                62.0,
+                43.0,
+                31.0,
+                25.0
+            ]
+        },
+        {
+            "scene": "11b-cuesta-de-la-luna",
+            "name": "Cuesta de la luna",
+            "nameEn": "Moon Slope",
+            "chapter": 3,
+            "fragments": 2,
+            "secret": false,
+            "medals": [
+                72.0,
+                50.0,
+                36.0,
+                29.0
             ]
         },
         {

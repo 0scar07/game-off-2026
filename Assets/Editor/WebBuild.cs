@@ -59,4 +59,28 @@ public static class WebBuild
         System.IO.File.WriteAllText("Logs/web-build.txt", result);
         Debug.Log(result);
     }
+
+    /// <summary>Menú Fase → Exportar escritorio: versión descargable para Windows (Builds/Windows).</summary>
+    [MenuItem("Fase/Exportar escritorio (Windows)")]
+    public static void BuildWindows()
+    {
+        PlayerSettings.productName = "FASE";
+        PlayerSettings.companyName = "0scar07";
+        PlayerSettings.fullScreenMode = FullScreenMode.FullScreenWindow;
+        PlayerSettings.defaultScreenWidth = 1920;
+        PlayerSettings.defaultScreenHeight = 1080;
+        var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
+        var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+        {
+            scenes = scenes,
+            locationPathName = "Builds/Windows/FASE.exe",
+            target = BuildTarget.StandaloneWindows64,
+            options = BuildOptions.None,
+        });
+        string result = report.summary.result == BuildResult.Succeeded
+            ? $"Windows exportado en Builds/Windows ({report.summary.totalSize / (1024f * 1024f):F1} MB)"
+            : $"La exportación de Windows falló: {report.summary.result}";
+        System.IO.File.WriteAllText("Logs/windows-build.txt", result);
+        Debug.Log(result);
+    }
 }

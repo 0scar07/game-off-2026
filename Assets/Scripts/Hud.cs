@@ -20,6 +20,8 @@ namespace Fase
         public float[] medalTimes = new float[4];
         [Tooltip("Nivel del desafío diario (no guarda récords ni medallas).")]
         public bool daily;
+        [Tooltip("Taller o modo sin fin: sin récords, medallas ni número de nivel.")]
+        public bool sandbox;
 
         public Text title;
         public Text hintText;
@@ -96,7 +98,7 @@ namespace Fase
 
         void Start()
         {
-            string name = daily ? $"{Loc.Get("daily")} · {Loc.Pick(levelName, levelNameEn)}" : $"{levelNumber}. {Loc.Pick(levelName, levelNameEn)}";
+            string name = sandbox ? Loc.Pick(levelName, levelNameEn) : daily ? $"{Loc.Get("daily")} · {Loc.Pick(levelName, levelNameEn)}" : $"{levelNumber}. {Loc.Pick(levelName, levelNameEn)}";
             title.text = name;
             hintText.text = Loc.Pick(hint, hintEn);
             corner.text = name;

@@ -177,6 +177,7 @@ namespace Fase
             var hud = Hud.Instance;
             if (hud == null) return;
             if (hud.Mirror) Unlock("espejo");
+            if (hud.sandbox) return;
             if (hud.Daily) { Unlock("diario"); return; }
             int level = hud.levelNumber;
             var catalog = LevelCatalog.Get;

@@ -194,7 +194,8 @@ public static partial class LevelBuilder
         hud.hintEn = level.hintEn;
         hud.fragmentsTotal = fragments;
         hud.medalTimes = level.MedalTimes;
-        hud.daily = level.daily;
+        hud.daily = level.daily || level.sandbox;
+        hud.sandbox = level.sandbox;
         hud.title = Label(canvas, "Titulo", new Vector2(0.5f, 0.5f), new Vector2(0f, 230f), new Vector2(1700f, 150f), 104, TextAnchor.MiddleCenter);
         hud.hintText = Label(canvas, "Pista", new Vector2(0.5f, 0.5f), new Vector2(0f, 110f), new Vector2(1500f, 150f), 46, TextAnchor.MiddleCenter);
         Pill(canvas, "FondoEsquina", new Vector2(0f, 1f), new Vector2(28f, -24f), new Vector2(620f, 76f));
