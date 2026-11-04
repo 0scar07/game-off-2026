@@ -83,4 +83,32 @@ public static class WebBuild
         System.IO.File.WriteAllText("Logs/windows-build.txt", result);
         Debug.Log(result);
     }
+
+    /// <summary>Menú Fase → Exportar Android: APK para instalar a mano (Builds/Android/FASE.apk).</summary>
+    [MenuItem("Fase/Exportar Android (APK)")]
+    public static void BuildAndroid()
+    {
+        PlayerSettings.productName = "FASE";
+        PlayerSettings.companyName = "0scar07";
+        PlayerSettings.SetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Android, "com.oscar07.fase");
+        PlayerSettings.defaultInterfaceOrientation = UIOrientation.AutoRotation;
+        PlayerSettings.allowedAutorotateToPortrait = PlayerSettings.allowedAutorotateToPortraitUpsideDown = false;
+        PlayerSettings.allowedAutorotateToLandscapeLeft = PlayerSettings.allowedAutorotateToLandscapeRight = true;
+        PlayerSettings.SetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Android, ScriptingImplementation.IL2CPP);
+        PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
+        EditorUserBuildSettings.buildAppBundle = false;
+        var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
+        var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+        {
+            scenes = scenes,
+            locationPathName = "Builds/Android/FASE.apk",
+            target = BuildTarget.Android,
+            options = BuildOptions.None,
+        });
+        string result = report.summary.result == BuildResult.Succeeded
+            ? $"Android exportado en Builds/Android ({report.summary.totalSize / (1024f * 1024f):F1} MB)"
+            : $"La exportación de Android falló: {report.summary.result}";
+        System.IO.File.WriteAllText("Logs/android-build.txt", result);
+        Debug.Log(result);
+    }
 }

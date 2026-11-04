@@ -1,0 +1,28 @@
+name: Nivel de la comunidad · Community level
+description: Comparte un nivel hecho en el Taller · Share a level made in the Workshop
+labels: [nivel]
+body:
+  - type: input
+    id: nombre
+    attributes:
+      label: Nombre del nivel · Level name
+    validations:
+      required: true
+  - type: input
+    id: codigo
+    attributes:
+      label: Código · Code
+      description: En el Taller, pulsa "Copiar código" y pégalo aquí.
+      placeholder: FASE-...
+    validations:
+      required: true
+  - type: dropdown
+    id: dificultad
+    attributes:
+      label: Dificultad · Difficulty
+      options: [Fácil, Normal, Difícil, Imposible]
+  - type: textarea
+    id: notas
+    attributes:
+      label: Notas · Notes
+      description: Algún truco, de qué va, una captura...

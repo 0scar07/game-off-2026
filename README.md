@@ -9,6 +9,8 @@
 [![Unity 6](https://img.shields.io/badge/Unity-6000.6-000000?logo=unity)](https://unity.com)
 [![Niveles](https://github.com/0scar07/game-off-2026/actions/workflows/niveles.yml/badge.svg)](https://github.com/0scar07/game-off-2026/actions/workflows/niveles.yml)
 [![Licencia MIT](https://img.shields.io/badge/código-MIT-3da639)](LICENSE)
+[![Última versión](https://img.shields.io/github/v/release/0scar07/game-off-2026?include_prereleases&filter=v*&label=versión&color=f0b04a)](https://github.com/0scar07/game-off-2026/releases)
+[![Descargas](https://img.shields.io/github/downloads/0scar07/game-off-2026/total?label=descargas&color=8fb0ff)](https://github.com/0scar07/game-off-2026/releases)
 
 Plataformas 2.5D para el **GitHub Game Off 2026**. Navegador, ordenador y móvil. Español e inglés.
 
@@ -16,9 +18,24 @@ Plataformas 2.5D para el **GitHub Game Off 2026**. Navegador, ordenador y móvil
 
 <sub>[GIF en máxima calidad](docs/fase-maxima-calidad.gif) · [GIF ligero](docs/fase.gif)</sub>
 
-[Español](#español) · [English](#english) · [Niveles](#niveles) · [Cómo está hecho](#cómo-está-hecho) · [Créditos](#créditos) · [Licencia](#licencia)
+[Descargar](#descargar) · [Español](#español) · [English](#english) · [Niveles](#niveles) · [Cómo está hecho](#cómo-está-hecho) · [Créditos](#créditos) · [Licencia](#licencia)
 
 </div>
+
+---
+
+## Descargar
+
+| Plataforma | Paquete | Descarga |
+|---|---|---|
+| 🌐 Navegador | Jugar sin instalar (ordenador y móvil) | [**Jugar en itch.io**](https://0scar07.itch.io/game-off-2026) |
+| 🪟 Windows | Portable (descomprimir y jugar) | [FASE-Windows-Portable-x86_64.zip](https://github.com/0scar07/game-off-2026/releases/latest/download/FASE-Windows-Portable-x86_64.zip) |
+| 🤖 Android | APK (instalar a mano) | [FASE-Android.apk](https://github.com/0scar07/game-off-2026/releases/latest/download/FASE-Android.apk) |
+| 🪟 Windows | Instalador | *próximamente* |
+| 🐧 Linux | AppImage | *próximamente* |
+
+Todas las versiones están en [Releases](https://github.com/0scar07/game-off-2026/releases).
+En Android hay que permitir "instalar apps de origen desconocido" para el APK.
 
 ---
 
@@ -86,6 +103,10 @@ it) · L for the night bubble · Esc to pause · R to retry · F for photo mode.
 | ★ | *Jardín del viento* (secreto) | ★ | *Bosque oscuro* (secreto) | 19 | **La Gran Sombra** *(jefe final)* |
 | | | | | ★ | *Aurora* (secreto) |
 
+**Niveles de la comunidad:** crea uno en el Taller del juego, pulsa *Copiar código* y
+compártelo con la plantilla [Nivel de la comunidad](https://github.com/0scar07/game-off-2026/issues/new?template=nivel.yml).
+Los mejores entrarán en el juego.
+
 Cada nivel es un archivo de texto en [`Assets/Levels`](Assets/Levels) (el formato está en el
 [LEEME](Assets/Levels/LEEME.md)), y [`comprobar_niveles.py`](Tools/comprobar_niveles.py)
 verifica en cada cambio que todos se pueden terminar.
@@ -102,6 +123,7 @@ verifica en cada cambio que todos se pueden terminar.
 - **Herramientas en Python** ([`Tools`](Tools)): niveles, música, efectos, voz, fuente y tráiler.
 - **Tráiler:** un director de cámara dentro del juego graba cada plano fotograma a fotograma
   ([`TrailerDirector.cs`](Assets/Scripts/TrailerDirector.cs)) y `montar_trailer.py` lo monta.
+- **Prensa:** logo, capturas y descripciones en el [kit de prensa](docs/prensa/README.md).
 - **Diseño:** el documento completo está en [`docs/DISENO.md`](docs/DISENO.md); los cambios, en
   el [`CHANGELOG`](CHANGELOG.md).
 

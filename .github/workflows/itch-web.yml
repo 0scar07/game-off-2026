@@ -24,6 +24,8 @@ on:
 
 jobs:
   upload:
+    # Solo las releases de la web (web-AAAAMMDD-N); las versiones del juego (v1.0...) no tocan itch.
+    if: startsWith(github.event.release.tag_name || inputs.tag, 'web-')
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
