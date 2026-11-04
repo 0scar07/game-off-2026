@@ -54,16 +54,16 @@ Ideas aprobadas para FASE y su estado. Las maquetas de referencia están en [`ma
 
 ## Más ideas
 
-| # | Idea | Estado |
-|---|---|---|
-| 16 | El mundo reacciona a la línea: hierba que se dobla, hojas, charcos que se congelan | ⬜ |
-| 17 | Lumi mira hacia lo importante (fragmentos cercanos, la línea al moverla) | ⬜ |
-| 18 | Al agarrar la línea se iluminan las piezas que van a cambiar | ⬜ |
-| 19 | La música resuelve en un acorde final en la meta | ✅ un acorde por capítulo en la tonalidad de su canción |
-| 20 | Celebración de capítulo: Lumi coloca su fragmento en la luna | ⬜ |
-| 21 | Accesibilidad: tamaño de texto y reducir destellos y temblores | ⬜ |
-| 22 | Vista previa del nivel en el mapa de viaje | ⬜ |
-| 23 | Pantalla "¿Sabías qué?" con curiosidades que se desbloquean | ⬜ |
+| # | Idea | Estado | Maqueta |
+|---|---|---|---|
+| 16 | El mundo reacciona a la línea: hierba que se dobla, hojas, charcos que se congelan | ⬜ | [idea-16](maquetas/idea-16.png) |
+| 17 | Lumi mira hacia lo importante (fragmentos cercanos, la línea al moverla) | ⬜ | [idea-17](maquetas/idea-17.png) |
+| 18 | Al agarrar la línea se iluminan las piezas que van a cambiar | ⬜ | [idea-18](maquetas/idea-18.png) |
+| 19 | La música resuelve en un acorde final en la meta | ✅ un acorde por capítulo en la tonalidad de su canción | |
+| 20 | Celebración de capítulo: Lumi coloca su fragmento en la luna | ⬜ | [idea-20](maquetas/idea-20.png) |
+| 21 | Accesibilidad: tamaño de texto y reducir destellos y temblores | ⬜ | [idea-21](maquetas/idea-21.png) |
+| 22 | Vista previa del nivel en el mapa de viaje | ⬜ | [idea-22](maquetas/idea-22.png) |
+| 23 | Pantalla "¿Sabías qué?" con curiosidades que se desbloquean | ⬜ | [idea-23](maquetas/idea-23.png) |
 
 ## Al final
 

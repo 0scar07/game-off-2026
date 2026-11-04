@@ -171,6 +171,7 @@ function text(t, x, y, size, col = '#fff', align = 'left', weight = '700', shado
   if (shadow) { g.shadowColor = 'rgba(0,0,30,0.6)'; g.shadowBlur = size * 0.3; g.shadowOffsetY = size * 0.06; }
   g.fillStyle = col; g.fillText(t, x, y); g.restore();
 }
+function panel(x, y, w, h, fill, stroke) { g.save(); g.fillStyle = fill; g.beginPath(); g.roundRect(x, y, w, h, 24); g.fill(); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 2; g.stroke(); } g.restore(); }
 function pill(x, y, w, h, fill, stroke) { g.save(); g.fillStyle = fill; g.beginPath(); g.roundRect(x, y, w, h, h / 2); g.fill(); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 2; g.stroke(); } g.restore(); }
 
 // Mundo partido: pinta `day` en todo, y `night` a la derecha de la línea.
@@ -607,6 +608,131 @@ const scenes = {
     let y = 230; lines.forEach(([t, s, c]) => { if (t) text(t, 640, y, s, c, 'center', s > 30 ? '700' : '400'); y += s + 18; });
     lumi(1080, 590, 0.6, true, -1); text('Lumi saluda mientras suben los nombres', 1080, 680, 16, '#cfd3ff', 'center', '400');
     label('Créditos tipo película: los nombres suben sobre el cielo y la luna ya reconstruida');
+  },
+  35() { // Idea 16: el mundo reacciona a la línea
+    const LX = 640, TOP = 560;
+    split(LX, () => { const p = PAL.day; sky(p, 300, 140, false); hills(p, 420, 3, 61); ground(p, -10, W + 10, TOP); seed = 4; for (let k = 0; k < 3; k++) tree(R(60, LX - 160), TOP, R(150, 200), p); },
+      () => { const p = PAL.night; sky(p, 1000, 140, true); hills(p, 420, 3, 61); ground(p, -10, W + 10, TOP); seed = 5; for (let k = 0; k < 2; k++) tree(R(LX + 180, W - 60), TOP, R(160, 210), p, 1, true); });
+    // hierba que se dobla hacia la línea (más cuanto más cerca)
+    for (let x = 20; x < W; x += 9) {
+      const d = x - LX, bend = Math.sign(-d) * Math.max(0, 1 - Math.abs(d) / 260) * 18, night = d > 0;
+      g.save(); g.strokeStyle = night ? '#4fc3b0' : '#3fbf5a'; g.lineWidth = 3; g.beginPath(); g.moveTo(x, TOP + 2); g.quadraticCurveTo(x + bend * 0.3, TOP - 12, x + bend, TOP - 20 - (x % 3) * 4); g.stroke(); g.restore();
+    }
+    // charco: agua de día, hielo de noche, partido justo por la línea
+    g.save(); g.beginPath(); g.ellipse(LX, TOP + 18, 150, 14, 0, 0, 7); g.clip();
+    rect(LX - 150, TOP, 150, 40, lin(0, TOP, 0, TOP + 36, [[0, '#7fd2ff'], [1, '#3d8fd6']]));
+    rect(LX, TOP, 150, 40, lin(0, TOP, 0, TOP + 36, [[0, '#e6f6ff'], [1, '#9fd0ff']]));
+    g.strokeStyle = 'rgba(80,140,200,0.9)'; g.lineWidth = 1.5; [[20, -4, 70, 6], [60, 2, 120, -6], [90, -6, 140, 4]].forEach(([a, b, c2, d]) => { g.beginPath(); g.moveTo(LX + a, TOP + 18 + b); g.lineTo(LX + c2, TOP + 18 + d); g.stroke(); });
+    g.restore();
+    text('agua', LX - 90, TOP + 60, 18, '#ffffff', 'center', '400'); text('hielo', LX + 90, TOP + 60, 18, '#dff2ff', 'center', '400');
+    // hojas que vuelan desde la línea
+    seed = 12; for (let i = 0; i < 14; i++) { const x = LX + R(-200, 200), y = R(260, 520); g.save(); g.translate(x, y); g.rotate(R(0, 6)); poly([[0, -7], [5, 0], [0, 7], [-5, 0]], x < LX ? '#7fdc6a' : '#6a8dff'); g.restore(); }
+    lumi(470, TOP - 62, 0.9, false, 1); lineBeam(LX);
+    bloomPass(); vignette(0.45);
+    label('Idea 16: la hierba se dobla hacia la línea, vuelan hojas al moverla y el charco se congela del lado de noche');
+  },
+  36() { // Idea 17: Lumi mira hacia lo importante
+    const LX = 820, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 70);
+    moonShard(560, 330, 1.1);
+    lumi(380, TOP - 62, 1.1, false, 1);
+    g.save(); g.setLineDash([6, 10]); g.strokeStyle = 'rgba(255,255,255,0.8)'; g.lineWidth = 2.5; g.beginPath(); g.moveTo(405, TOP - 100); g.lineTo(535, 350); g.stroke(); g.restore();
+    pill(230, 230, 250, 46, 'rgba(0,0,0,0.5)'); text('ojos y cabeza giran', 355, 253, 20, '#fff', 'center', '400', false);
+    // segunda viñeta: mira la línea al moverla
+    panel(900, 230, 340, 220, 'rgba(10,10,40,0.8)', 'rgba(255,255,255,0.3)');
+    text('Al mover la línea…', 1070, 262, 20, '#ffd98a', 'center', '700', false);
+    lumi(990, 370, 0.5, true, 1); rect(1150, 285, 4, 110, '#fff'); glow(1152, 340, 50, 'rgba(255,255,255,0.7)');
+    text('→', 1075, 345, 30, '#fff', 'center', '700', false);
+    text('…Lumi la sigue con la mirada', 1070, 425, 16, '#cfd3ff', 'center', '400', false);
+    lineBeam(LX); bloomPass(); vignette(0.45);
+    label('Idea 17: Lumi gira la cabeza hacia el fragmento de luna más cercano y hacia la línea cuando la mueves');
+  },
+  37() { // Idea 18: al agarrar la línea se iluminan las piezas que cambiarán
+    const LX = 600, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 80);
+    g.save(); g.fillStyle = 'rgba(255,240,180,0.07)'; g.fillRect(LX - 220, 0, 440, H); g.restore();
+    const piece = (x, y, w, h, col, ring) => { if (ring) glow(x + w / 2, y + h / 2, Math.max(w, h) * 0.9, 'rgba(255,240,170,0.7)'); rect(x, y, w, h, col); if (ring) { g.save(); g.setLineDash([8, 6]); g.strokeStyle = '#fff3c0'; g.lineWidth = 3; g.strokeRect(x - 6, y - 6, w + 12, h + 12); g.restore(); } };
+    piece(450, 430, 110, 20, '#c98a5a', true);
+    piece(680, 380, 120, 22, 'rgba(140,190,255,0.9)', true);
+    piece(960, 470, 70, 70, '#b07a4a', false);
+    text('cambiará', 505, 400, 18, '#fff3c0', 'center'); text('cambiará', 740, 350, 18, '#fff3c0', 'center'); text('lejos: no cambia', 995, 445, 16, '#cfd3ff', 'center', '400');
+    lumi(300, TOP - 62, 1, false, 1); lineBeam(LX);
+    g.save(); g.globalAlpha = 0.85; circle(LX, 220, 30, '#fff'); g.restore();
+    text('◀  alcance  ▶', LX, 165, 22, '#fff', 'center');
+    bloomPass(); vignette(0.45);
+    label('Idea 18: mientras sostienes la línea, las piezas que van a cambiar de estado brillan con un contorno');
+  },
+  38() { // Idea 20: celebración de capítulo
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#05051a'], [0.6, '#1b1650'], [1, '#3a2a70']]));
+    seed = 3; for (let i = 0; i < 220; i++) circle(R(0, W), R(0, H * 0.8), R(0.5, 1.8), `rgba(255,255,255,${R(0.2, 0.9)})`);
+    const MX = 640, MY = 300;
+    glow(MX, MY, 300, 'rgba(255,240,200,0.5)'); circle(MX, MY, 140, '#fff4d6');
+    poly([[MX - 60, MY - 120], [MX + 10, MY - 40], [MX - 90, MY - 20]], '#ffd76a');
+    poly([[MX + 20, MY - 30], [MX + 120, MY - 70], [MX + 90, MY + 40]], '#2a2458');
+    poly([[MX - 70, MY + 20], [MX + 10, MY + 30], [MX - 20, MY + 120]], '#2a2458');
+    glow(MX - 50, MY - 60, 90, 'rgba(255,220,120,0.9)');
+    g.save(); g.strokeStyle = 'rgba(255,230,150,0.85)'; g.lineWidth = 4; g.setLineDash([2, 12]); g.beginPath(); g.moveTo(660, 520); g.quadraticCurveTo(420, 420, MX - 50, MY - 60); g.stroke(); g.restore();
+    rect(0, 600, W, 120, '#14123a'); lumi(640, 560, 1.1, true, 1);
+    fireflies(300, 980, 420, 590, 18);
+    text('Capítulo 1 completado', 640, 70, 44, '#fff', 'center');
+    text('La luna recupera su primer trozo', 640, 115, 22, '#cfd3ff', 'center', '400');
+    pill(1010, 620, 230, 50, '#ffe27a'); text('Seguir ▶', 1125, 645, 24, '#3a2400', 'center', '700', false);
+    bloomPass(); vignette(0.5);
+    label('Idea 20: al terminar un capítulo, Lumi lanza su fragmento y encaja en la luna (cámara lenta y acorde final)');
+  },
+  39() { // Idea 21: accesibilidad extra
+    base(640, 560, PAL.day, PAL.night, 90); lineBeam(640);
+    rect(0, 0, W, H, 'rgba(5,5,25,0.72)');
+    panel(300, 80, 680, 580, 'rgba(25,22,60,0.96)', 'rgba(255,255,255,0.25)');
+    text('Accesibilidad', 640, 130, 36, '#fff', 'center');
+    const row = (y, name, val, on) => { text(name, 340, y, 24, '#fff', 'left', '400', false); pill(740, y - 20, 200, 40, on ? '#ffe27a' : 'rgba(255,255,255,0.12)'); text(val, 840, y, 20, on ? '#3a2400' : '#cfd3ff', 'center', '700', false); };
+    row(205, 'Tamaño del texto', '◀  Grande  ▶', true);
+    row(270, 'Reducir destellos', 'Sí', true);
+    row(335, 'Quitar temblores de cámara', 'Sí', true);
+    row(400, 'Alto contraste', 'No', false);
+    row(465, 'Modo asistido', 'No', false);
+    rect(340, 505, 600, 2, 'rgba(255,255,255,0.15)');
+    text('Vista previa', 640, 535, 18, '#9aa0d0', 'center', '400', false);
+    text('Mueve la línea para cambiar el mundo', 640, 590, 32, '#fff', 'center');
+    label('Idea 21: más opciones de accesibilidad: tamaño de texto (con vista previa) y quitar destellos y temblores');
+  },
+  40() { // Idea 22: vista previa del nivel en el mapa de viaje
+    rect(0, 0, W, H, lin(0, 0, W, H, [[0, '#1a1440'], [1, '#2c1f5e']]));
+    seed = 8; for (let i = 0; i < 120; i++) circle(R(0, W), R(0, H), R(0.5, 1.5), `rgba(255,255,255,${R(0.2, 0.7)})`);
+    text('El viaje', 90, 80, 40, '#fff', 'left');
+    const pts = [[110, 560], [230, 470], [350, 540], [470, 430], [590, 500], [690, 380]];
+    g.save(); g.strokeStyle = 'rgba(255,230,170,0.5)'; g.lineWidth = 6; g.setLineDash([4, 14]); g.beginPath(); pts.forEach((p, i) => i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])); g.stroke(); g.restore();
+    pts.forEach(([x, y], i) => { const sel = i === 4; if (sel) glow(x, y, 70, 'rgba(255,230,150,0.8)'); circle(x, y, sel ? 30 : 24, i < 4 ? '#ffe27a' : sel ? '#fff' : '#5a5290'); text(String(i + 1), x, y, 20, i < 4 || sel ? '#3a2400' : '#cfd3ff', 'center', '700', false); });
+    g.save(); g.strokeStyle = 'rgba(255,255,255,0.5)'; g.lineWidth = 2; g.beginPath(); g.moveTo(620, 500); g.lineTo(760, 360); g.stroke(); g.restore();
+    panel(760, 140, 470, 440, 'rgba(15,12,40,0.95)', 'rgba(255,255,255,0.3)');
+    g.save(); g.beginPath(); g.roundRect(785, 165, 420, 236, 16); g.clip();
+    g.translate(785, 165); g.scale(420 / W, 236 / H);
+    base(560, 560, PAL.day, PAL.night, 33); lumi(380, 498, 1, false, 1); lineBeam(560);
+    g.restore();
+    text('▶ en movimiento', 1190, 385, 14, '#fff', 'right', '400');
+    text('5 · El puente de la luna', 995, 435, 26, '#fff', 'center');
+    text('★ ★ ☆   ·   ☾ 2/3   ·   ⏱ 0:48', 995, 475, 20, '#ffd98a', 'center', '400');
+    pill(905, 512, 180, 46, '#ffe27a'); text('Jugar ▶', 995, 535, 22, '#3a2400', 'center', '700', false);
+    label('Idea 22: al pasar por un nivel del mapa aparece una vista previa en movimiento con tus medallas y récord');
+  },
+  41() { // Idea 23: "¿Sabías qué?"
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#120f33'], [1, '#2a1f5e']]));
+    seed = 6; for (let i = 0; i < 140; i++) circle(R(0, W), R(0, H), R(0.5, 1.5), `rgba(255,255,255,${R(0.2, 0.7)})`);
+    text('¿Sabías qué?', 640, 70, 44, '#fff', 'center');
+    text('Curiosidades que se desbloquean al jugar', 640, 115, 20, '#cfd3ff', 'center', '400');
+    const card = (x, y, title, body, open) => {
+      g.save(); g.fillStyle = open ? 'rgba(255,240,200,0.12)' : 'rgba(255,255,255,0.05)'; g.strokeStyle = open ? 'rgba(255,230,150,0.5)' : 'rgba(255,255,255,0.15)'; g.lineWidth = 2; g.beginPath(); g.roundRect(x, y, 340, 200, 22); g.fill(); g.stroke(); g.restore();
+      if (open) { text(title, x + 170, y + 45, 22, '#ffd98a', 'center'); body.forEach((b, i) => text(b, x + 170, y + 90 + i * 30, 17, '#fff', 'center', '400', false)); }
+      else { text('?', x + 170, y + 85, 60, '#5a5290', 'center'); text(body[0], x + 170, y + 155, 16, '#8a86b8', 'center', '400', false); }
+    };
+    card(90, 160, 'La línea', ['Lumi empezó siendo un', 'cuadradito blanco en', 'el primer prototipo.'], true);
+    card(470, 160, 'Las luciérnagas', ['Siempre vuelan hacia', 'el camino escondido', 'más cercano.'], true);
+    card(850, 160, '', ['Completa el capítulo 2'], false);
+    card(90, 400, 'El jefe', ['La Gran Sombra se', 'vuelve piedra con', 'la luz del día.'], true);
+    card(470, 400, '', ['Encuentra 10 secretos'], false);
+    card(850, 400, '', ['Juega en modo espejo'], false);
+    text('3 / 12', 1190, 630, 20, '#cfd3ff', 'right', '400', false);
+    label('Idea 23: una galería de curiosidades del juego que se abren con logros, secretos y capítulos');
   },
 };
 
