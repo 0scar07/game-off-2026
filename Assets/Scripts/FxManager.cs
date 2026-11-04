@@ -27,6 +27,7 @@ namespace Fase
         void OnEnable()
         {
             GameEvents.Landed += OnLanded;
+            GameEvents.Braked += OnBraked;
             GameEvents.Jumped += OnJumped;
             GameEvents.PieceAppeared += OnAppeared;
             GameEvents.PieceVanished += OnVanished;
@@ -38,6 +39,7 @@ namespace Fase
         void OnDisable()
         {
             GameEvents.Landed -= OnLanded;
+            GameEvents.Braked -= OnBraked;
             GameEvents.Jumped -= OnJumped;
             GameEvents.PieceAppeared -= OnAppeared;
             GameEvents.PieceVanished -= OnVanished;
@@ -50,6 +52,7 @@ namespace Fase
 
         void OnLanded(float speed) => Emit(dust, Feet, (int)Mathf.Lerp(4, 18, speed / 20f));
         void OnJumped() => Emit(dust, Feet, 6);
+        void OnBraked(Vector3 at, float speed) => Emit(dust, Feet, 10);
         void OnCollected() => Emit(collect, player != null ? player.position : Vector3.zero, 40);
         void OnDied() => Emit(poof, player != null ? player.position : Vector3.zero, 25);
 

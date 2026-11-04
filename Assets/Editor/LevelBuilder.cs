@@ -207,6 +207,7 @@ public static partial class LevelBuilder
         var life = new GameObject("VidaDelNivel");
         life.AddComponent<LevelLife>();
         life.AddComponent<PhotoMode>();
+        life.AddComponent<TutorialHint>();   // solo hace algo en el nivel 1
         BuildMobileUi();
         BuildPause();
         BuildTransition();

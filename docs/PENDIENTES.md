@@ -22,16 +22,16 @@ Ideas aprobadas para FASE y su estado. Las maquetas de referencia están en [`ma
 
 | # | Idea | Estado | Maqueta |
 |---|---|---|---|
-| 9.1 | Pausas de 2-3 fotogramas al coger luna, golpear al jefe o aterrizar fuerte | ⬜ | [lumi-expresiva](maquetas/lumi-expresiva.png) |
-| 9.2 | Lumi expresiva: se estira, se aplasta, polvo al frenar, se ladea al girar | ⬜ | [lumi-expresiva](maquetas/lumi-expresiva.png) |
-| 9.3 | La línea con vida: vibra al moverla rápido, chispea al cruzar objetos, sonido más grave con la velocidad | ⬜ | |
-| 9.4 | Cámara cinematográfica: mira hacia la acción y se aleja en los momentos grandes | ⬜ | |
+| 9.1 | Pausas de 2-3 fotogramas al coger luna, golpear al jefe o aterrizar fuerte |✅ | [lumi-expresiva](maquetas/lumi-expresiva.png) |
+| 9.2 | Lumi expresiva: se estira, se aplasta, polvo al frenar, se ladea al girar |✅ | [lumi-expresiva](maquetas/lumi-expresiva.png) |
+| 9.3 | La línea con vida: vibra al moverla rápido, chispea al cruzar objetos, sonido más grave con la velocidad |✅ | |
+| 9.4 | Cámara cinematográfica: mira hacia la acción y se aleja en los momentos grandes |✅ | |
 
 ## Primeros minutos
 
 | # | Idea | Estado | Maqueta |
 |---|---|---|---|
-| 5 | Tutorial sin texto en el nivel 1 (flecha, mano fantasma, puente que aparece) | ⬜ | [tutorial-nivel-1](maquetas/tutorial-nivel-1.png) |
+| 5 | Tutorial sin texto en el nivel 1 (flecha, mano fantasma, puente que aparece) |✅ | [tutorial-nivel-1](maquetas/tutorial-nivel-1.png) |
 | 6 | Curva de dificultad y tiempos de medalla | ⬜ 🙋 con tus partidas | |
 | 7 | Ritmo de los niveles: recortar tramos vacíos y poner respiros | ⬜ | |
 

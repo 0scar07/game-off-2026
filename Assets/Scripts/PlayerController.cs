@@ -44,6 +44,7 @@ namespace Fase
         bool grounded;
         float facing = 1f;
         float lastFallSpeed, stepLeft, landLeft, carried;
+        bool braking;
         bool celebrating;
         float idleTime, boredLeft;
         string boredState = "Yes";
@@ -73,6 +74,33 @@ namespace Fase
 
         public void SetCheckpoint(Vector3 position) => checkpoint = position;
 
+        // Estirar y aplastar: (ancho, alto) que vuelve poco a poco a (1, 1).
+        Vector2 squash = Vector2.one;
+        float lean, lastVx;
+        Vector3 visualScale = Vector3.one;
+        bool scaleKnown;
+
+        /// <summary>Se estira al saltar y se aplasta al aterrizar (más cuanto más fuerte cae).</summary>
+        void OnJumpedSquash() => squash = new Vector2(0.84f, 1.2f);
+
+        void OnLandedSquash(float speed)
+        {
+            float k = Mathf.Clamp01(speed / 20f);
+            squash = new Vector2(1f + 0.3f * k, 1f - 0.28f * k);
+        }
+
+        void OnEnable()
+        {
+            GameEvents.Jumped += OnJumpedSquash;
+            GameEvents.Landed += OnLandedSquash;
+        }
+
+        void OnDisable()
+        {
+            GameEvents.Jumped -= OnJumpedSquash;
+            GameEvents.Landed -= OnLandedSquash;
+        }
+
         /// <summary>En la meta: deja de responder a los controles, mira a la cámara y saluda.</summary>
         public void Celebrate() => celebrating = true;
 
@@ -87,7 +115,7 @@ namespace Fase
         /// <summary>
         /// Elige la animación y gira el modelo hacia donde camina. Estados del Animator (los del
         /// personaje de Quaternius): Idle, Run, Jump (despegue), Jump_Idle (en el aire),
-        /// Jump_Land (aterrizaje) y Wave (saluda en la meta).
+        /// Jump_Land (aterrizaje) y Wave (saluda en la meta). Además se estira, se aplasta y se ladea.
         /// </summary>
         void Animate()
         {
@@ -96,8 +124,18 @@ namespace Fase
             // El modelo de Quaternius mira hacia la cámara con giro 0: -90 es la derecha y +90 la izquierda.
             float yaw = celebrating ? 0f : -facing * 90f;
             if (visual != null)
+            {
+                if (!scaleKnown) { visualScale = visual.localScale; scaleKnown = true; }
+                // Se ladea al acelerar o girar, como si tuviera inercia.
+                float accel = (v.x - lastVx) / Mathf.Max(Time.deltaTime, 1e-4f);
+                lastVx = v.x;
+                float targetLean = grounded ? Mathf.Clamp(-accel * 0.35f, -10f, 10f) : Mathf.Clamp(-v.x * 0.8f, -6f, 6f);
+                lean = Mathf.Lerp(lean, targetLean, Time.deltaTime * 10f);
                 visual.localRotation = Quaternion.Slerp(visual.localRotation,
-                    Quaternion.Euler(0f, yaw, 0f), Time.deltaTime * 14f);
+                    Quaternion.Euler(0f, 0f, lean) * Quaternion.Euler(0f, yaw, 0f), Time.deltaTime * 14f);
+                squash = Vector2.Lerp(squash, Vector2.one, Time.deltaTime * 10f);
+                visual.localScale = new Vector3(visualScale.x * squash.x, visualScale.y * squash.y, visualScale.z * squash.x);
+            }
 
             if (animator == null || animator.runtimeAnimatorController == null) return;
             landLeft -= Time.deltaTime;
@@ -140,6 +178,13 @@ namespace Fase
             {
                 GameEvents.RaiseStep(!ShiftLine.IsDay(transform.position));
                 stepLeft = stepInterval;
+            }
+            // Frenazo en el suelo: avisa para levantar polvo.
+            if (grounded && Mathf.Abs(v.x) > 5f && Mathf.Abs(input) < 0.1f) braking = true;
+            if (braking && Mathf.Abs(v.x) < 1.5f)
+            {
+                braking = false;
+                if (grounded) GameEvents.RaiseBraked(transform.position, speed);
             }
             float accel = grounded ? acceleration : airAcceleration;
             v.x = Mathf.MoveTowards(v.x - carried, input * speed, accel * Time.fixedDeltaTime);

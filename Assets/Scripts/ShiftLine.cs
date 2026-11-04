@@ -24,6 +24,10 @@ namespace Fase
         /// <summary>Posición de la (primera) línea a lo largo de su normal.</summary>
         public static float X => Instance != null ? Instance.x : 0f;
 
+        /// <summary>Lo rápido que se mueve la línea ahora mismo (unidades por segundo, suavizado).</summary>
+        public static float Speed => Instance != null ? Instance.speed : 0f;
+        float speed, lastSum;
+
         /// <summary>Normal de la línea en el mundo: (1, 0) vertical, (0, 1) horizontal.</summary>
         public Vector2 Normal => new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
 
@@ -177,7 +181,14 @@ namespace Fase
         }
 
         // Después de que la cámara se mueva (CameraFollow usa LateUpdate con orden 0).
-        void LateUpdate() => Apply();
+        void LateUpdate()
+        {
+            float sum = x + x2;
+            float now = Time.deltaTime > 0f ? Mathf.Abs(sum - lastSum) / Time.deltaTime : 0f;
+            lastSum = sum;
+            speed = Mathf.Lerp(speed, autoSweep ? 0f : now, Time.deltaTime * 12f);
+            Apply();
+        }
 
         /// <summary>Punto de la línea en el mundo más cercano al centro de la cámara.</summary>
         public Vector2 PointOnLine(float offset)

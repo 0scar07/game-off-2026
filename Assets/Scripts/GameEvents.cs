@@ -23,6 +23,7 @@ namespace Fase
         public static event Action CheckpointReached;
         public static event Action Bounced;
         public static event Action ChestOpened;
+        public static event Action<Vector3, float> Braked;   // dónde frena Lumi y a qué velocidad iba
         public static event Action<string> Achievement;     // id del logro conseguido
 
         public static void RaiseJumped() => Jumped?.Invoke();
@@ -39,6 +40,7 @@ namespace Fase
         public static void RaiseCheckpoint() => CheckpointReached?.Invoke();
         public static void RaiseBounced() => Bounced?.Invoke();
         public static void RaiseChestOpened() => ChestOpened?.Invoke();
+        public static void RaiseBraked(Vector3 at, float speed) => Braked?.Invoke(at, speed);
         public static void RaiseAchievement(string id) => Achievement?.Invoke(id);
     }
 }

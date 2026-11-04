@@ -59,6 +59,13 @@ namespace Fase
 
         public static float LineSpeedFactor => new[] { 0.6f, 1f, 1.6f }[LineSpeed];
 
+        /// <summary>Menos destellos, temblores y pausas de impacto (accesibilidad).</summary>
+        public static bool ReduceEffects
+        {
+            get => PlayerPrefs.GetInt("fase_menos_efectos", 0) == 1;
+            set => SetBool("fase_menos_efectos", value);
+        }
+
         public static bool Vibration
         {
             get => PlayerPrefs.GetInt("fase_vibracion", 1) == 1;

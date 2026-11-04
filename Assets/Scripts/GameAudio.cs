@@ -111,7 +111,12 @@ namespace Fase
         }
         void OnLineGrabbed() => Play(lineGrab, 0.5f, 0.05f);
         void OnLineReleased() => Play(lineRelease, 0.45f, 0.05f);
-        void OnLineTick() => Play(lineTick, 0.18f, 0.15f);
+        // Cuanto más rápido va la línea, más grave y más fuerte su "tic".
+        void OnLineTick()
+        {
+            float fast = Mathf.Clamp01(ShiftLine.Speed / 18f);
+            Play(lineTick, 0.16f + fast * 0.14f, 0.08f, Mathf.Lerp(1.2f, 0.7f, fast));
+        }
         void OnGoal()
         {
             Play(goal, 0.9f, 0f);

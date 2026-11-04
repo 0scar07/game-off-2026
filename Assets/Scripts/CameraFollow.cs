@@ -19,6 +19,9 @@ namespace Fase
         public float goalZoom = 6f;
 
         Vector3 velocity;
+        float lineBias, pull, appliedPull;
+        Boss boss;
+        bool bossSearched;
         float ahead, shake, zoom;
 
         void OnEnable()
@@ -45,9 +48,23 @@ namespace Fase
             if (target == null) return;
             ahead = Mathf.Lerp(ahead, Mathf.Sign(target.linearVelocity.x) * Mathf.Min(Mathf.Abs(target.linearVelocity.x), 1f) * lookAhead, Time.deltaTime * 2f);
             Vector3 goal = target.position + offset + Vector2.right * ahead;
-            goal.x = Mathf.Clamp(goal.x, minX, maxX);
+            // Mientras se mueve la línea, la cámara mira un poco hacia ella (donde está la acción).
+            var line = ShiftLine.Instance;
+            float toLine = 0f;
+            if (line != null && ShiftLine.Speed > 0.5f && line.angle < 45f)
+                toLine = Mathf.Clamp((line.PointOnLine(line.x).x - target.position.x) * 0.3f, -4f, 4f);
+            lineBias = Mathf.Lerp(lineBias, toLine, Time.deltaTime * 2f);
+            goal.x = Mathf.Clamp(goal.x + lineBias, minX, maxX);
             goal.z = transform.position.z;
+            // En los momentos grandes (un jefe en pie) la cámara se aleja para que quepa todo.
+            if (boss == null && !bossSearched) { boss = FindAnyObjectByType<Boss>(); bossSearched = true; }
+            float wantedPull = boss != null && boss.isActiveAndEnabled && !boss.Defeated ? 5f : 0f;
+            pull = Mathf.Lerp(pull, wantedPull, Time.deltaTime * 1.5f);
+            goal.y += pull * 0.35f;
             Vector3 position = Vector3.SmoothDamp(transform.position, goal, ref velocity, smoothTime);
+            // La z no se suaviza (la cambia también el acercamiento de la meta): se suma solo lo nuevo.
+            position.z -= pull - appliedPull;
+            appliedPull = pull;
 
             // Acercarse a la meta: avanzar en z poco a poco.
             if (zoom > 0f)
@@ -58,7 +75,7 @@ namespace Fase
             }
             transform.position = position;
 
-            if (shake > 0f)
+            if (shake > 0f && !Settings.ReduceEffects)
             {
                 transform.position += (Vector3)(Random.insideUnitCircle * shake);
                 shake = Mathf.Max(0f, shake - Time.deltaTime * 1.5f);

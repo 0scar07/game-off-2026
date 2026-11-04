@@ -17,9 +17,12 @@ namespace Fase
         Vector3 baseScale;
         Camera cam;
 
+        ParticleSystem sparks;
+
         void Awake()
         {
             baseScale = transform.localScale;
+            sparks = GetComponentInChildren<ParticleSystem>();
             cam = Camera.main;
             // Línea dorada de la tienda.
             if (Shop.Worn("lineadorada"))
@@ -46,8 +49,16 @@ namespace Fase
             Vector3 world = cam.ViewportToWorldPoint(new Vector3(onScreen.x, onScreen.y, depth));
             transform.position = new Vector3(world.x, world.y, p.z);
             transform.rotation = Quaternion.Euler(0f, 0f, line.angle);
-            float pulse = 1f + Mathf.Sin(Time.time * pulseSpeed) * pulseAmount;
+            // Late despacio; al moverla rápido vibra, se ensancha y suelta más chispas.
+            float fast = Mathf.Clamp01(ShiftLine.Speed / 18f);
+            float jitter = Settings.ReduceEffects ? 0f : (Mathf.PerlinNoise(Time.time * 40f, 0f) - 0.5f) * 0.6f * fast;
+            float pulse = 1f + Mathf.Sin(Time.time * pulseSpeed) * pulseAmount + fast * 0.8f + jitter;
             transform.localScale = new Vector3(baseScale.x * pulse, baseScale.y, baseScale.z);
+            if (sparks != null)
+            {
+                var emission = sparks.emission;
+                emission.rateOverTime = 40f + fast * 260f;
+            }
         }
     }
 }
