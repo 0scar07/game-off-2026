@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>FASE maquetas</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c"></canvas>
+<script>
+// Maquetas de FASE pintadas a mano en canvas. ?s=1..5 elige la escena.
+const W = 1280, H = 720;
+const c = document.getElementById('c'), g = c.getContext('2d');
+const params = new URLSearchParams(location.search);
+const scene = +(params.get('s') || 1);
+// ?k=1.5 pinta a 1920×1080 con las mismas coordenadas de 1280×720.
+const K = +(params.get('k') || 1);
+c.width = W * K; c.height = H * K; g.scale(K, K);
+let seed = 7;
+const rnd = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const R = (a, b) => a + (b - a) * rnd();
+const FONT = '"Trebuchet MS", "Segoe UI", sans-serif';
+
+function lin(x0, y0, x1, y1, stops) { const gr = g.createLinearGradient(x0, y0, x1, y1); stops.forEach(([o, col]) => gr.addColorStop(o, col)); return gr; }
+function rad(x, y, r, stops) { const gr = g.createRadialGradient(x, y, 0, x, y, r); stops.forEach(([o, col]) => gr.addColorStop(o, col)); return gr; }
+function rect(x, y, w, h, fill) { g.fillStyle = fill; g.fillRect(x, y, w, h); }
+function poly(pts, fill) { g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); pts.slice(1).forEach(p => g.lineTo(p[0], p[1])); g.closePath(); g.fillStyle = fill; g.fill(); }
+function glow(x, y, r, col, a = 1) { g.save(); g.globalAlpha = a; g.globalCompositeOperation = 'lighter'; g.fillStyle = rad(x, y, r, [[0, col], [0.35, col.replace(/[\d.]+\)$/, '0.35)')], [1, col.replace(/[\d.]+\)$/, '0)')]]); g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.restore(); }
+function circle(x, y, r, fill) { g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = fill; g.fill(); }
+function clipX(x0, x1, fn) { g.save(); g.beginPath(); g.rect(x0, 0, x1 - x0, H); g.clip(); fn(); g.restore(); }
+
+// ───── Paisaje ─────
+const PAL = {
+  day: { sky: ['#5fb4f0', '#a9dcf7', '#fff1d2'], hill: ['#8fd6a8', '#6cbf8c', '#4fa775'], haze: 'rgba(255,244,214,', grass: '#5ccf6d', grassDark: '#3fa857', dirt: '#d98654', dirtDark: '#b0623d', leaf: ['#62e0b8', '#3fc49b'], trunk: '#c98a5a' },
+  night: { sky: ['#05051a', '#141142', '#2a1d5e'], hill: ['#24245e', '#1c1b4d', '#14133a'], haze: 'rgba(90,90,200,', grass: '#2f8d84', grassDark: '#236f6b', dirt: '#5a4467', dirtDark: '#3f2f4f', leaf: ['#4a7dff', '#355de0'], trunk: '#4b3a66' },
+  autumn: { sky: ['#f39a5a', '#ffc98a', '#fff0c8'], hill: ['#e8a465', '#cc7e4a', '#a85d3a'], haze: 'rgba(255,220,170,', grass: '#e09a3a', grassDark: '#b87628', dirt: '#8a5a3a', dirtDark: '#6a4028', leaf: ['#ff7a3d', '#e2552e'], trunk: '#7a4a2e' },
+  autumnNight: { sky: ['#0b0614', '#2a0f2a', '#5a1f3a'], hill: ['#3a1a3a', '#2a1230', '#1c0b24'], haze: 'rgba(200,90,140,', grass: '#7a3a5a', grassDark: '#5a2846', dirt: '#3a2030', dirtDark: '#28141f', leaf: ['#b0306a', '#8a1f55'], trunk: '#3a1f2f' },
+  snow: { sky: ['#8fd0ff', '#d6efff', '#ffffff'], hill: ['#cfe6ff', '#b4d4f4', '#9cc0e8'], haze: 'rgba(255,255,255,', grass: '#ffffff', grassDark: '#dbe9f7', dirt: '#9db8d6', dirtDark: '#7f9bbd', leaf: ['#8fc4b0', '#6da896'], trunk: '#7a6a72' },
+  snowNight: { sky: ['#010614', '#06163a', '#0c2a5a'], hill: ['#0e2a55', '#0a1f44', '#071633'], haze: 'rgba(80,200,255,', grass: '#bfe6ff', grassDark: '#7fb8e6', dirt: '#1d3a63', dirtDark: '#12284a', leaf: ['#59e1ff', '#2fb6e6'], trunk: '#21365a' },
+};
+
+function sky(p, sunX, sunY, night) {
+  rect(0, 0, W, H, lin(0, 0, 0, H, [[0, p.sky[0]], [0.6, p.sky[1]], [1, p.sky[2]]]));
+  if (night) {
+    seed = 11;
+    for (let i = 0; i < 260; i++) { const x = R(0, W), y = R(0, H * 0.75), s = R(0.5, 1.8); circle(x, y, s, `rgba(255,255,255,${R(0.3, 1)})`); if (s > 1.5) glow(x, y, 8, 'rgba(180,200,255,0.8)', 0.6); }
+    g.save(); g.globalAlpha = 0.18; g.fillStyle = lin(0, 0, W, H, [[0, 'rgba(120,90,255,0)'], [0.5, 'rgba(200,120,255,1)'], [1, 'rgba(80,160,255,0)']]);
+    g.beginPath(); g.moveTo(0, 260); g.bezierCurveTo(400, 120, 800, 320, W, 100); g.lineTo(W, 200); g.bezierCurveTo(800, 420, 400, 220, 0, 360); g.fill(); g.restore();
+    glow(sunX, sunY, 260, 'rgba(150,170,255,0.5)');
+    circle(sunX, sunY, 58, '#eef2ff'); circle(sunX - 16, sunY - 10, 12, 'rgba(180,190,230,0.6)'); circle(sunX + 18, sunY + 14, 8, 'rgba(180,190,230,0.5)');
+  } else {
+    glow(sunX, sunY, 420, 'rgba(255,240,200,0.9)');
+    circle(sunX, sunY, 70, '#fffbe8');
+    g.save(); g.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < 9; i++) { const a = -0.2 + i * 0.12; g.fillStyle = 'rgba(255,240,200,0.05)'; g.beginPath(); g.moveTo(sunX, sunY); g.lineTo(sunX + Math.cos(a + 1.2) * 1600, sunY + Math.sin(a + 1.2) * 1600); g.lineTo(sunX + Math.cos(a + 1.26) * 1600, sunY + Math.sin(a + 1.26) * 1600); g.fill(); }
+    g.restore();
+    seed = 5;
+    for (let i = 0; i < 6; i++) { const cx = R(0, W); if (Math.abs(cx - sunX) > 220) cloud(cx, R(60, 260), R(0.6, 1.3)); }
+  }
+}
+
+function cloud(x, y, s) { g.save(); g.globalAlpha = 0.85; [[0, 0, 40], [38, -14, 46], [80, 0, 38], [40, 12, 42]].forEach(([dx, dy, r]) => circle(x + dx * s, y + dy * s, r * s, 'rgba(255,255,255,0.9)')); g.restore(); }
+
+function hills(p, baseY, layers = 3, sd = 3) {
+  seed = sd;
+  for (let l = 0; l < layers; l++) {
+    const y0 = baseY + l * 55, amp = 70 - l * 15;
+    const pts = [[0, H]]; for (let x = 0; x <= W; x += 40) pts.push([x, y0 - Math.sin(x / 180 + l * 2) * amp * 0.5 - R(0, amp * 0.5)]); pts.push([W, H]);
+    poly(pts, lin(0, y0 - amp, 0, H, [[0, p.hill[l]], [1, p.hill[Math.min(l + 1, 2)]]]));
+    if (l < layers - 1) for (let x = R(0, 60); x < W; x += R(50, 110)) tree(x, y0 - R(0, amp * 0.3) + 10, R(40, 70) * (0.5 + l * 0.25), p, l === 0 ? 0.55 : 0.8);
+    rect(0, y0 - amp, W, H, lin(0, y0 - amp, 0, H, [[0, p.haze + '0)'], [1, p.haze + (0.35 - l * 0.1) + ')']]));
+  }
+}
+
+function tree(x, baseY, h, p, alpha = 1, pine = false) {
+  g.save(); g.globalAlpha = alpha;
+  rect(x - h * 0.06, baseY - h * 0.45, h * 0.12, h * 0.45, p.trunk);
+  if (pine || p === PAL.night || p === PAL.snowNight || p === PAL.snow) {
+    for (let i = 0; i < 4; i++) { const w = h * (0.42 - i * 0.08), y = baseY - h * 0.3 - i * h * 0.17; poly([[x - w, y], [x, y - h * 0.28], [x + w, y]], i % 2 ? p.leaf[1] : p.leaf[0]); poly([[x, y], [x, y - h * 0.28], [x + w, y]], 'rgba(0,0,0,0.12)'); }
+  } else {
+    const cy = baseY - h * 0.7;
+    poly([[x - h * 0.34, cy + h * 0.15], [x - h * 0.4, cy - h * 0.12], [x - h * 0.12, cy - h * 0.36], [x + h * 0.2, cy - h * 0.34], [x + h * 0.4, cy - h * 0.08], [x + h * 0.32, cy + h * 0.18], [x, cy + h * 0.26]], p.leaf[0]);
+    poly([[x, cy - h * 0.35], [x + h * 0.2, cy - h * 0.34], [x + h * 0.4, cy - h * 0.08], [x + h * 0.32, cy + h * 0.18], [x, cy + h * 0.26]], p.leaf[1]);
+    poly([[x - h * 0.3, cy - h * 0.05], [x - h * 0.12, cy - h * 0.3], [x - h * 0.02, cy - h * 0.2]], 'rgba(255,255,255,0.18)');
+  }
+  g.restore();
+}
+
+function ground(p, x0, x1, top, depth = 300, tile = 64) {
+  for (let x = x0; x < x1; x += tile) {
+    const w = Math.min(tile, x1 - x);
+    rect(x, top + 14, w, depth, lin(0, top, 0, top + depth, [[0, p.dirt], [1, p.dirtDark]]));
+    rect(x + w - 3, top + 14, 3, depth, 'rgba(0,0,0,0.12)');
+    g.save(); g.fillStyle = p.grass; g.beginPath(); g.roundRect(x - 1, top - 4, w + 2, 26, 10); g.fill();
+    g.fillStyle = p.grassDark; g.fillRect(x, top + 14, w, 8); g.restore();
+    for (let i = 0; i < 3; i++) { const gx = x + R(4, w - 4); poly([[gx - 4, top], [gx, top - R(8, 16)], [gx + 4, top]], p.grass); }
+  }
+  rect(x0, top + 22, x1 - x0, 50, lin(0, top + 22, 0, top + 72, [[0, 'rgba(0,0,0,0.18)'], [1, 'rgba(0,0,0,0)']]));
+}
+
+function bridge(x0, x1, top) {
+  for (let x = x0; x < x1; x += 34) { rect(x, top, 30, 16, '#d9a06a'); rect(x, top + 12, 30, 4, '#a8703f'); }
+  rect(x0, top - 30, x1 - x0, 5, '#c98a5a'); for (let x = x0; x <= x1; x += 68) rect(x - 3, top - 30, 6, 46, '#a8703f');
+}
+
+function iceSlab(x, y, w, h = 22, col = 'rgba(120,180,255,') {
+  glow(x + w / 2, y + h / 2, w * 0.9, col + '0.6)', 0.55);
+  g.save(); g.fillStyle = lin(0, y, 0, y + h, [[0, '#cfe8ff'], [1, '#6f8dff']]); g.beginPath(); g.roundRect(x, y, w, h, 6); g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.7)'; g.fillRect(x + 6, y + 3, w * 0.5, 3); g.restore();
+}
+
+// ───── Personajes ─────
+function lumi(x, y, s, night, facing = 1) {
+  g.save(); g.translate(x, y); g.scale(s * facing, s);
+  g.fillStyle = 'rgba(0,0,0,0.22)'; g.beginPath(); g.ellipse(0, 62, 34, 7, 0, 0, 7); g.fill();
+  // bufanda al viento
+  g.fillStyle = '#ff7a3d'; g.beginPath(); g.moveTo(-6, 18); g.bezierCurveTo(-40, 14, -62, 30, -86, 18); g.lineTo(-82, 32); g.bezierCurveTo(-60, 42, -36, 28, -6, 32); g.fill();
+  g.fillStyle = '#e8592a'; g.beginPath(); g.moveTo(-60, 30); g.lineTo(-86, 18); g.lineTo(-82, 32); g.fill();
+  rect(-16, 40, 12, 22, '#9a7ae0'); rect(6, 40, 12, 22, '#9a7ae0');
+  g.fillStyle = '#f2f2fa'; g.beginPath(); g.ellipse(-14, -50, 9, 24, -0.25, 0, 7); g.fill(); g.beginPath(); g.ellipse(12, -52, 9, 24, 0.2, 0, 7); g.fill();
+  g.fillStyle = '#ffb08a'; g.beginPath(); g.ellipse(-14, -48, 4, 15, -0.25, 0, 7); g.fill(); g.beginPath(); g.ellipse(12, -50, 4, 15, 0.2, 0, 7); g.fill();
+  g.fillStyle = lin(-40, -40, 40, 40, [[0, '#ffffff'], [1, '#d9dbea']]); g.beginPath(); g.arc(0, 0, 40, 0, 7); g.fill();
+  g.fillStyle = '#22223a'; g.beginPath(); g.ellipse(14, 2, 24, 20, 0, 0, 7); g.fill();
+  circle(8, 0, 6, night ? '#9fe7ff' : '#7fd3ff'); circle(24, 0, 6, night ? '#9fe7ff' : '#7fd3ff'); circle(10, -2, 2, '#fff'); circle(26, -2, 2, '#fff');
+  g.fillStyle = 'rgba(255,255,255,0.8)'; g.beginPath(); g.ellipse(-16, -20, 10, 6, -0.6, 0, 7); g.fill();
+  g.fillStyle = '#ff7a3d'; g.beginPath(); g.roundRect(-34, 22, 68, 16, 8); g.fill();
+  // farol
+  g.strokeStyle = '#6a5a7a'; g.lineWidth = 3; g.beginPath(); g.moveTo(34, 20); g.lineTo(52, 30); g.stroke();
+  g.fillStyle = '#4a3a5a'; g.fillRect(46, 30, 14, 22);
+  g.fillStyle = night ? '#ffe28a' : '#fff1c4'; g.fillRect(48, 33, 10, 15);
+  g.restore();
+  if (night) { glow(x + 53 * s * facing, y + 40 * s, 160 * s, 'rgba(255,210,120,0.75)'); glow(x + 53 * s * facing, y + 40 * s, 40 * s, 'rgba(255,240,200,1)'); }
+}
+
+function creature(x, y, s, stone) {
+  g.save(); g.translate(x, y); g.scale(s, s);
+  g.fillStyle = 'rgba(0,0,0,0.25)'; g.beginPath(); g.ellipse(0, 70, 46, 8, 0, 0, 7); g.fill();
+  if (stone) {
+    poly([[-44, 70], [-50, 20], [-30, -30], [0, -46], [32, -30], [50, 18], [44, 70]], '#9a948c');
+    poly([[0, -46], [32, -30], [50, 18], [44, 70], [0, 70]], '#7f7a73');
+    g.strokeStyle = '#5f5a54'; g.lineWidth = 3; g.beginPath(); g.moveTo(-10, -20); g.lineTo(4, 6); g.lineTo(-6, 30); g.stroke();
+    rect(-20, -4, 12, 4, '#5f5a54'); rect(8, -4, 12, 4, '#5f5a54');
+    poly([[-30, -30], [-20, -46], [-12, -36]], '#7fae6a'); poly([[16, -40], [26, -52], [30, -34]], '#7fae6a');
+  } else {
+    glow(0, 10, 150, 'rgba(160,60,255,0.45)');
+    g.fillStyle = lin(0, -60, 0, 70, [[0, '#3a2a8a'], [1, '#120a33']]);
+    g.beginPath(); g.moveTo(-46, 70); g.bezierCurveTo(-60, 0, -40, -58, 0, -58); g.bezierCurveTo(40, -58, 60, 0, 46, 70);
+    for (let i = 0; i < 6; i++) g.lineTo(46 - i * 18.4 - 9, 54), g.lineTo(46 - (i + 1) * 18.4, 70); g.fill();
+    poly([[-30, -40], [-44, -74], [-16, -50]], '#2a1f6a'); poly([[30, -40], [44, -74], [16, -50]], '#2a1f6a');
+    [[-16, -6], [16, -6]].forEach(([ex, ey]) => { glow(ex, ey, 34, 'rgba(255,60,140,0.9)'); circle(ex, ey, 9, '#ff4d8a'); circle(ex + 2, ey - 2, 3, '#fff'); });
+    g.strokeStyle = '#ff4d8a'; g.lineWidth = 3; g.beginPath(); g.arc(0, 14, 14, 0.2, Math.PI - 0.2); g.stroke();
+  }
+  g.restore();
+}
+
+function moonShard(x, y, s) { glow(x, y, 70 * s, 'rgba(255,220,130,0.8)'); g.save(); g.translate(x, y); g.rotate(0.3); poly([[0, -22 * s], [14 * s, 0], [0, 22 * s], [-10 * s, 4 * s]], '#fff2b0'); poly([[0, -22 * s], [14 * s, 0], [0, 22 * s]], '#ffd76a'); g.restore(); }
+
+function fireflies(x0, x1, y0, y1, n, col = 'rgba(255,240,140,1)') { for (let i = 0; i < n; i++) { const x = R(x0, x1), y = R(y0, y1); glow(x, y, R(10, 22), col, 0.9); circle(x, y, 2, '#fffbe0'); } }
+function pollen(x0, x1, y0, y1, n) { for (let i = 0; i < n; i++) circle(R(x0, x1), R(y0, y1), R(1, 3), `rgba(255,255,230,${R(0.3, 0.8)})`); }
+function butterfly(x, y, col) { g.save(); g.translate(x, y); poly([[0, 0], [-12, -10], [-14, 4]], col); poly([[0, 0], [12, -12], [14, 4]], col); rect(-1, -6, 2, 10, '#40303a'); g.restore(); }
+
+function lineBeam(x) {
+  g.save(); g.globalCompositeOperation = 'lighter';
+  rect(x - 60, 0, 120, H, lin(x - 60, 0, x + 60, 0, [[0, 'rgba(255,220,160,0)'], [0.45, 'rgba(255,230,180,0.18)'], [0.5, 'rgba(255,255,255,0.9)'], [0.55, 'rgba(140,170,255,0.25)'], [1, 'rgba(120,150,255,0)']]));
+  g.restore(); rect(x - 2, 0, 4, H, '#ffffff');
+  seed = 99; for (let i = 0; i < 40; i++) { const y = R(0, H), dx = R(-26, 26); glow(x + dx, y, R(6, 14), dx < 0 ? 'rgba(255,220,150,1)' : 'rgba(150,190,255,1)', 0.9); }
+  glow(x, H * 0.55, 90, 'rgba(255,255,255,0.6)', 0.6);
+}
+
+function vignette(a = 0.55) { rect(0, 0, W, H, rad(W / 2, H / 2, W * 0.75, [[0.55, 'rgba(0,0,0,0)'], [1, `rgba(0,0,10,${a})`]])); }
+function bloomPass() { g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.filter = `blur(${18 * K}px) brightness(1.15)`; g.globalAlpha = 0.28; g.globalCompositeOperation = 'screen'; g.drawImage(c, 0, 0); g.restore(); }
+function grade(col, a) { g.save(); g.globalCompositeOperation = 'soft-light'; g.globalAlpha = a; rect(0, 0, W, H, col); g.restore(); }
+
+function text(t, x, y, size, col = '#fff', align = 'left', weight = '700', shadow = true) {
+  g.save(); g.font = `${weight} ${size}px ${FONT}`; g.textAlign = align; g.textBaseline = 'middle';
+  if (shadow) { g.shadowColor = 'rgba(0,0,30,0.6)'; g.shadowBlur = size * 0.3; g.shadowOffsetY = size * 0.06; }
+  g.fillStyle = col; g.fillText(t, x, y); g.restore();
+}
+function pill(x, y, w, h, fill, stroke) { g.save(); g.fillStyle = fill; g.beginPath(); g.roundRect(x, y, w, h, h / 2); g.fill(); if (stroke) { g.strokeStyle = stroke; g.lineWidth = 2; g.stroke(); } g.restore(); }
+
+// Mundo partido: pinta `day` en todo, y `night` a la derecha de la línea.
+function split(lineX, day, night) { day(); clipX(lineX, W, night); }
+
+// ───── Escenas ─────
+const scenes = {
+  1() { // Gameplay premium
+    const LX = 650, TOP = 520;
+    split(LX, () => {
+      const p = PAL.day; sky(p, 330, 150, false); hills(p, 400, 3, 4);
+      ground(p, -10, 420, TOP); bridge(420, 650, TOP + 4); ground(p, 650, W + 10, TOP);
+      seed = 21; [[70, 160], [230, 190], [360, 140], [840, 170], [1010, 150], [1180, 180]].forEach(([x, h]) => tree(x, TOP, h, p));
+      [[120, '#ff7aa8'], [300, '#ffd35a'], [780, '#b28aff']].forEach(([x, col]) => { rect(x, TOP - 22, 3, 22, '#3fa857'); circle(x + 1, TOP - 24, 7, col); });
+      pollen(0, LX, 120, 560, 120); butterfly(250, 330, '#ff9ec4'); butterfly(540, 280, '#ffd35a');
+    }, () => {
+      const p = PAL.night; sky(p, 1010, 150, true); hills(p, 400, 3, 4);
+      ground(p, 650, W + 10, TOP);
+      seed = 22; [[840, 200], [1010, 180], [1180, 210]].forEach(([x, h]) => tree(x, TOP, h, p, 1, true));
+      iceSlab(700, 430, 120); iceSlab(880, 360, 120); iceSlab(1060, 300, 140);
+      [[790, TOP], [930, TOP], [1100, TOP]].forEach(([x, y]) => { glow(x, y - 10, 40, 'rgba(120,160,255,0.9)'); circle(x, y - 12, 8, '#9db8ff'); rect(x - 2, y - 10, 4, 10, '#c9d6ff'); });
+      fireflies(LX, W, 160, 560, 26);
+      creature(1150, TOP - 70, 0.75, false);
+    });
+    moonShard(960, 250, 1);
+    lumi(560, TOP - 62, 1.05, false, 1);
+    seed = 31; for (let i = 0; i < 8; i++) circle(540 + R(-20, 50), TOP - R(0, 12), R(3, 7), 'rgba(255,255,255,0.55)');
+    lineBeam(LX);
+    bloomPass(); grade('#ffb070', 0.08); vignette(0.5);
+    pill(28, 24, 330, 54, 'rgba(10,10,40,0.45)'); text('2 · Noche estrellada', 52, 51, 26);
+    pill(W - 250, 24, 150, 54, 'rgba(10,10,40,0.45)'); moonShard(W - 218, 51, 0.6); text('1 / 3', W - 192, 52, 26, '#ffe8a0');
+    pill(W - 86, 24, 58, 54, 'rgba(10,10,40,0.45)'); text('II', W - 57, 52, 24, '#fff', 'center');
+    pill(28, H - 68, 210, 44, 'rgba(10,10,40,0.35)'); text('⏱ 0:42.18', 50, H - 46, 22, '#cfe0ff');
+  },
+
+  2() { // Tres capítulos
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#0b0a1c'], [1, '#191636']]));
+    text('Tres capítulos, tres mundos', W / 2, 62, 40, '#fff', 'center');
+    const cards = [
+      ['I', 'La Pradera', PAL.day, PAL.night, 'flauta · marimba · grillos'],
+      ['II', 'El Bosque Otoñal', PAL.autumn, PAL.autumnNight, 'guitarra · cuerdas · búhos'],
+      ['III', 'La Cumbre Helada', PAL.snow, PAL.snowNight, 'campanas · coro · viento'],
+    ];
+    cards.forEach(([num, name, d, n, music], i) => {
+      const x = 40 + i * 410, y = 110, w = 380, h = 520;
+      g.save(); g.beginPath(); g.roundRect(x, y, w, h, 22); g.clip(); g.translate(x, y); g.scale(w / W, h / H);
+      const LX = 700, TOP = 560;
+      split(LX, () => { sky(d, 380, 180, false); hills(d, 420, 3, 8 + i); ground(d, -10, W + 10, TOP); seed = 40 + i; for (let k = 0; k < 6; k++) tree(R(40, 660), TOP, R(150, 230), d, 1, i === 2); },
+        () => { sky(n, 1000, 170, true); hills(n, 420, 3, 8 + i); ground(n, -10, W + 10, TOP); seed = 50 + i; for (let k = 0; k < 5; k++) tree(R(740, 1260), TOP, R(160, 240), n, 1, true); fireflies(LX, W, 200, 560, 22, i === 2 ? 'rgba(120,230,255,1)' : i === 1 ? 'rgba(255,120,190,1)' : 'rgba(255,240,140,1)'); });
+      if (i === 1) { seed = 77; for (let k = 0; k < 70; k++) { const lx = R(0, 700), ly = R(0, 700), a = R(0, 6.3); g.save(); g.translate(lx, ly); g.rotate(a); poly([[0, -9], [6, 0], [0, 9], [-6, 0]], k % 2 ? 'rgba(255,140,60,0.85)' : 'rgba(230,90,50,0.85)'); g.restore(); } }
+      if (i === 2) { seed = 78; for (let k = 0; k < 160; k++) circle(R(0, W), R(0, H), R(2, 5), 'rgba(255,255,255,0.8)'); }
+      lumi(560, TOP - 70, 1.1, false); lineBeam(LX);
+      g.restore();
+      g.save(); g.beginPath(); g.roundRect(x, y, w, h, 22); g.lineWidth = 3; g.strokeStyle = 'rgba(255,255,255,0.18)'; g.stroke(); g.restore();
+      rect(x, y + h - 150, w, 150, lin(0, y + h - 150, 0, y + h, [[0, 'rgba(5,5,20,0)'], [1, 'rgba(5,5,20,0.92)']]));
+      text(`Capítulo ${num}`, x + 26, y + h - 92, 20, '#ffd98a');
+      text(name, x + 26, y + h - 60, 34);
+      text('♪ ' + music, x + 26, y + h - 26, 17, '#cfd3ff', 'left', '400');
+    });
+    bloomPass(); vignette(0.4);
+  },
+
+  3() { // Mapa de niveles más largos
+    const p = PAL.day; sky(p, 220, 120, false);
+    clipX(640, W, () => sky(PAL.night, 1080, 120, true));
+    rect(0, 0, W, H, 'rgba(8,8,30,0.35)');
+    text('El viaje', W / 2, 60, 44, '#fff', 'center');
+    // isla del capítulo
+    const path = [[120, 560], [230, 470], [360, 520], [470, 420], [600, 470], [720, 380], [840, 440], [960, 340], [1070, 400], [1170, 300]];
+    g.save(); g.lineWidth = 10; g.lineCap = 'round'; g.setLineDash([2, 22]); g.strokeStyle = 'rgba(255,240,200,0.9)'; g.beginPath(); path.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.stroke(); g.restore();
+    seed = 61;
+    path.forEach(([x, y], i) => {
+      const done = i < 6, current = i === 6, isNight = x > 640;
+      for (let k = 0; k < 3; k++) tree(x + R(-80, 80), y + R(30, 60), R(40, 70), isNight ? PAL.night : PAL.day, 0.9, isNight);
+      glow(x, y, current ? 90 : 50, current ? 'rgba(255,220,120,0.9)' : isNight ? 'rgba(120,150,255,0.6)' : 'rgba(255,255,200,0.5)');
+      circle(x, y, 30, done ? '#ffcf6a' : current ? '#fff' : 'rgba(255,255,255,0.25)');
+      circle(x, y, 23, done ? '#ff9a3d' : current ? '#ff7a3d' : 'rgba(20,20,50,0.7)');
+      text(String(i + 1), x, y + 1, 22, '#fff', 'center');
+      if (done) for (let m = 0; m < 3; m++) moonShard(x - 22 + m * 22, y - 50, m < (i % 3) + 1 ? 0.42 : 0.001);
+    });
+    lumi(840, 360, 0.6, true);
+    pill(W / 2 - 330, H - 132, 660, 96, 'rgba(10,10,40,0.7)', 'rgba(255,255,255,0.2)');
+    text('7 · Al revés', W / 2 - 300, H - 102, 30);
+    text('Récord 1:12.40   ·   Luna 2/3   ·   Ruta secreta: sin descubrir', W / 2 - 300, H - 64, 20, '#cfd3ff', 'left', '400');
+    bloomPass(); vignette(0.5);
+  },
+
+  4() { // Personajes
+    const LX = 640;
+    split(LX, () => { const p = PAL.day; sky(p, 260, 140, false); hills(p, 430, 3, 9); ground(p, -10, W + 10, 560); },
+      () => { const p = PAL.night; sky(p, 1050, 140, true); hills(p, 430, 3, 9); ground(p, -10, W + 10, 560); fireflies(LX, W, 160, 540, 20); });
+    lumi(330, 440, 1.9, false, 1);
+    lumi(880, 440, 1.9, true, -1);
+    creature(105, 470, 0.95, true);
+    creature(1170, 470, 0.95, false);
+    lineBeam(LX); bloomPass(); vignette(0.5);
+    pill(40, 30, 520, 120, 'rgba(10,10,40,0.55)');
+    text('Lumi', 70, 72, 46); text('Bufanda al viento · farol que ilumina la noche', 70, 118, 20, '#ffe3c4', 'left', '400');
+    pill(W - 560, 30, 520, 120, 'rgba(10,10,40,0.55)');
+    text('Las Sombras', W - 530, 72, 46, '#ffb3d6'); text('Despiertas de noche · de piedra durante el día', W - 530, 118, 20, '#e6d6ff', 'left', '400');
+  },
+
+
+  // ───── Viñetas de la intro (sin texto: los subtítulos los pone el juego) ─────
+  6() { // El día y la noche compartían el cielo
+    rect(0, 0, W, H, lin(0, 0, W, 0, [[0, '#7fc3f0'], [0.5, '#f0a07a'], [1, '#2a1d5e']]));
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, 'rgba(10,10,40,0.35)'], [0.7, 'rgba(255,220,180,0)']]));
+    glow(330, 170, 300, 'rgba(255,235,190,0.9)'); circle(330, 170, 62, '#fffbe8');
+    glow(960, 160, 220, 'rgba(170,180,255,0.6)'); circle(960, 160, 50, '#eef2ff');
+    seed = 11; for (let i = 0; i < 90; i++) circle(R(700, W), R(0, 380), R(0.5, 1.6), `rgba(255,255,255,${R(0.3, 0.9)})`);
+    hills({ ...PAL.day, hill: ['#b98ab0', '#8a6a9a', '#5a4a7a'], haze: 'rgba(255,210,190,', leaf: ['#e88a6a', '#c86a5a'] }, 420, 3, 21);
+    ground({ ...PAL.day, grass: '#7ab86a', grassDark: '#5a9a55', dirt: '#b07a5a', dirtDark: '#7a5040' }, -10, W + 10, 560);
+    for (let i = 0; i < 7; i++) house(120 + i * 165, 560, i < 4 ? PAL.day : PAL.night);
+    lumi(640, 495, 0.75, true, 1);
+    bloomPass(); vignette(0.6);
+  },
+  7() { // La luna se rompe
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#05051a'], [0.7, '#1c1446'], [1, '#2a1d5e']]));
+    seed = 12; for (let i = 0; i < 200; i++) circle(R(0, W), R(0, 450), R(0.5, 1.8), `rgba(255,255,255,${R(0.3, 1)})`);
+    glow(640, 220, 420, 'rgba(255,230,170,0.95)');
+    seed = 88; for (let i = 0; i < 22; i++) { const a = R(0, 6.28), d = R(60, 360); moonShard(640 + Math.cos(a) * d, 220 + Math.sin(a) * d * 0.6, R(0.4, 1.3)); }
+    circle(640, 220, 40, '#fff6d6');
+    hills(PAL.night, 440, 3, 13);
+    ground(PAL.night, -10, W + 10, 580);
+    for (let i = 0; i < 7; i++) house(120 + i * 165, 580, PAL.night);
+    bloomPass(); grade('#ffb070', 0.08); vignette(0.65);
+  },
+  8() { // La grieta parte el mundo en dos
+    const LX = 660;
+    split(LX, () => { const p = PAL.day; sky(p, 300, 160, false); hills(p, 400, 3, 12); ground(p, -10, W + 10, 560); for (let i = 0; i < 4; i++) house(140 + i * 130, 560, PAL.day); },
+      () => { const p = PAL.night; sky(p, 1000, 170, true); hills(p, 400, 3, 12); ground(p, -10, W + 10, 560); for (let i = 0; i < 4; i++) house(740 + i * 130, 560, PAL.night); fireflies(LX, W, 200, 520, 18); });
+    g.save(); g.strokeStyle = '#ffffff'; g.lineWidth = 7; g.shadowColor = '#fff'; g.shadowBlur = 40; g.beginPath();
+    g.moveTo(660, 0); g.lineTo(648, 160); g.lineTo(672, 300); g.lineTo(652, 440); g.lineTo(670, 560); g.lineTo(660, H); g.stroke(); g.restore();
+    lineBeam(LX);
+    bloomPass(); vignette(0.6);
+  },
+  9() { // Lumi sale a buscar los fragmentos
+    const LX = 760;
+    split(LX, () => { const p = PAL.day; sky(p, 260, 140, false); hills(p, 380, 3, 31); ground(p, -10, W + 10, 600); tree(120, 600, 220, p); tree(330, 600, 170, p); pollen(0, LX, 100, 580, 80); },
+      () => { const p = PAL.night; sky(p, 1080, 140, true); hills(p, 380, 3, 31); ground(p, -10, W + 10, 600); tree(1000, 600, 230, p, 1, true); tree(1180, 600, 190, p, 1, true); fireflies(LX, W, 120, 580, 30); });
+    seed = 41; for (let i = 0; i < 9; i++) moonShard(R(380, 1180), R(80, 330), R(0.5, 0.9));
+    lumi(600, 535, 1.4, true, 1);
+    lineBeam(LX);
+    bloomPass(); grade('#ffb070', 0.06); vignette(0.55);
+  },
+  5() { // Intro con historia
+    const LX = 660;
+    split(LX, () => { const p = PAL.day; sky(p, 300, 160, false); hills(p, 400, 3, 12); ground(p, -10, W + 10, 560); seed = 3;
+      for (let i = 0; i < 4; i++) house(140 + i * 130, 560, PAL.day); },
+      () => { const p = PAL.night; sky(p, 1000, 170, true); hills(p, 400, 3, 12); ground(p, -10, W + 10, 560);
+      for (let i = 0; i < 4; i++) house(740 + i * 130, 560, PAL.night); fireflies(LX, W, 200, 520, 18); });
+    // la luna estallando en fragmentos
+    seed = 88; glow(660, 190, 300, 'rgba(255,230,170,0.9)');
+    for (let i = 0; i < 14; i++) { const a = R(0, 6.28), d = R(40, 260); moonShard(660 + Math.cos(a) * d, 190 + Math.sin(a) * d * 0.6, R(0.4, 1.1)); }
+    circle(660, 190, 46, '#fff6d6');
+    g.save(); g.strokeStyle = '#ffffff'; g.lineWidth = 6; g.shadowColor = '#fff'; g.shadowBlur = 30; g.beginPath();
+    g.moveTo(660, 236); g.lineTo(648, 320); g.lineTo(672, 410); g.lineTo(652, 500); g.lineTo(666, H); g.stroke(); g.restore();
+    lumi(560, 495, 0.75, false, 1);
+    bloomPass(); grade('#ff9a5a', 0.1); vignette(0.65);
+    rect(0, 0, W, 70, '#000'); rect(0, H - 120, W, 120, '#000');
+    text('Una noche, la luna se rompió en mil pedazos…', W / 2, H - 76, 32, '#fff', 'center', '400');
+    text('y el mundo quedó partido en dos.', W / 2, H - 36, 26, '#cfcfe8', 'center', '400');
+    text('Saltar ▶', W - 40, 35, 18, '#8a8aa8', 'right', '400', false);
+  },
+
+  10() { // Idea A: la Gran Sombra del eclipse (jefe final)
+    const LX = 620, TOP = 560;
+    split(LX, () => { const p = PAL.snow; sky(p, 240, 140, false); hills(p, 420, 3, 21); ground(p, -10, W + 10, TOP);
+      seed = 61; for (let k = 0; k < 4; k++) tree(R(40, 480), TOP, R(150, 210), p, 1, true); },
+      () => { const p = PAL.snowNight; sky(p, 980, 150, true); hills(p, 420, 3, 21); ground(p, -10, W + 10, TOP);
+        // eclipse: anillo de fuego detrás de la luna
+        glow(980, 150, 260, 'rgba(255,120,60,0.8)'); circle(980, 150, 64, '#0a0a18');
+        g.save(); g.strokeStyle = '#ffb36a'; g.lineWidth = 4; g.shadowColor = '#ff7a3d'; g.shadowBlur = 30; g.beginPath(); g.arc(980, 150, 66, 0, 7); g.stroke(); g.restore();
+        fireflies(LX, W, 220, 540, 20, 'rgba(120,230,255,1)'); });
+    // la Gran Sombra: medio cuerpo en la noche (despierta) y la mano en el día (piedra)
+    g.save(); clipX(LX, W, () => creature(640, 330, 3.2, false)); g.restore();
+    clipX(0, LX, () => creature(640, 330, 3.2, true));
+    // ondas que lanza y que solo existen de noche
+    [[900, 0.9], [1000, 0.6]].forEach(([x, a]) => { g.save(); g.globalAlpha = a; g.strokeStyle = '#b06aff'; g.lineWidth = 8; g.shadowColor = '#b06aff'; g.shadowBlur = 24; g.beginPath(); g.arc(x, TOP + 6, 40, Math.PI, 0); g.stroke(); g.restore(); });
+    // fragmentos de luna en su pecho: los golpes
+    [[600, 300], [680, 300], [640, 360]].forEach(([x, y], i) => i < 2 ? moonShard(x, y, 0.8) : (glow(x, y, 50, 'rgba(255,90,120,0.8)'), circle(x, y, 12, '#ff4d8a')));
+    lumi(260, TOP - 62, 1.0, false, 1);
+    lineBeam(LX);
+    bloomPass(); grade('#ff7a3d', 0.1); vignette(0.6);
+    // barra de vida del jefe
+    pill(W / 2 - 300, 30, 600, 26, 'rgba(10,10,40,0.6)'); pill(W / 2 - 296, 34, 380, 18, lin(0, 0, W, 0, [[0, '#b06aff'], [1, '#ff4d8a']]));
+    text('La Gran Sombra', W / 2, 78, 26, '#fff', 'center');
+    pill(28, H - 120, 560, 90, 'rgba(10,10,40,0.55)');
+    text('Idea A · Jefe final en el Eclipse', 50, H - 92, 24, '#ffd98a');
+    text('Ponle luz de día para volverla piedra y salta a por los fragmentos de su pecho.', 50, H - 58, 17, '#e6e8ff', 'left', '400');
+  },
+
+  11() { // Idea B: medallas de tiempo por nivel
+    const p = PAL.day; sky(p, 260, 140, false); clipX(640, W, () => sky(PAL.night, 1040, 140, true)); hills(p, 430, 3, 9);
+    rect(0, 0, W, H, 'rgba(8,8,30,0.55)');
+    text('¡Nivel completado!', W / 2, 92, 52, '#fff', 'center');
+    text('4 · Lago helado', W / 2, 146, 26, '#cfd3ff', 'center', '400');
+    const medals = [['Bronce', '1:30', '#d08a52'], ['Plata', '1:05', '#d9e1ee'], ['Oro', '0:48', '#ffd35a'], ['Luna', '0:39', '#b8d4ff']];
+    medals.forEach(([name, t, col], i) => {
+      const x = 260 + i * 255, y = 330, got = i < 3;
+      g.save(); g.globalAlpha = got ? 1 : 0.35;
+      if (got) glow(x, y, 120, 'rgba(255,230,150,0.55)');
+      circle(x, y, 74, got ? col : '#40405a'); circle(x, y, 58, 'rgba(255,255,255,0.18)');
+      if (i === 3) moonShard(x, y, 1.6); else text('★', x, y + 4, 64, 'rgba(0,0,0,0.25)', 'center', '700', false);
+      poly([[x - 40, y + 64], [x - 56, y + 140], [x - 30, y + 124], [x - 14, y + 150], [x, y + 70]], got ? '#ff7a3d' : '#40405a');
+      poly([[x + 40, y + 64], [x + 56, y + 140], [x + 30, y + 124], [x + 14, y + 150], [x, y + 70]], got ? '#e8592a' : '#40405a');
+      g.restore();
+      text(name, x, y + 180, 26, got ? '#fff' : '#8a8aa8', 'center');
+      text(t, x, y + 212, 20, got ? '#ffe8a0' : '#8a8aa8', 'center', '400');
+    });
+    pill(W / 2 - 170, 600, 340, 64, 'rgba(255,255,255,0.12)', 'rgba(255,255,255,0.3)');
+    text('⏱ 0:44.72   ·   ☾ 2/2', W / 2, 632, 26, '#fff', 'center');
+    lumi(120, 600, 0.7, false, 1);
+    bloomPass(); vignette(0.5);
+    text('Idea B · Medallas de tiempo (la de Luna es secreta y muy difícil)', 30, 30, 18, '#ffd98a', 'left', '400');
+  },
+
+  12() { // Idea C: logros en el menú
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#0b0a1c'], [1, '#191636']]));
+    seed = 12; for (let i = 0; i < 140; i++) circle(R(0, W), R(0, H), R(0.5, 1.6), `rgba(255,255,255,${R(0.2, 0.8)})`);
+    text('Logros', W / 2, 70, 46, '#fff', 'center');
+    text('9 / 16', W / 2, 116, 22, '#ffd98a', 'center', '400');
+    const list = [
+      ['Primer amanecer', 'Termina el nivel 1', 1], ['Coleccionista', 'Todos los fragmentos de luna', 0],
+      ['Equilibrista', 'Cruza un puente mientras desaparece', 1], ['Piedra papel', 'Pasa junto a 10 Sombras dormidas', 1],
+      ['Sin mirar atrás', 'Termina un nivel sin morir', 1], ['Eclipse', 'Vence a la Gran Sombra', 0],
+      ['Medio y medio', 'Ten a Lumi justo en la línea 3 s', 1], ['Velocista', 'Consigue 5 medallas de oro', 0],
+    ];
+    list.forEach(([name, desc, got], i) => {
+      const x = 120 + (i % 2) * 540, y = 160 + Math.floor(i / 2) * 120, w = 500, h = 100;
+      g.save(); g.globalAlpha = got ? 1 : 0.45;
+      pill(x, y, w, h, got ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)', got ? 'rgba(255,217,138,0.5)' : 'rgba(255,255,255,0.12)');
+      if (got) glow(x + 52, y + 50, 60, 'rgba(255,210,120,0.6)');
+      circle(x + 52, y + 50, 32, got ? '#ffd35a' : '#40405a');
+      text(got ? '★' : '?', x + 52, y + 52, 30, got ? '#8a5a1a' : '#8a8aa8', 'center', '700', false);
+      text(name, x + 102, y + 36, 24, '#fff'); text(desc, x + 102, y + 68, 17, '#cfd3ff', 'left', '400');
+      g.restore();
+    });
+    // aviso emergente de logro en partida
+    pill(W - 420, H - 96, 390, 70, 'rgba(20,16,50,0.92)', 'rgba(255,217,138,0.7)');
+    glow(W - 384, H - 61, 50, 'rgba(255,210,120,0.7)'); circle(W - 384, H - 61, 22, '#ffd35a'); text('★', W - 384, H - 59, 22, '#8a5a1a', 'center', '700', false);
+    text('¡Logro! Equilibrista', W - 350, H - 72, 20, '#ffd98a'); text('Cruza un puente mientras desaparece', W - 350, H - 46, 15, '#e6e8ff', 'left', '400');
+    bloomPass(); vignette(0.45);
+    text('Idea C · Logros (pantalla del menú + aviso en partida)', 30, H - 30, 18, '#ffd98a', 'left', '400');
+  },
+  20() { // Resultados+: muertes, confeti de oro, desafíos, estadísticas
+    base(640, 560, PAL.day, PAL.night, 31); rect(0, 0, W, H, 'rgba(6,6,24,0.6)');
+    seed = 5; for (let i = 0; i < 140; i++) { g.save(); g.translate(R(200, 1080), R(60, 420)); g.rotate(R(0, 6)); poly([[0, -7], [5, 0], [0, 7], [-5, 0]], ['#ffd35a', '#fff2b0', '#ffb36a'][i % 3]); g.restore(); }
+    text('¡Nivel completado!', W / 2, 80, 52, '#fff', 'center');
+    medal(W / 2 - 220, 230, '#ffd35a', 'Oro', true); medal(W / 2, 230, '#d9e1ee', 'Plata', true); medal(W / 2 + 220, 230, '#40405a', 'Luna', false);
+    pill(W / 2 - 330, 360, 660, 60, 'rgba(255,255,255,0.1)'); text('⏱ 0:44.72   ·   ☾ 2/2   ·   3 caídas', W / 2, 391, 26, '#fff', 'center');
+    text('Desafíos', W / 2, 455, 26, '#ffd98a', 'center');
+    [['✔', 'Sin mover la línea más de 3 veces', 1], ['✔', 'Sin tocar el suelo de noche', 1], ['✖', 'Menos de 40 s', 0]].forEach(([m, t, ok], i) => {
+      pill(W / 2 - 300, 480 + i * 52, 600, 44, ok ? 'rgba(120,220,140,0.18)' : 'rgba(255,255,255,0.06)'); text(m + '  ' + t, W / 2 - 280, 503 + i * 52, 21, ok ? '#c8ffd2' : '#9a9ab8'); });
+    pill(40, 590, 330, 80, 'rgba(10,10,40,0.6)'); text('Total: 1.284 saltos', 60, 618, 18, '#cfd3ff', 'left', '400'); text('3,2 km · línea movida 412 veces', 60, 646, 16, '#cfd3ff', 'left', '400');
+    label('Ideas 1 · 3 · 9 · 21: muertes, confeti, estadísticas y desafíos por nivel');
+  },
+
+  21() { // Pausa con mapa del nivel + página del diario
+    base(640, 560, PAL.autumn, PAL.autumnNight, 32); rect(0, 0, W, H, 'rgba(6,6,24,0.7)');
+    text('Pausa', 320, 70, 44, '#fff', 'center');
+    pill(60, 110, 520, 200, 'rgba(255,255,255,0.08)');
+    seed = 9; let y = 240; for (let x = 80; x < 560; x += 12) { y = Math.max(170, Math.min(270, y + R(-14, 14))); rect(x, y, 12, 290 - y, '#5a4a7a'); }
+    circle(140, 225, 9, '#fff'); text('Lumi', 140, 205, 14, '#fff', 'center', '400');
+    [[260, 190, 1], [430, 175, 0], [520, 215, 0]].forEach(([x, yy, got]) => { glow(x, yy, 30, got ? 'rgba(120,120,140,0.4)' : 'rgba(255,220,130,0.8)'); text(got ? '☾' : '★', x, yy, 22, got ? '#777' : '#ffd35a', 'center'); });
+    text('Faltan 2 fragmentos', 320, 330, 20, '#ffd98a', 'center', '400');
+    ['Continuar', 'Reiniciar (R)', 'Menú'].forEach((t, i) => { pill(170, 370 + i * 80, 300, 64, 'rgba(40,32,90,0.95)'); text(t, 320, 402 + i * 80, 28, '#fff', 'center'); });
+    g.save(); g.translate(880, 360); g.rotate(-0.05); rect(-230, -260, 460, 520, '#f3e6c8'); rect(-230, -260, 460, 520, lin(0, -260, 0, 260, [[0, 'rgba(0,0,0,0)'], [1, 'rgba(120,80,30,0.25)']]));
+    text('Diario de Lumi · página 3', 0, -210, 24, '#6a4a2a', 'center');
+    ['La noche que la luna se rompió,', 'el abuelo dijo que cada fragmento', 'guarda un recuerdo del cielo entero.', '', 'Hoy encontré el primero junto', 'al lago. Brillaba igual que su', 'farol...'].forEach((l, i) => text(l, -190, -150 + i * 38, 21, '#5a3a20', 'left', '400', false));
+    moonShard(150, 180, 0.8); g.restore();
+    label('Ideas 5 · 10 · 18: reintento rápido, mapa del nivel en pausa y diario de lore');
+  },
+
+  22() { // Modo foto + fantasma de tu mejor tiempo
+    base(560, 560, PAL.day, PAL.night, 33);
+    g.save(); g.globalAlpha = 0.45; lumi(760, 498, 1.0, true, 1); g.restore(); text('Tu récord', 760, 410, 18, '#cfe0ff', 'center', '400');
+    lumi(640, 498, 1.0, false, 1); lineBeam(560); bloomPass(); vignette(0.4);
+    g.save(); g.strokeStyle = 'rgba(255,255,255,0.5)'; g.lineWidth = 2; g.strokeRect(40, 40, W - 80, H - 80);
+    for (const x of [W / 3, 2 * W / 3]) { g.beginPath(); g.moveTo(x, 40); g.lineTo(x, H - 40); g.stroke(); }
+    for (const yy of [H / 3, 2 * H / 3]) { g.beginPath(); g.moveTo(40, yy); g.lineTo(W - 40, yy); g.stroke(); } g.restore();
+    pill(W - 330, 70, 270, 250, 'rgba(10,10,40,0.7)'); text('Modo foto', W - 300, 105, 22, '#ffd98a');
+    ['Zoom', 'Inclinación', 'Filtro: Atardecer', 'Ocultar a Lumi'].forEach((t, i) => { text(t, W - 300, 150 + i * 45, 18, '#fff', 'left', '400'); if (i < 2) { rect(W - 170, 147 + i * 45, 90, 4, '#666'); circle(W - 140 + i * 20, 149 + i * 45, 8, '#ffd35a'); } });
+    pill(W / 2 - 110, H - 110, 220, 56, 'rgba(255,255,255,0.9)'); text('Capturar', W / 2, H - 82, 24, '#221a40', 'center');
+    label('Idea 11 · avanzada 5: modo foto y carrera contra el fantasma de tu récord');
+  },
+
+  23() { // Luz volumétrica, línea inclinada y transición de papel
+    const p = PAL.day; sky(p, 300, 120, false); hills(p, 420, 3, 34); ground(p, -10, W + 10, 560);
+    g.save(); g.beginPath(); g.moveTo(820, 0); g.lineTo(W, 0); g.lineTo(W, H); g.lineTo(420, H); g.closePath(); g.clip();
+    const n = PAL.night; sky(n, 1000, 140, true); hills(n, 420, 3, 34); ground(n, -10, W + 10, 560); fireflies(400, W, 200, 540, 30); g.restore();
+    g.save(); g.globalCompositeOperation = 'lighter'; for (let i = 0; i < 7; i++) { g.fillStyle = 'rgba(255,230,170,0.06)'; g.beginPath(); g.moveTo(300, 120); g.lineTo(450 + i * 70, 560); g.lineTo(480 + i * 70, 560); g.fill(); } g.restore();
+    g.save(); g.strokeStyle = '#fff'; g.lineWidth = 5; g.shadowColor = '#fff'; g.shadowBlur = 30; g.beginPath(); g.moveTo(820, 0); g.lineTo(420, H); g.stroke(); g.restore();
+    g.fillStyle = 'rgba(0,0,0,0.25)'; g.beginPath(); g.ellipse(560, 562, 60, 8, 0, 0, 7); g.fill(); lumi(520, 498, 1.0, false, 1);
+    g.save(); g.translate(1060, 330); g.transform(1, 0.25, -0.5, 1, 0, 0); rect(-80, -60, 160, 120, 'rgba(255,255,255,0.15)'); g.restore(); text('el mundo se dobla como papel', 1060, 450, 18, '#cfe0ff', 'center', '400');
+    bloomPass(); vignette(0.45);
+    label('Avanzadas 1 · 2 · 8: rayos de luz y sombras, transición de papel y LÍNEA INCLINADA');
+  },
+
+  24() { // Cooperativo local + Nox
+    base(640, 560, PAL.day, PAL.night, 35);
+    lumi(470, 498, 1.0, false, 1);
+    g.save(); g.filter = 'hue-rotate(200deg) saturate(1.6)'; lumi(860, 498, 1.0, true, -1); g.restore();
+    lineBeam(640); circle(640, 300, 26, 'rgba(255,255,255,0.9)'); text('✋', 640, 302, 26, '#222', 'center', '700', false);
+    pill(30, 24, 330, 60, 'rgba(255,160,90,0.85)'); text('J1 · Lumi  (A/D + Espacio)', 50, 54, 20, '#fff');
+    pill(W - 380, 24, 350, 60, 'rgba(120,110,255,0.85)'); text('J2 · La línea  (← → o ratón)', W - 360, 54, 20, '#fff');
+    text('Nox', 860, 400, 22, '#d9c8ff', 'center'); text('salta más alto, corre más lento', 860, 425, 15, '#cfd3ff', 'center', '400');
+    bloomPass(); vignette(0.45);
+    label('Ideas 25 · 26: Nox, la Lumi de la noche, y cooperativo local (uno mueve a Lumi, otro la línea)');
+  },
+
+  25() { // Jefes intermedios: pájaro gigante y araña de hielo
+    const LX = 640;
+    split(LX, () => { const p = PAL.day; sky(p, 260, 120, false); hills(p, 420, 3, 36); ground(p, -10, W + 10, 560);
+      g.save(); g.translate(330, 260); poly([[-170, 0], [0, -40], [170, 0], [0, 30]], '#c0603a'); poly([[-170, 0], [-260, -90], [-60, -20]], '#e0804a'); poly([[170, 0], [260, -90], [60, -20]], '#e0804a'); circle(60, -10, 10, '#fff'); circle(62, -10, 5, '#222'); poly([[110, -5], [150, 5], [110, 12]], '#ffd35a'); g.restore();
+      text('Garra del Alba', 330, 380, 26, '#fff', 'center'); },
+      () => { const p = PAL.autumnNight; sky(p, 1000, 140, true); hills(p, 420, 3, 36); ground(p, -10, W + 10, 560);
+      g.save(); g.translate(960, 400); for (let k = 0; k < 8; k++) { const a = (k < 4 ? Math.PI - 0.4 - k * 0.25 : 0.4 + (k - 4) * 0.25); g.strokeStyle = '#9fe0ff'; g.lineWidth = 10; g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(a) * 120, -40); g.lineTo(Math.cos(a) * 170, 150); g.stroke(); }
+      circle(0, 0, 70, '#6fb8e6'); circle(0, -10, 50, '#a8e0ff'); [-20, 0, 20].forEach(x => { glow(x, -20, 20, 'rgba(255,80,140,0.9)'); circle(x, -20, 6, '#ff4d8a'); }); g.restore();
+      text('Reina de Escarcha', 960, 600, 26, '#fff', 'center'); });
+    lineBeam(LX); bloomPass(); vignette(0.5);
+    label('Idea 27: jefes intermedios en los capítulos 1 (de día) y 2 (de noche)');
+  },
+
+  26() { // Nivel vertical con línea horizontal + guía luciérnaga + caja que cambia
+    const LY = 360; const d = PAL.day, n = PAL.night;
+    sky(d, 900, 120, false); g.save(); g.beginPath(); g.rect(0, LY, W, H - LY); g.clip(); sky(n, 900, 600, true); g.restore();
+    for (let i = 0; i < 6; i++) { const y = 120 + i * 100, x = 300 + (i % 2) * 380; if (y < LY) bridge(x, x + 200, y); else iceSlab(x, y, 200); }
+    g.save(); g.strokeStyle = '#fff'; g.lineWidth = 5; g.shadowColor = '#fff'; g.shadowBlur = 30; g.beginPath(); g.moveTo(0, LY); g.lineTo(W, LY); g.stroke(); g.restore();
+    lumi(780, 380, 0.8, true, 1);
+    glow(900, 300, 50, 'rgba(180,255,120,0.9)'); circle(900, 300, 8, '#eaffc0'); pill(920, 250, 280, 50, 'rgba(10,30,10,0.7)'); text('"¡Prueba a subir por aquí!"', 935, 275, 16, '#d8ffc8', 'left', '400');
+    rect(150, 160, 60, 60, '#c98a5a'); text('→', 230, 190, 30, '#fff'); rect(260, 460, 60, 60, '#a8d8ff'); text('caja de día = hielo de noche', 240, 545, 15, '#fff', 'center', '400');
+    bloomPass(); vignette(0.45);
+    label('Ideas 19 · 28 · avanzada 9: nivel vertical (arriba día, abajo noche), luciérnaga guía y cajas que cambian');
+  },
+
+  27() { // Editor de niveles + tienda cosmética
+    rect(0, 0, W, H, '#14122e');
+    for (let x = 0; x < 30; x++) for (let y = 0; y < 14; y++) rect(40 + x * 26, 90 + y * 26, 25, 25, y > 10 ? '#3b8a4a' : (x === 12 && y === 10) ? '#c98a5a' : (x > 15 && x < 20 && y === 8) ? '#9fd0ff' : 'rgba(255,255,255,0.05)');
+    text('Editor de niveles', 40, 55, 30, '#fff');
+    ['# Suelo', 'D Caja', 'n Hielo', 'M Sombra', '* Luna', 'G Meta'].forEach((t, i) => { pill(40 + i * 130, 470, 120, 44, i === 2 ? 'rgba(160,200,255,0.4)' : 'rgba(255,255,255,0.1)'); text(t, 100 + i * 130, 492, 17, '#fff', 'center', '400'); });
+    pill(40, 540, 420, 56, 'rgba(255,200,90,0.9)'); text('▶ Probar   ·   Compartir: FASE-7K2Q', 250, 568, 18, '#2a1a00', 'center');
+    pill(860, 70, 380, 580, 'rgba(255,255,255,0.06)'); text('Tienda', 1050, 110, 30, '#fff', 'center'); text('☾ 34 fragmentos', 1050, 145, 18, '#ffd98a', 'center', '400');
+    [['Gorro de lana', 8], ['Estela de estrellas', 12], ['Línea dorada', 15], ['Farol de cristal', 10]].forEach(([t, c], i) => { pill(890, 180 + i * 110, 320, 90, 'rgba(255,255,255,0.08)'); circle(935, 225 + i * 110, 28, ['#ff7aa8', '#ffd35a', '#ffe08a', '#9fe7ff'][i]); text(t, 980, 215 + i * 110, 20, '#fff'); text('☾ ' + c, 980, 243 + i * 110, 16, '#ffd98a', 'left', '400'); });
+    label('Avanzada 6 · idea 32: editor de niveles con código para compartir y tienda de cosméticos');
+  },
+
+  28() { // Dos finales + cinemática
+    const LX = 640;
+    split(LX, () => { sky(PAL.day, 640, 260, false); }, () => { sky(PAL.night, 640, 260, true); });
+    seed = 3; glow(640, 260, 300, 'rgba(255,240,200,0.9)'); circle(640, 260, 90, '#fffbe8');
+    for (let i = 0; i < 12; i++) { const a = i / 12 * 6.28; moonShard(640 + Math.cos(a) * 150, 260 + Math.sin(a) * 110, 0.7); }
+    lumi(640, 520, 0.9, false, 1); lineBeam(LX);
+    text('¿Qué harás con la luna?', W / 2, 70, 34, '#fff', 'center');
+    pill(180, 600, 400, 70, 'rgba(255,190,90,0.9)'); text('Reconstruirla', 380, 635, 26, '#2a1a00', 'center');
+    pill(700, 600, 400, 70, 'rgba(120,110,255,0.9)'); text('Dejar el mundo partido', 900, 635, 26, '#fff', 'center');
+    bloomPass(); vignette(0.5);
+    label('Idea 33 · avanzada 4: cinemática final con la luna y DOS FINALES');
+  },
+
+  29() { // Modo sin fin + clasificación
+    base(640, 560, PAL.snow, PAL.snowNight, 37);
+    lumi(520, 498, 1.0, false, 1); lineBeam(640); bloomPass(); vignette(0.45);
+    pill(30, 24, 300, 60, 'rgba(10,10,40,0.6)'); text('∞ Sin fin · 1.240 m', 50, 54, 22, '#fff');
+    pill(W - 360, 90, 330, 360, 'rgba(10,10,40,0.75)'); text('Clasificación de hoy', W - 195, 125, 22, '#ffd98a', 'center');
+    [['osky7', '0:41.20'], ['luna_k', '0:42.88'], ['pixelzz', '0:44.01'], ['tú', '0:44.72'], ['mar1a', '0:47.30']].forEach(([nm, t], i) => { text(`${i + 1}. ${nm}`, W - 340, 170 + i * 52, 20, i === 3 ? '#ffd98a' : '#fff', 'left', '400'); text(t, W - 50, 170 + i * 52, 20, '#cfd3ff', 'right', '400'); });
+    label('Idea 31 · avanzada 7: modo sin fin y clasificación online');
+  },
+30() { // Menú principal reorganizado
+    base(820, 600, PAL.day, PAL.night, 40); lumi(980, 538, 0.7, true, -1); lineBeam(820); bloomPass();
+    rect(0, 0, W, H, lin(0, 0, W, 0, [[0, 'rgba(6,6,24,0.75)'], [0.45, 'rgba(6,6,24,0.35)'], [0.7, 'rgba(6,6,24,0)']]));
+    text('FASE', 70, 150, 150, '#fff6e0', 'left', '700'); text('Mueve la línea. Cambia el mundo.', 76, 235, 26, '#e8e6ff', 'left', '400');
+    pill(70, 290, 420, 92, 'rgba(255,190,90,0.95)'); text('▶  Continuar', 280, 336, 38, '#2a1a00', 'center');
+    text('Nivel 7 · Al revés   ·   ☾ 14/38', 280, 400, 18, '#cfd3ff', 'center', '400');
+    pill(70, 430, 420, 70, 'rgba(40,32,90,0.95)'); text('El viaje', 280, 465, 30, '#fff', 'center');
+    const tiles = [['☺', 'Lumi'], ['★', 'Logros'], ['✎', 'Diario'], ['☀', 'Diario'], ['▦', 'Taller'], ['∞', 'Sin fin'], ['☾', 'Tienda'], ['⚙', 'Opciones']];
+    pill(40, 590, 1200, 100, 'rgba(10,10,40,0.7)');
+    tiles.forEach(([ic, t], i) => { const x = 110 + i * 148; text(ic, x, 625, 30, '#ffd98a', 'center'); text(i === 3 ? 'Desafío' : t, x, 662, 17, '#fff', 'center', '400'); });
+    text('GitHub Game Off 2026 · SHIFT · por 0scar07', W - 30, 30, 14, '#cfd3ff', 'right', '400', false);
+    label('Menú reorganizado: lo principal a la izquierda, el mundo a la derecha y todo lo demás en una barra abajo');
+  },
+  31() { // Tutorial sin texto en el nivel 1
+    const LX = 520, TOP = 560;
+    split(LX, () => { const p = PAL.day; sky(p, 300, 140, false); hills(p, 420, 3, 50); ground(p, -10, 600, TOP); ground(p, 900, W + 10, TOP); bridge(600, 900, TOP + 4); },
+      () => { const p = PAL.night; sky(p, 1000, 140, true); hills(p, 420, 3, 50); ground(p, -10, 600, TOP); ground(p, 900, W + 10, TOP); fireflies(LX, W, 200, 540, 16); });
+    // el puente solo se ve de día: la parte de noche aparece en silueta punteada
+    g.save(); g.setLineDash([10, 8]); g.strokeStyle = 'rgba(255,230,170,0.8)'; g.lineWidth = 3; g.strokeRect(LX, TOP + 4, 900 - LX, 16); g.restore();
+    lumi(420, TOP - 62, 1.0, false, 1); lineBeam(LX);
+    // flecha brillante y mano fantasma arrastrando la línea
+    glow(LX, 300, 120, 'rgba(255,240,200,0.8)');
+    g.save(); g.fillStyle = '#fff6d6'; g.beginPath(); g.moveTo(LX + 30, 300); g.lineTo(LX + 110, 300); g.lineTo(LX + 110, 278); g.lineTo(LX + 160, 315); g.lineTo(LX + 110, 352); g.lineTo(LX + 110, 330); g.lineTo(LX + 30, 330); g.fill(); g.restore();
+    g.save(); g.globalAlpha = 0.75; circle(LX + 8, 420, 36, 'rgba(255,255,255,0.85)'); rect(LX - 4, 430, 24, 60, 'rgba(255,255,255,0.85)'); g.restore();
+    text('···→', LX + 60, 425, 34, 'rgba(255,255,255,0.7)', 'left', '700', false);
+    bloomPass(); vignette(0.45);
+    label('Idea 5: el nivel 1 enseña sin texto: flecha sobre la línea, mano fantasma y el puente que aparece al moverla');
+  },
+
+  32() { // Lumi expresiva: estirarse, aplastarse, polvo, pausa al impacto
+    const p = PAL.day; sky(p, 300, 120, false); hills(p, 430, 3, 51); ground(p, -10, W + 10, 560);
+    const frames = [[180, 'Prepara', 1.15, 0.85], [420, 'Salta', 0.82, 1.22], [660, 'En el aire', 1, 1], [900, 'Aterriza', 1.25, 0.75], [1120, 'Frena', 1, 1]];
+    frames.forEach(([x, t, sx, sy], i) => {
+      const y = i === 2 ? 360 : i === 1 ? 430 : 498;
+      g.save(); g.translate(x, y + 62); g.scale(sx, sy); lumi(0, -62, 0.9, false, 1); g.restore();
+      text(t, x, 640, 22, '#3a2a40', 'center', '700', false);
+      if (i === 3 || i === 4) { seed = 60 + i; for (let k = 0; k < 9; k++) circle(x + R(-70, 70) + (i === 4 ? -60 : 0), 555 - R(0, 25), R(5, 12), 'rgba(255,255,255,0.7)'); }
+      if (i === 1) for (let k = 0; k < 3; k++) rect(x - 40 + k * 30, 500 + k * 8, 4, 30, 'rgba(255,255,255,0.6)');
+    });
+    glow(900, 540, 120, 'rgba(255,255,255,0.7)'); text('¡golpe!', 900, 300, 26, '#ff7a3d', 'center');
+    moonShard(660, 250, 0.9); text('pausa de 3 fotogramas al coger luna', 660, 205, 18, '#3a2a40', 'center', '400', false);
+    label('Ideas 1 · 2: Lumi se estira, se aplasta, deja polvo, y el juego hace una micro-pausa en los impactos');
+  },
+
+  33() { // Pantalla de inicio con el logo partido por la línea
+    rect(0, 0, W, H, '#05040e');
+    seed = 7; for (let i = 0; i < 160; i++) circle(R(640, W), R(0, H), R(0.5, 1.6), `rgba(255,255,255,${R(0.2, 0.9)})`);
+    rect(0, 0, 640, H, lin(0, 0, 640, 0, [[0, '#ffe9b8'], [1, '#fff6e0']]));
+    g.save(); g.font = `700 230px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.save(); g.beginPath(); g.rect(0, 0, 640, H); g.clip(); g.fillStyle = '#3a2410'; g.fillText('FASE', 640, 330); g.restore();
+    g.save(); g.beginPath(); g.rect(640, 0, 640, H); g.clip(); g.fillStyle = '#cfe0ff'; g.shadowColor = '#7fa0ff'; g.shadowBlur = 40; g.fillText('FASE', 640, 330); g.restore();
+    g.restore();
+    lineBeam(640);
+    text('0scar07 presenta', 640, 520, 28, '#8a8aa8', 'center', '400', false);
+    text('pulsa cualquier tecla', 640, 640, 20, '#6a6a88', 'center', '400', false);
+    label('Idea 12: pantalla de inicio: la línea barre la pantalla y parte el logo en día y noche');
+  },
+
+  34() { // Créditos tipo película
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#06051a'], [1, '#1a1440']]));
+    seed = 9; for (let i = 0; i < 180; i++) circle(R(0, W), R(0, H), R(0.5, 1.6), `rgba(255,255,255,${R(0.2, 0.8)})`);
+    glow(640, 120, 260, 'rgba(255,240,200,0.6)'); circle(640, 120, 60, '#fffbe8');
+    const lines = [['Un juego de', 22, '#9aa0d0'], ['0scar07', 48, '#fff'], ['', 20, ''], ['Diseño y niveles', 22, '#9aa0d0'], ['0scar07', 36, '#fff'],
+      ['', 20, ''], ['Modelos', 22, '#9aa0d0'], ['Quaternius · Kenney', 34, '#fff'], ['', 20, ''], ['Música y sonido', 22, '#9aa0d0'], ['Hechos para FASE', 34, '#fff'],
+      ['', 20, ''], ['Gracias por jugar', 40, '#ffd98a']];
+    let y = 230; lines.forEach(([t, s, c]) => { if (t) text(t, 640, y, s, c, 'center', s > 30 ? '700' : '400'); y += s + 18; });
+    lumi(1080, 590, 0.6, true, -1); text('Lumi saluda mientras suben los nombres', 1080, 680, 16, '#cfd3ff', 'center', '400');
+    label('Créditos tipo película: los nombres suben sobre el cielo y la luna ya reconstruida');
+  },
+};
+
+
+
+function base(LX, TOP, d, n, sd) {
+  split(LX, () => { sky(d, 300, 140, false); hills(d, 420, 3, sd); ground(d, -10, W + 10, TOP); seed = sd; for (let k = 0; k < 4; k++) tree(R(40, LX - 60), TOP, R(140, 200), d); },
+    () => { sky(n, 1000, 150, true); hills(n, 420, 3, sd); ground(n, -10, W + 10, TOP); seed = sd + 1; for (let k = 0; k < 3; k++) tree(R(LX + 60, W), TOP, R(150, 210), n, 1, true); fireflies(LX, W, 200, 540, 18); });
+}
+function medal(x, y, col, name, got) { g.save(); g.globalAlpha = got ? 1 : 0.4; if (got) glow(x, y, 90, 'rgba(255,230,150,0.5)'); circle(x, y, 60, col); circle(x, y, 46, 'rgba(255,255,255,0.2)'); g.restore(); text(name, x, y + 90, 22, got ? '#fff' : '#8a8aa8', 'center'); }
+function label(t) { pill(20, H - 50, Math.min(W - 40, t.length * 9.5 + 40), 36, 'rgba(0,0,0,0.55)'); text(t, 38, H - 32, 17, '#ffd98a', 'left', '400', false); }
+
+function house(x, base, p) {
+  const night = p === PAL.night;
+  rect(x - 46, base - 80, 92, 80, night ? '#3a2f5a' : '#f2e2c8'); rect(x - 46, base - 80, 92, 8, night ? '#2a2246' : '#d9c4a2');
+  poly([[x - 58, base - 78], [x, base - 132], [x + 58, base - 78]], night ? '#2a1f4a' : '#d9653a');
+  rect(x - 12, base - 40, 24, 40, night ? '#1c1533' : '#8a5a3a');
+  rect(x + 18, base - 66, 18, 18, night ? '#ffd36e' : '#9fd8ff'); if (night) glow(x + 27, base - 57, 50, 'rgba(255,210,110,0.9)');
+}
+
+(scenes[scene] || scenes[1])();
+document.title = 'listo';
+</script></body></html>

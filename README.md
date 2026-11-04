@@ -123,6 +123,7 @@ verifica en cada cambio que todos se pueden terminar.
 - **Herramientas en Python** ([`Tools`](Tools)): niveles, música, efectos, voz, fuente y tráiler.
 - **Tráiler:** un director de cámara dentro del juego graba cada plano fotograma a fotograma
   ([`TrailerDirector.cs`](Assets/Scripts/TrailerDirector.cs)) y `montar_trailer.py` lo monta.
+- **Hoja de ruta:** lo que viene, con sus maquetas, en [`docs/PENDIENTES.md`](docs/PENDIENTES.md).
 - **Prensa:** logo, capturas y descripciones en el [kit de prensa](docs/prensa/README.md).
 - **Diseño:** el documento completo está en [`docs/DISENO.md`](docs/DISENO.md); los cambios, en
   el [`CHANGELOG`](CHANGELOG.md).
