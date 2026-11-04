@@ -91,6 +91,126 @@ Guardadas para más adelante. Como siempre: primero maqueta, luego Unity.
 | 41 | Modo daltónico con formas: las piezas de noche llevan un icono además del color | ⬜ |
 | 42 | Móvil: pausa con un botón y controles táctiles que se pueden mover y cambiar de tamaño | ⬜ |
 
+## Más ideas (43-62)
+
+| # | Idea | Estado |
+|---|---|---|
+| 43 | Niveles de la semana: un nivel del Taller elegido, cargado desde el repositorio de GitHub | ⬜ |
+| 44 | Plataformas que crecen: de día brotan como plantas y de noche se recogen poco a poco | ⬜ |
+| 45 | Agua que sube de noche (marea) y baja de día: la línea controla el nivel del agua | ⬜ |
+| 46 | Viento solo de día que empuja a Lumi; de noche, calma | ⬜ |
+| 47 | Sombras sólidas: de noche la sombra de un objeto se vuelve una plataforma | ⬜ |
+| 48 | Llaves y puertas de dos colores: la llave de día solo abre puertas de día | ⬜ |
+| 49 | Nivel a oscuras: solo se ve lo que ilumina el farol de Lumi | ⬜ |
+| 50 | Lumi ríe al caer de muy alto en agua, tiembla en la nieve y se sacude la lluvia | ⬜ |
+| 51 | Estaciones dentro de un nivel: la línea cambia también de otoño a invierno | ⬜ |
+| 52 | Pequeños jefes por capítulo antes de la Gran Sombra | ⬜ |
+| 53 | Medallas de estilo: terminar sin tocar el suelo de noche, cruzar la línea 50 veces... | ⬜ |
+| 54 | Repetición del nivel al terminar (cámara rápida de tu partida) para compartir | ⬜ |
+| 55 | Pantalla de estadísticas: tiempo total, caídas, kilómetros recorridos, veces que moviste la línea | ⬜ |
+| 56 | Pistas visuales opcionales: una línea fantasma muestra dónde conviene ponerla | ⬜ |
+| 57 | Modo historia relajado: sin caídas al vacío, Lumi flota de vuelta a la plataforma | ⬜ |
+| 58 | Tutorial de mando: iconos de botones según el mando conectado (Xbox, PlayStation) | ⬜ |
+| 59 | Vibración del mando distinta para día y noche | ⬜ |
+| 60 | Título del nivel escrito a mano que aparece trazado por la línea | ⬜ |
+| 61 | Final secreto si se reúnen todas las lunas y todas las páginas del diario | ⬜ |
+| 62 | Encuesta corta al terminar el juego (qué te gustó, qué cambiarías) que abre un issue en GitHub | ⬜ |
+
+## Ideas por impacto (63-92), de menor a mayor
+
+| # | Idea | Impacto | Estado |
+|---|---|---|---|
+| 63 | Cursor propio con forma de línea dorada en el menú | Bajo | ⬜ |
+| 64 | Sonido distinto al pasar el ratón por cada botón del menú | Bajo | ⬜ |
+| 65 | Frase aleatoria de Lumi en el menú ("¿Seguimos?", "Hoy hay luna llena") | Bajo | ⬜ |
+| 66 | Contador de días seguidos jugando el desafío diario | Bajo | ⬜ |
+| 67 | Pantalla de carga con datos del nivel que viene (récord, lunas que faltan) | Bajo | ⬜ |
+| 68 | El menú cambia de hora real: amanecer, tarde o noche según el reloj del PC | Bajo-medio | ⬜ |
+| 69 | Logros con dibujo propio en vez de estrella genérica | Bajo-medio | ⬜ |
+| 70 | Tarjeta para compartir al terminar el juego (tiempo total, lunas, medallas) | Bajo-medio | ⬜ |
+| 71 | Ajuste de velocidad del juego (80 %, 100 %) para quien va con calma | Medio | ⬜ |
+| 72 | Puntos de control que se ven en el mapa de pausa | Medio | ⬜ |
+| 73 | Lumi deja un rastro de luz al correr rápido | Medio | ⬜ |
+| 74 | Cámara lenta automática al cruzar la línea justo a tiempo en un salto | Medio | ⬜ |
+| 75 | Nivel tutorial opcional de "trucos avanzados" (dos líneas, burbuja del farol) | Medio | ⬜ |
+| 76 | Cada capítulo con un color de línea propio (dorada, naranja, azul hielo) | Medio | ⬜ |
+| 77 | Escenas cortas entre capítulos con dibujos y texto (estilo cuento) | Medio-alto | ⬜ |
+| 78 | Banda sonora que se puede escuchar en el menú (reproductor de pistas) | Medio-alto | ⬜ |
+| 79 | Modo "speedrun" con cronómetro por tramos y comparación con tu récord | Medio-alto | ⬜ |
+| 80 | Tabla de récords en línea por nivel (con nombre corto) | Medio-alto | ⬜ |
+| 81 | Editor de niveles con compartir por enlace (el código va en la URL) | Alto | ⬜ |
+| 82 | Capítulo 4: un mundo nuevo (ciudad de noche, cielo de auroras) | Alto | ⬜ |
+| 83 | Mecánica de tercera fase: el atardecer como mundo propio entre día y noche | Alto | ⬜ |
+| 84 | Cooperativo en línea: uno mueve a Lumi y el otro la línea desde otro PC | Alto | ⬜ |
+| 85 | Voces y sonidos de Lumi (risas, "¡hop!", suspiros) grabados o generados | Alto | ⬜ |
+| 86 | Jefe final con varias fases que usa la línea contra ti | Alto | ⬜ |
+| 87 | Versión de móvil publicada en Google Play | Muy alto | ⬜ |
+| 88 | Traducciones a más idiomas (portugués, francés, japonés) | Muy alto | ⬜ |
+| 89 | Modo historia ampliado: 40 niveles, con mapa del mundo explorable | Muy alto | ⬜ |
+| 90 | Versión en Steam con logros de Steam y tarjetas | Muy alto | ⬜ |
+| 91 | Generador de niveles infinitos con dificultad que se adapta a cómo juegas | Muy alto | ⬜ |
+| 92 | Tráiler de lanzamiento nuevo con todo lo añadido y una campaña en redes | Muy alto | ⬜ |
+
+## Más ideas por impacto (93-122), de menor a mayor
+
+| # | Idea | Impacto | Estado |
+|---|---|---|---|
+| 93 | Lumi saluda con la mano cuando vuelves al menú tras un rato fuera | Bajo | ⬜ |
+| 94 | Estrellas fugaces de vez en cuando en el cielo de noche | Bajo | ⬜ |
+| 95 | El farol de Lumi tintinea al caminar | Bajo | ⬜ |
+| 96 | Al pausar, el mundo se queda en blanco y negro salvo la línea | Bajo | ⬜ |
+| 97 | Mensaje de ánimo tras muchas caídas seguidas ("¡Casi!") | Bajo | ⬜ |
+| 98 | Atajo para reiniciar desde el último punto de control (mantener R) | Bajo-medio | ⬜ |
+| 99 | Notas musicales al recoger fragmentos que forman una melodía en el nivel | Bajo-medio | ⬜ |
+| 100 | Nombre del jugador en el menú ("¡Hola, Oscar!") | Bajo-medio | ⬜ |
+| 101 | Partículas de pétalos al florecer las plantas cuando pasa el día | Bajo-medio | ⬜ |
+| 102 | Saltos con un pequeño eco visual (anillo de luz en el suelo) | Medio | ⬜ |
+| 103 | Coleccionables de capítulo: una pluma, una hoja, un copo de nieve | Medio | ⬜ |
+| 104 | Mapa de pausa con las lunas que faltan marcadas | Medio | ⬜ |
+| 105 | Niveles con dos caminos (fácil y difícil) que se juntan al final | Medio | ⬜ |
+| 106 | Plataformas que solo existen mientras Lumi está sobre la línea | Medio | ⬜ |
+| 107 | Clima que cambia con la línea: lluvia de día y estrellas fugaces de noche | Medio | ⬜ |
+| 108 | Logros de exploración: tocar todos los bordes del mapa, quedarse quieto un minuto | Medio-alto | ⬜ |
+| 109 | Modo galería: modelos de Lumi, Nox y los enemigos que se pueden girar | Medio-alto | ⬜ |
+| 110 | Enemigo nuevo que copia la posición de la línea (la sigue o la evita) | Medio-alto | ⬜ |
+| 111 | Nivel musical: plataformas y peligros al ritmo de la canción | Medio-alto | ⬜ |
+| 112 | Puzles de luz: reflejar la luz del farol para abrir caminos | Alto | ⬜ |
+| 113 | Línea curva en niveles especiales (arco en lugar de recta) | Alto | ⬜ |
+| 114 | Lumi puede llevar objetos (caja, flor) del día a la noche | Alto | ⬜ |
+| 115 | Mundo abierto pequeño entre capítulos que conecta los niveles | Alto | ⬜ |
+| 116 | Modo carrera a pantalla partida para dos jugadores | Alto | ⬜ |
+| 117 | Sistema de habilidades que se desbloquean (doble salto, planear con el farol) | Alto | ⬜ |
+| 118 | Historia con decisiones: ayudar a la noche o al día cambia el final | Muy alto | ⬜ |
+| 119 | Versión para consolas (Switch) con controles adaptados | Muy alto | ⬜ |
+| 120 | Integración con Twitch: el público mueve la línea por votación | Muy alto | ⬜ |
+| 121 | Herramientas para la comunidad: editor de niveles completo y Steam Workshop | Muy alto | ⬜ |
+| 122 | Secuela o expansión: "FASE: Eclipse", con una tercera línea | Muy alto | ⬜ |
+
+## Últimas ideas (123-142), de menor a mayor impacto
+
+| # | Idea | Impacto | Estado |
+|---|---|---|---|
+| 123 | Lumi estornuda al entrar en la nieve | Bajo | ⬜ |
+| 124 | Los botones del menú se inclinan un poco hacia el ratón | Bajo | ⬜ |
+| 125 | Reloj de arena en la pausa que muestra cuánto llevas jugando hoy | Bajo | ⬜ |
+| 126 | Nubes que tapan el sol y oscurecen un poco el lado de día | Bajo | ⬜ |
+| 127 | Créditos con los nombres de quienes probaron el juego | Bajo-medio | ⬜ |
+| 128 | Sonido ambiente que cambia al entrar en cuevas o zonas cerradas | Bajo-medio | ⬜ |
+| 129 | Mensajes escondidos en el decorado (carteles, piedras grabadas) | Bajo-medio | ⬜ |
+| 130 | Ajuste de brillo en Opciones | Medio | ⬜ |
+| 131 | Retos semanales con premio de ropa para Lumi | Medio | ⬜ |
+| 132 | Lumi recuerda dónde cayó más veces y deja una flor en ese sitio | Medio | ⬜ |
+| 133 | Mapa del capítulo que se va pintando a medida que avanzas | Medio | ⬜ |
+| 134 | Puertas que solo se abren si la línea está en un ángulo concreto | Medio-alto | ⬜ |
+| 135 | Niveles verticales de escalada con la línea tumbada | Medio-alto | ⬜ |
+| 136 | Ghost de amigos: cargar la partida de otro con un código | Medio-alto | ⬜ |
+| 137 | Modo de un solo toque para móvil (la línea sigue a Lumi sola, tú solo saltas) | Alto | ⬜ |
+| 138 | Iluminación en tiempo real con sombras largas al atardecer | Alto | ⬜ |
+| 139 | Capítulo submarino: de día agua clara, de noche bioluminiscencia | Alto | ⬜ |
+| 140 | Analítica anónima: dónde se atasca la gente, para ajustar niveles | Muy alto | ⬜ |
+| 141 | Modo creador con IA: describes un nivel y se genera una propuesta | Muy alto | ⬜ |
+| 142 | Lanzamiento completo: página de Steam, prensa y festival de juegos indie | Muy alto | ⬜ |
+
 ## Al final
 
 - Exportar web, Windows y Android y subirlos (itch y release v1.0).
