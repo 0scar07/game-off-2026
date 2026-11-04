@@ -65,6 +65,32 @@ Ideas aprobadas para FASE y su estado. Las maquetas de referencia están en [`ma
 | 22 | Vista previa del nivel en el mapa de viaje | ✅ plano del nivel recorriéndose, con medallas y récord | [idea-22](maquetas/idea-22.png) |
 | 23 | Pantalla "¿Sabías qué?" con curiosidades que se desbloquean | ✅ 12 curiosidades en el menú | [idea-23](maquetas/idea-23.png) |
 
+## Ideas nuevas (24-42)
+
+Guardadas para más adelante. Como siempre: primero maqueta, luego Unity.
+
+| # | Idea | Estado |
+|---|---|---|
+| 24 | Piezas de atardecer: solo existen en una franja estrecha justo encima de la línea | ⬜ |
+| 25 | Espejos de luz: un rayo de sol rebota y crea una franja de día lejos de la línea | ⬜ |
+| 26 | Línea con peso: en algunos niveles cae despacio como un péndulo y hay que sujetarla | ⬜ |
+| 27 | Niveles de persecución: la noche avanza sola por detrás | ⬜ |
+| 28 | Interruptores de mundo: palancas que cambian qué lado es día y cuál noche unos segundos | ⬜ |
+| 29 | Animales que cambian: pájaros de día que de noche son búhos o luciérnagas | ⬜ |
+| 30 | Lumi bosteza: si estás quieto un rato se sienta, bosteza y se duerme con el farol apagado | ⬜ |
+| 31 | Huellas de Lumi en la nieve que se borran o se congelan según el lado de la línea | ⬜ |
+| 32 | Personaje compañero con frases cortas y pequeñas misiones secundarias | ⬜ |
+| 33 | Contrarreloj por capítulo: todos sus niveles seguidos con un cronómetro y ranking local | ⬜ |
+| 34 | Desafíos con condiciones ("sin mover la línea a la izquierda", "solo 5 agarres"...) | ⬜ |
+| 35 | Fantasma de tu mejor partida desde el mapa de viaje | ⬜ |
+| 36 | Mutadores tras terminar el juego: gravedad baja, línea invertida, Lumi gigante... | ⬜ |
+| 37 | Transición entre niveles con la línea barriendo la pantalla | ⬜ |
+| 38 | Narrador de cuento: frases cortas al empezar cada capítulo | ⬜ |
+| 39 | Álbum de fotos del modo foto dentro del menú | ⬜ |
+| 40 | Música interactiva: cada fragmento recogido añade un instrumento | ⬜ |
+| 41 | Modo daltónico con formas: las piezas de noche llevan un icono además del color | ⬜ |
+| 42 | Móvil: pausa con un botón y controles táctiles que se pueden mover y cambiar de tamaño | ⬜ |
+
 ## Al final
 
 - Exportar web, Windows y Android y subirlos (itch y release v1.0).

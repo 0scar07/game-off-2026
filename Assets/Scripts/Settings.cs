@@ -96,6 +96,12 @@ namespace Fase
             // La web usa el perfil "Mobile" (80 % de resolución, sombras pequeñas). En un ordenador
             // sobra potencia: resolución completa y sombras nítidas. (En el editor no, que
             // cambiaría el archivo del perfil.)
+            // En un ordenador, el perfil de calidad "PC" (antialiasing 4x, sombras suaves).
+            if (!Application.isEditor && !Application.isMobilePlatform)
+            {
+                int pc = System.Array.IndexOf(QualitySettings.names, "PC");
+                if (pc >= 0 && QualitySettings.GetQualityLevel() != pc) QualitySettings.SetQualityLevel(pc, true);
+            }
             if (!Application.isEditor && !Application.isMobilePlatform
                 && UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline is UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset urp)
             {
