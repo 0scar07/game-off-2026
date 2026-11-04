@@ -82,13 +82,21 @@ namespace Fase
             else
             {
                 string moon = fragmentsTotal[level - 1] > 0 ? $"{Loc.Get("moon")} {Progress.Fragments(level)}/{fragmentsTotal[level - 1]}" : "";
-                infoDetail.text = $"{Loc.Get("best")} {Hud.FormatTime(Progress.BestTime(level))}    ·    {moon}";
+                int medal = Medals.Best(level);
+                string stars = $"<color=#ffd98a>{new string('★', Mathf.Min(medal, 3))}</color><color=#ffffff40>{new string('★', 3 - Mathf.Min(medal, 3))}</color>" + (medal >= Medals.Moon ? " ☾" : "");
+                infoDetail.text = $"{stars}    ·    {Loc.Get("best")} {Hud.FormatTime(Progress.BestTime(level))}    ·    {moon}";
             }
+            Selected?.Invoke(level, open);
+
             infoPlay.interactable = open;
             if (marker != null) markerBase = ((RectTransform)nodes[level - 1].transform).anchoredPosition + Vector2.up * 92f;
         }
 
         public void PlaySelected() => LoadLevel(selected);
+
+        /// <summary>Se elige un nivel en el mapa (número, si está abierto).</summary>
+        public event System.Action<int, bool> Selected;
+
 
         void Update()
         {

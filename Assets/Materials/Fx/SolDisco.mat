@@ -35,6 +35,6 @@ Material:
     - _SrcBlend: 1
     - _World: 0
     m_Colors:
-    - _Color: {r: 2.28, g: 2.328, b: 2.4, a: 2.4}
+    - _Color: {r: 2.4, g: 2.2080002, b: 1.6800001, a: 2.4}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

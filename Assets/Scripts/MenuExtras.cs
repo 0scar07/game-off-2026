@@ -13,7 +13,7 @@ namespace Fase
     public class MenuExtras : MonoBehaviour
     {
         MainMenu menu;
-        GameObject achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel;
+        GameObject achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel, triviaPanel;
         readonly List<System.Action> refreshers = new List<System.Action>();
         Settings.Action? rebinding;
         Text rebindLabel;
@@ -27,8 +27,10 @@ namespace Fase
             accessPanel = BuildAccess();
             diaryPanel = BuildDiary();
             shopPanel = BuildShop();
+            triviaPanel = BuildTrivia();
             BuildJourneyExtras();
-            foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel }) menu.AddPanel(panel);
+            BuildJourneyPreview();
+            foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel, triviaPanel }) menu.AddPanel(panel);
             menu.Shown += _ => Refresh();
             Loc.Changed += Refresh;
         }
@@ -45,7 +47,7 @@ namespace Fase
         /// <summary>Barra de abajo con iconos: todo lo que no es jugar o el viaje.</summary>
         void BuildMainRow()
         {
-            var dock = UiKit.Box(menu.mainPanel.transform.parent, "Barra", new Vector2(0.5f, 0f), new Vector2(0f, 26f), new Vector2(1640f, 128f), new Color(0.04f, 0.03f, 0.14f, 0.78f));
+            var dock = UiKit.Box(menu.mainPanel.transform.parent, "Barra", new Vector2(0.5f, 0f), new Vector2(0f, 26f), new Vector2(1680f, 128f), new Color(0.04f, 0.03f, 0.14f, 0.78f));
             dock.rectTransform.pivot = new Vector2(0.5f, 0f);
             // La barra va con el menú principal: se esconde cuando se abre otro panel.
             menu.Shown += panel => dock.gameObject.SetActive(panel == menu.mainPanel);
@@ -58,21 +60,22 @@ namespace Fase
                 ("▦", "workshop", () => SceneFader.Load("Taller")),
                 ("∞", "endless", () => SceneFader.Load("SinFin")),
                 ("☾", "shop", () => menu.Show(shopPanel)),
+                ("?", "trivia", () => menu.Show(triviaPanel)),
                 ("⚙", "options", menu.ShowOptions),
             };
             for (int i = 0; i < items.Length; i++)
             {
                 var (icon, key, action) = items[i];
-                float x = (i - (items.Length - 1) * 0.5f) * 200f;
-                var button = UiKit.Button(dock.transform, key, "", new Vector2(0.5f, 0.5f), new Vector2(x, 0f), new Vector2(186f, 112f), action, 26);
+                float x = (i - (items.Length - 1) * 0.5f) * 182f;
+                var button = UiKit.Button(dock.transform, key, "", new Vector2(0.5f, 0.5f), new Vector2(x, 0f), new Vector2(172f, 112f), action, 24);
                 var image = button.GetComponent<Image>();
                 image.color = new Color(1f, 1f, 1f, 0.02f);
                 var label = button.GetComponentInChildren<Text>();
                 label.rectTransform.anchoredPosition = new Vector2(0f, -26f);
-                var glyph = UiKit.Text(button.transform, "Icono", icon, new Vector2(0.5f, 0.5f), new Vector2(0f, 16f), new Vector2(186f, 60f), 46, TextAnchor.MiddleCenter, UiKit.Gold);
+                var glyph = UiKit.Text(button.transform, "Icono", icon, new Vector2(0.5f, 0.5f), new Vector2(0f, 16f), new Vector2(172f, 60f), 46, TextAnchor.MiddleCenter, UiKit.Gold);
                 glyph.fontStyle = FontStyle.Normal;
                 string k = key;
-                refreshers.Add(() => label.text = k == "daily" ? Loc.Pick("Desafío", "Daily") : Loc.Get(k));
+                refreshers.Add(() => label.text = k == "daily" ? Loc.Pick("Desafío", "Daily") : k == "trivia" ? Loc.Pick("Curiosidades", "Trivia") : Loc.Get(k));
             }
         }
 
@@ -234,14 +237,24 @@ namespace Fase
         GameObject BuildAccess()
         {
             var panel = Panel("Accesibilidad", "controls", out var content);
-            Toggle(content, "assist", new Vector2(-350f, 260f), () => Settings.Assist, v => Settings.Assist = v);
-            Toggle(content, "contrast", new Vector2(-350f, 160f), () => Settings.HighContrast, v => Settings.HighContrast = v);
-            Toggle(content, "vibration", new Vector2(-350f, 60f), () => Settings.Vibration, v => Settings.Vibration = v);
-            Toggle(content, "mirror", new Vector2(-350f, -40f), () => MirrorMode.Enabled, v => MirrorMode.Enabled = v, () => MirrorMode.Unlocked);
-            Toggle(content, "coop", new Vector2(-350f, -140f), () => Settings.Coop, v => Settings.Coop = v);
+            // Columna izquierda: ocho ajustes, de 82 en 82.
+            float row = 282f;
+            Toggle(content, "assist", new Vector2(-350f, row), () => Settings.Assist, v => Settings.Assist = v);
+            Toggle(content, "contrast", new Vector2(-350f, row -= 82f), () => Settings.HighContrast, v => Settings.HighContrast = v);
+            Toggle(content, "reduceeffects", new Vector2(-350f, row -= 82f), () => Settings.ReduceEffects, v => Settings.ReduceEffects = v);
+            // Tamaño del texto: cada clic pasa al siguiente (se ve al momento en todo el menú).
+            Toggle(content, "textsize", new Vector2(-350f, row -= 82f), () => Settings.TextSize == 2, _ => Settings.TextSize++, null,
+                _ => Loc.Pick(new[] { "Normal", "Grande", "Muy grande" }[Settings.TextSize], new[] { "Normal", "Large", "Extra large" }[Settings.TextSize]));
+            Toggle(content, "vibration", new Vector2(-350f, row -= 82f), () => Settings.Vibration, v => Settings.Vibration = v);
+            Toggle(content, "mirror", new Vector2(-350f, row -= 82f), () => MirrorMode.Enabled, v => MirrorMode.Enabled = v, () => MirrorMode.Unlocked);
+            Toggle(content, "coop", new Vector2(-350f, row -= 82f), () => Settings.Coop, v => Settings.Coop = v);
             // Velocidad de la línea: cada clic pasa a la siguiente.
-            Toggle(content, "linespeed", new Vector2(-350f, -240f), () => Settings.LineSpeed == 2, _ => Settings.LineSpeed++, null,
+            Toggle(content, "linespeed", new Vector2(-350f, row -= 82f), () => Settings.LineSpeed == 2, _ => Settings.LineSpeed++, null,
                 _ => Loc.Pick(new[] { "Lenta", "Normal", "Rápida" }[Settings.LineSpeed], new[] { "Slow", "Normal", "Fast" }[Settings.LineSpeed]));
+            // Vista previa del tamaño del texto.
+            var sample = UiKit.Text(content, "Muestra", "", new Vector2(0.5f, 0.5f), new Vector2(400f, -320f), new Vector2(560f, 50f), 28, TextAnchor.MiddleCenter, UiKit.Soft);
+            refreshers.Add(() => sample.text = Loc.Pick("Así se verá el texto", "This is how text will look"));
+
 
             var actions = (Settings.Action[])System.Enum.GetValues(typeof(Settings.Action));
             string[] keys = { "left", "right", "jump", "lineleft", "lineright" };
@@ -275,7 +288,7 @@ namespace Fase
         void Toggle(RectTransform parent, string key, Vector2 position, System.Func<bool> get, System.Action<bool> set, System.Func<bool> available = null,
             System.Func<bool, string> valueText = null)
         {
-            var button = UiKit.Button(parent, key, "", new Vector2(0.5f, 0.5f), position, new Vector2(560f, 80f), null, 32);
+            var button = UiKit.Button(parent, key, "", new Vector2(0.5f, 0.5f), position, new Vector2(560f, 80f), null, 28);
             var text = button.GetComponentInChildren<Text>();
             button.onClick.AddListener(() => { set(!get()); Refresh(); });
             refreshers.Add(() =>
@@ -302,7 +315,125 @@ namespace Fase
             }
         }
 
+        // ───────── ¿Sabías qué? ─────────
+
+        GameObject BuildTrivia()
+        {
+            var panel = Panel("Curiosidades", "trivia", out var content);
+            var catalog = LevelCatalog.Get;
+            int boss = 0;
+            for (int i = 0; i < catalog.levels.Length; i++) if (catalog.levels[i].name.Contains("Sombra")) boss = i + 1;
+            System.Func<int> moon = () => { int n = 0; for (int i = 0; i < catalog.levels.Length; i++) n += Progress.Fragments(i + 1); return n; };
+            var facts = new (string titleEs, string titleEn, string es, string en, string howEs, string howEn, System.Func<bool> open)[]
+            {
+                ("La línea", "The line", "FASE nació del tema de la\nGitHub Game Off 2026: SHIFT.", "FASE was born from the GitHub\nGame Off 2026 theme: SHIFT.",
+                    "Supera el nivel 1", "Beat level 1", () => Progress.Unlocked > 1),
+                ("El farol", "The lantern", "Cerca de un fragmento de luna,\nel farol de Lumi brilla y late\nmás rápido.", "Near a moon fragment, Lumi's\nlantern glows and beats faster.",
+                    "Reúne 5 fragmentos", "Collect 5 fragments", () => moon() >= 5),
+                ("Las luciérnagas", "The fireflies", "Si te atascas, una luciérnaga\nviene a darte una pista.", "If you get stuck, a firefly\ncomes to give you a hint.",
+                    "Llega al nivel 6", "Reach level 6", () => Progress.Unlocked >= 6),
+                ("Dos canciones", "Two songs", "Cada capítulo tiene una canción\nde día y otra de noche: suenan a\nla vez y la línea elige cuál oyes.", "Each chapter has a day song and\na night song: both play at once\nand the line picks which you hear.",
+                    "Termina el capítulo 1", "Finish chapter 1", () => catalog.ChapterDone(1)),
+                ("Nox", "Nox", "Nox salta más alto que Lumi,\npero corre un poco más despacio.", "Nox jumps higher than Lumi,\nbut runs a little slower.",
+                    "Termina el capítulo 1", "Finish chapter 1", () => Wardrobe.NoxUnlocked),
+                ("El acorde final", "The final chord", "Al llegar a la meta, la música\nacaba en un acorde en el tono\nde su capítulo.", "At the goal, the music ends on\na chord in its chapter's key.",
+                    "Termina el capítulo 2", "Finish chapter 2", () => catalog.ChapterDone(2)),
+                ("Niveles secretos", "Secret levels", "Cada capítulo esconde un nivel:\nse abre al reunir todos sus\nfragmentos de luna.", "Each chapter hides a level: it\nopens when you collect all of\nits moon fragments.",
+                    "Todos los fragmentos\nde un capítulo", "All fragments\nin a chapter", () => catalog.AllFragments(1) || catalog.AllFragments(2) || catalog.AllFragments(3)),
+                ("El diario", "The diary", "Hay una página del diario de Lumi\nen el cofre secreto de cada nivel.", "There's a page of Lumi's diary\nin every level's secret chest.",
+                    "Encuentra un cofre", "Find a chest", () => Diary.Found >= 1),
+                ("La Gran Sombra", "The Great Shadow", "La Gran Sombra se vuelve piedra\ncon la luz del día.", "The Great Shadow turns to stone\nin daylight.",
+                    "Vence a la Gran Sombra", "Defeat the Great Shadow", () => boss > 0 && Progress.Unlocked > boss),
+                ("Medalla de luna", "Moon medal", "La medalla de luna es más rápida\nque el oro, y su tiempo no se ve\nhasta que la consigues.", "The moon medal beats gold, and\nits time stays hidden until\nyou earn it.",
+                    "Consigue 5 logros", "Earn 5 achievements", () => Achievements.Count >= 5),
+                ("Modo espejo", "Mirror mode", "Al terminar la historia se abre\nel modo espejo: todos los niveles\ndel revés.", "Finishing the story unlocks\nmirror mode: every level\nflipped around.",
+                    "Termina la historia", "Finish the story", () => MirrorMode.Unlocked),
+                ("Hecho en un mes", "Made in a month", "FASE se hizo en noviembre de 2026\npara la GitHub Game Off.", "FASE was made in November 2026\nfor the GitHub Game Off.",
+                    "Termina la historia", "Finish the story", () => MirrorMode.Unlocked),
+            };
+            var count = UiKit.Text(content, "Cuenta", "", new Vector2(1f, 1f), new Vector2(-10f, 70f), new Vector2(300f, 50f), 34, TextAnchor.MiddleRight, UiKit.Gold);
+            count.rectTransform.pivot = new Vector2(1f, 0.5f);
+            for (int i = 0; i < facts.Length; i++)
+            {
+                var fact = facts[i];
+                var card = UiKit.Box(content, "Curiosidad" + i, new Vector2(0.5f, 0.5f), new Vector2((i % 4 - 1.5f) * 345f, 210f - (i / 4) * 220f), new Vector2(330f, 200f), Color.white);
+                var title = UiKit.Text(card.transform, "Titulo", "", new Vector2(0.5f, 1f), new Vector2(0f, -34f), new Vector2(310f, 40f), 28, TextAnchor.MiddleCenter, UiKit.Gold);
+                var body = UiKit.Text(card.transform, "Texto", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -24f), new Vector2(310f, 130f), 21);
+                body.horizontalOverflow = HorizontalWrapMode.Wrap;
+                var mark = UiKit.Text(card.transform, "Interrogacion", "?", new Vector2(0.5f, 0.5f), new Vector2(0f, 24f), new Vector2(120f, 100f), 76, TextAnchor.MiddleCenter, new Color(0.4f, 0.37f, 0.65f));
+                refreshers.Add(() =>
+                {
+                    bool open = fact.open();
+                    card.color = open ? new Color(1f, 0.94f, 0.78f, 0.12f) : new Color(1f, 1f, 1f, 0.04f);
+                    title.text = open ? Loc.Pick(fact.titleEs, fact.titleEn) : "";
+                    body.text = open ? Loc.Pick(fact.es, fact.en) : Loc.Pick(fact.howEs, fact.howEn);
+                    body.color = open ? Color.white : new Color(0.6f, 0.58f, 0.78f);
+                    body.rectTransform.anchoredPosition = new Vector2(0f, open ? -24f : -58f);
+                    mark.enabled = !open;
+                });
+            }
+            refreshers.Add(() => { int n = 0; foreach (var f in facts) if (f.open()) n++; count.text = $"{n} / {facts.Length}"; });
+            return panel;
+        }
+
+        // ───────── Mapa de viaje: vista previa del nivel ─────────
+
+        /// <summary>
+        /// La ficha del nivel elegido crece y muestra a la izquierda el plano del nivel (lo dibuja
+        /// el generador en Resources/Vistas) recorriéndose despacio, partido en día y noche.
+        /// </summary>
+        void BuildJourneyPreview()
+        {
+            if (menu.infoTitle == null) return;
+            var info = (RectTransform)menu.infoTitle.transform.parent;
+            info.sizeDelta = new Vector2(info.sizeDelta.x, 250f);
+            foreach (var label in new[] { menu.infoTitle, menu.infoDetail })
+            {
+                var r = label.rectTransform;
+                r.anchoredPosition += new Vector2(400f, label == menu.infoTitle ? -6f : 6f);
+                r.sizeDelta = new Vector2(500f, r.sizeDelta.y);
+            }
+            menu.infoTitle.fontSize = 44;
+            menu.infoDetail.fontSize = 28;
+
+            var frame = UiKit.Box(info, "Marco", new Vector2(0f, 0.5f), new Vector2(22f, 0f), new Vector2(394f, 210f), new Color(1f, 1f, 1f, 0.25f));
+            frame.rectTransform.pivot = new Vector2(0f, 0.5f);
+            var window = UiKit.Rect(info, "Vista", new Vector2(0f, 0.5f), new Vector2(24f, 0f), new Vector2(390f, 206f));
+            window.pivot = new Vector2(0f, 0.5f);
+            window.anchoredPosition = new Vector2(24f, 0f);
+            window.gameObject.AddComponent<RectMask2D>();
+            var day = UiKit.Box(window, "Dia", new Vector2(0f, 0.5f), Vector2.zero, new Vector2(195f, 206f), new Color(0.55f, 0.8f, 0.98f), false);
+            day.rectTransform.pivot = new Vector2(0f, 0.5f);
+            var night = UiKit.Box(window, "Noche", new Vector2(1f, 0.5f), Vector2.zero, new Vector2(195f, 206f), new Color(0.1f, 0.09f, 0.3f), false);
+            night.rectTransform.pivot = new Vector2(1f, 0.5f);
+            var map = UiKit.Rect(window, "Plano", new Vector2(0f, 0.5f), Vector2.zero, new Vector2(390f, 206f)).gameObject.AddComponent<RawImage>();
+            map.rectTransform.pivot = new Vector2(0f, 0.5f);
+            map.raycastTarget = false;
+            // Velo de noche sobre la mitad derecha y la línea en medio.
+            UiKit.Box(window, "Velo", new Vector2(1f, 0.5f), Vector2.zero, new Vector2(195f, 206f), new Color(0.05f, 0.05f, 0.25f, 0.35f), false).rectTransform.pivot = new Vector2(1f, 0.5f);
+            UiKit.Box(window, "Halo", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(26f, 206f), new Color(1f, 0.95f, 0.8f, 0.25f), false);
+            UiKit.Box(window, "Linea", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(4f, 206f), Color.white, false);
+            var locked = UiKit.Text(window, "Cerrado", "?", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(200f, 160f), 110, TextAnchor.MiddleCenter, new Color(1f, 1f, 1f, 0.5f));
+            var pan = map.gameObject.AddComponent<PreviewPan>();
+
+            menu.Selected += (level, open) =>
+            {
+                var entry = LevelCatalog.Get.At(level);
+                var texture = open && entry != null ? Resources.Load<Texture2D>("Vistas/" + entry.scene) : null;
+                map.texture = texture;
+                map.enabled = texture != null;
+                locked.enabled = !open;
+                if (texture != null)
+                {
+                    float scale = 206f / texture.height;
+                    map.rectTransform.sizeDelta = new Vector2(texture.width * scale, 206f);
+                    pan.Restart(Mathf.Max(0f, texture.width * scale - 390f));
+                }
+            };
+        }
+
         // ───────── Mapa de viaje: niveles secretos ─────────
+
 
         void BuildJourneyExtras()
         {

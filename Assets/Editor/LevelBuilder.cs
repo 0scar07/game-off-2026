@@ -119,12 +119,73 @@ public static partial class LevelBuilder
             }
         EditorBuildSettings.scenes = scenes.ToArray();
         WriteCatalog(levels);
+        WritePreviews(levels);
         AssetDatabase.SaveAssets();
         EditorSceneManager.OpenScene(menuPath);
         Debug.Log($"Generados {levels.Count} niveles en {ScenesFolder}.");
     }
 
+    /// <summary>
+    /// Resources/Vistas/&lt;escena&gt;.png: el plano de cada nivel, un píxel por casilla, para la
+    /// ficha del mapa de viaje (MenuExtras lo recorre despacio).
+    /// </summary>
+    static void WritePreviews(List<Level> levels)
+    {
+        const string folder = "Assets/Resources/Vistas";
+        Directory.CreateDirectory(folder);
+        var wood = new Color(0.86f, 0.6f, 0.34f);
+        var night = new Color(0.48f, 0.66f, 1f);
+        foreach (var level in levels)
+        {
+            var biome = level.Biome;
+            // Sin el cielo vacío de arriba (deja tres filas de margen).
+            int first = 0;
+            while (first < level.Height - 1 && level.rows[first].Trim().Length == 0) first++;
+            first = Mathf.Max(0, first - 3);
+            int w = level.Width, h = level.Height - first;
+            var texture = new Texture2D(w, h, TextureFormat.RGBA32, false);
+            var clear = new Color(0f, 0f, 0f, 0f);
+            for (int row = 0; row < h; row++)
+                for (int col = 0; col < w; col++)
+                {
+                    char c = level.At(col, row + first);
+                    Color color;
+                    switch (c)
+                    {
+                        case '#': color = level.At(col, row + first - 1) == '#' ? biome.dirtMid : biome.grass; break;
+                        case 'D': case 'd': case 'Z': color = wood; break;
+                        case 'N': case 'n': case '~': color = night; break;
+                        case '^': case 'F': color = new Color(1f, 0.38f, 0.32f); break;
+                        case '*': case 'K': color = new Color(1f, 0.85f, 0.3f); break;
+                        case 'G': case 'H': color = Color.white; break;
+                        case 'S': color = new Color(1f, 0.62f, 0.75f); break;
+                        case 'M': case 'J': case 'P': case 'R': color = new Color(0.36f, 0.2f, 0.56f); break;
+                        case ' ': color = clear; break;
+                        default: color = new Color(0.82f, 0.82f, 0.9f); break;
+                    }
+                    texture.SetPixel(col, h - 1 - row, color);
+                }
+            texture.Apply();
+            string path = $"{folder}/{Path.GetFileNameWithoutExtension(level.file)}.png";
+            File.WriteAllBytes(path, texture.EncodeToPNG());
+            Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(path);
+            if (AssetImporter.GetAtPath(path) is TextureImporter importer)
+            {
+                importer.textureType = TextureImporterType.Default;
+                importer.filterMode = FilterMode.Point;
+                importer.mipmapEnabled = false;
+                importer.alphaIsTransparency = true;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.npotScale = TextureImporterNPOTScale.None;
+                importer.wrapMode = TextureWrapMode.Clamp;
+                importer.SaveAndReimport();
+            }
+        }
+    }
+
     /// <summary>Resources/catalogo.json: la lista de niveles que leen logros, medallas y secretos.</summary>
+
     static void WriteCatalog(List<Level> levels)
     {
         var catalog = new LevelCatalog
@@ -525,8 +586,9 @@ public static partial class LevelBuilder
         {
             var spot = top + new Vector3((float)random.NextDouble() * 0.6f - 0.3f, 0f, -0.7f);
             string plant = biome.dayPlants[random.Next(biome.dayPlants.Length)];
-            Fit(plant, spot, new Vector3(0.5f, 0.45f, 0.5f), Day, parent, recolor: biome.TreeColors);
-            Fit(Nature + "mushroom_redGroup.fbx", spot, new Vector3(0.5f, 0.5f, 0.5f), Night, parent, biome.nightTint * 0.9f, biome.mushroomGlow);
+            // Plantas pequeñas: se doblan hacia la línea (LineReactor).
+            Fit(plant, spot, new Vector3(0.5f, 0.45f, 0.5f), Day, parent, recolor: biome.TreeColors).AddComponent<Sway>();
+            Fit(Nature + "mushroom_redGroup.fbx", spot, new Vector3(0.5f, 0.5f, 0.5f), Night, parent, biome.nightTint * 0.9f, biome.mushroomGlow).AddComponent<Sway>();
             if (random.NextDouble() < 0.5)
                 Glow("BrilloSeta", spot + new Vector3(0f, 0.3f, -0.2f), 1.4f, biome.mushroomGlow * 2f + new Color(0, 0, 0, 0.6f), Night, parent);
         }
@@ -801,7 +863,8 @@ public static partial class LevelBuilder
             // Lo que se mueve o se anima no puede ser estático.
             if (t.GetComponentInParent<Monster>() || t.GetComponentInParent<Spinner>() || t.GetComponentInParent<Collectible>()
                 || t.GetComponentInParent<ChestPickup>() || t.GetComponentInParent<Spring>() || t.GetComponentInParent<Checkpoint>()
-                || t.GetComponentInParent<GlowSprite>() || t.GetComponent<SkinnedMeshRenderer>()) continue;
+                || t.GetComponentInParent<GlowSprite>() || t.GetComponentInParent<Sway>() || t.GetComponent<SkinnedMeshRenderer>()) continue;
+
             GameObjectUtility.SetStaticEditorFlags(t.gameObject, StaticEditorFlags.BatchingStatic);
         }
     }

@@ -104,10 +104,20 @@ namespace Fase
             var shadow = label.gameObject.AddComponent<Shadow>();
             shadow.effectColor = new Color(0f, 0f, 0.1f, 0.6f);
             shadow.effectDistance = new Vector2(0f, -3f);
+            label.gameObject.AddComponent<TextScaler>().Init(label);
             return label;
+
         }
 
-        public static Button Button(Transform parent, string name, string text, Vector2 anchor, Vector2 position, Vector2 size, UnityAction onClick, int fontSize = 44)
+        /// <summary>Cambia el tamaño de un texto respetando el tamaño de texto de Accesibilidad.</summary>
+        public static void SetSize(Text text, int size)
+        {
+            var scaler = text.GetComponent<TextScaler>();
+            if (scaler != null) scaler.SetBase(size); else text.fontSize = size;
+        }
+
+        public static Button Button(
+Transform parent, string name, string text, Vector2 anchor, Vector2 position, Vector2 size, UnityAction onClick, int fontSize = 44)
         {
             var image = Box(parent, name, anchor, position, size, ButtonColor);
             image.raycastTarget = true;

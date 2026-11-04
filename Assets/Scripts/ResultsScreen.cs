@@ -27,7 +27,10 @@ namespace Fase
         IEnumerator Run(float delay)
         {
             yield return new WaitForSecondsRealtime(delay);
+            // Último nivel de un capítulo: primero el fragmento vuela a la luna.
+            if (Hud.Instance != null && !Hud.Instance.Daily) yield return ChapterCelebration.Run(Hud.Instance.levelNumber);
             var hud = Hud.Instance;
+
             int level = hud != null ? hud.levelNumber : 1;
             float time = hud != null ? hud.Elapsed : 0f;
             float[] times = hud != null ? hud.medalTimes : null;

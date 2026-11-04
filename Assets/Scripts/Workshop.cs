@@ -141,7 +141,7 @@ namespace Fase
             rect.anchoredPosition = new Vector2(200f, 60f);
             rect.sizeDelta = new Vector2(500f, 80f);
             var input = go.GetComponent<InputField>();
-            foreach (var t in go.GetComponentsInChildren<Text>()) { t.font = UiKit.Font; t.fontSize = 26; }
+            foreach (var t in go.GetComponentsInChildren<Text>()) { t.font = UiKit.Font; UiKit.SetSize(t, 26); }
             input.placeholder.GetComponent<Text>().text = Loc.Pick("Pega un código FASE-...", "Paste a FASE-... code");
             return input;
         }

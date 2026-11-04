@@ -84,6 +84,10 @@ namespace Fase
             ["equipped"] = ("Puesta", "Wearing"),
             ["assist"] = ("Modo asistido", "Assist mode"),
             ["contrast"] = ("Alto contraste", "High contrast"),
+            ["reduceeffects"] = ("Menos destellos", "Fewer flashes"),
+            ["textsize"] = ("Tamaño del texto", "Text size"),
+            ["trivia"] = ("¿Sabías qué?", "Did you know?"),
+
             ["vibration"] = ("Vibración", "Vibration"),
             ["controls"] = ("Controles", "Controls"),
             ["presskey"] = ("Pulsa una tecla...", "Press a key..."),

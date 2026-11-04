@@ -79,7 +79,7 @@ namespace Fase
             tip.anchoredPosition = new Vector2(0f, 110f);
             instance.tip = tip.gameObject.AddComponent<Text>();
             instance.tip.font = UiKit.Font;
-            instance.tip.fontSize = 34;
+            UiKit.SetSize(instance.tip, 34);
             instance.tip.alignment = TextAnchor.MiddleCenter;
             instance.tip.color = new Color(0.8f, 0.84f, 1f, 0.9f);
             instance.tip.horizontalOverflow = HorizontalWrapMode.Wrap;

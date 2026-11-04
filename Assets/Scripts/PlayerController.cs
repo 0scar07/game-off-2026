@@ -104,6 +104,10 @@ namespace Fase
         /// <summary>En la meta: deja de responder a los controles, mira a la cámara y saluda.</summary>
         public void Celebrate() => celebrating = true;
 
+        /// <summary>Hacia dónde mira: 1 derecha, -1 izquierda (0 si mira a la cámara celebrando).</summary>
+        public float Facing => celebrating ? 0f : facing;
+
+
         void Update()
         {
             if (JumpPressed()) bufferLeft = jumpBuffer;

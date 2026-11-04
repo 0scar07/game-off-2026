@@ -66,8 +66,18 @@ namespace Fase
             set => SetBool("fase_menos_efectos", value);
         }
 
+        /// <summary>Tamaño del texto: 0 normal, 1 grande, 2 muy grande.</summary>
+        public static int TextSize
+        {
+            get => PlayerPrefs.GetInt("fase_tamano_texto", 0);
+            set { PlayerPrefs.SetInt("fase_tamano_texto", (value % 3 + 3) % 3); PlayerPrefs.Save(); Changed?.Invoke(); }
+        }
+
+        public static float TextScale => new[] { 1f, 1.15f, 1.3f }[TextSize];
+
         public static bool Vibration
         {
+
             get => PlayerPrefs.GetInt("fase_vibracion", 1) == 1;
             set => SetBool("fase_vibracion", value);
         }

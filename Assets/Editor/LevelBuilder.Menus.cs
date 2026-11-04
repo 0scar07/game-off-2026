@@ -41,12 +41,27 @@ public static partial class LevelBuilder
     }
 
     /// <summary>Solo el menú (mucho más rápido que regenerar todos los niveles).</summary>
+    /// <summary>En modo Play: lanza la celebración del primer capítulo para verla sin jugar hasta el final.</summary>
+    [MenuItem("Fase/Probar celebración de capítulo")]
+    static void TestChapterCelebration()
+    {
+        if (!Application.isPlaying) { Debug.LogWarning("Pulsa Play primero."); return; }
+        var catalog = LevelCatalog.Get;
+        for (int level = 1; level <= catalog.levels.Length; level++)
+            if (ChapterCelebration.IsChapterEnd(level))
+            {
+                new GameObject("PruebaCelebracion").AddComponent<UiRunner>().StartCoroutine(ChapterCelebration.Run(level));
+                return;
+            }
+    }
+
     [MenuItem("Fase/Generar solo el menú")]
     static void BuildMenuOnly()
     {
         var levels = Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f, System.StringComparer.Ordinal).Select(Parse).OrderBy(l => l.secret).ToList();
         PrepareRendering();
         BuildMenu(levels);
+        WritePreviews(levels);
         AssetDatabase.SaveAssets();
         Debug.Log("Menú generado.");
     }

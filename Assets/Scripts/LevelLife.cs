@@ -31,6 +31,11 @@ namespace Fase
             if (lantern != null) lanternSize = lantern.size;
             fragments = FindObjectsByType<Collectible>();
             BuildWeather();
+            // El mundo reacciona a la línea, Lumi mira lo importante y se marcan las piezas al alcance.
+            gameObject.AddComponent<LineReactor>();
+            gameObject.AddComponent<PieceHighlight>();
+            if (player.GetComponent<LumiGaze>() == null) player.gameObject.AddComponent<LumiGaze>();
+
             GameEvents.Died += OnDied;
             GameEvents.CheckpointReached += OnCheckpoint;
             yield return ChapterCard();
