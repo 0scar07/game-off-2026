@@ -73,6 +73,22 @@ def drums(name, bpm, bars):
     save(name, out[:total], 0.8)
 
 
+def finale(name, notes):
+    """Acorde final para la meta: campanas que se abren de grave a agudo y un colchón suave."""
+    total = int(SR * 4.5)
+    out = np.zeros(total + SR * 3)
+    x = np.arange(int(SR * 4.5)) / SR
+    pad = sum(np.sin(2 * np.pi * f / 2 * x) * 0.5 for f in notes[:3]) * np.minimum(1, x / 0.3) * np.exp(-x * 0.7)
+    out[:len(pad)] += pad * 0.35
+    for i, f in enumerate(notes):
+        n = bell(f, 4.0)
+        s = int(i * 0.09 * SR)
+        out[s:s + len(n)] += n * (0.9 - i * 0.08)
+    out = out[:total]
+    out[-int(SR * 0.4):] *= np.linspace(1, 0, int(SR * 0.4))
+    save(name, out, 0.7)
+
+
 if __name__ == "__main__":
     D, Fs, A, E, B, Cs = 1174.7, 1480.0, 1760.0, 1318.5, 987.8 * 2, 1108.7 * 2
     # Mismo tempo y largo que dia.wav (84 BPM), otono (76) y nieve (70): 16 compases.
@@ -82,3 +98,7 @@ if __name__ == "__main__":
     drums("jefe_tambores", 70, 16)
     drums("jefe_tambores_pradera", 84, 16)
     drums("jefe_tambores_bosque", 76, 16)
+    # Acordes de la meta: Re mayor (pradera), Re mayor tras el Re menor del bosque, Mi mayor (cumbre).
+    finale("final_pradera", [587.3, 740.0, 880.0, 1174.7, 1480.0])
+    finale("final_bosque", [587.3, 740.0, 880.0, 1174.7, 1760.0])
+    finale("final_cumbre", [659.3, 830.6, 987.8, 1318.5, 1661.2])

@@ -90,7 +90,9 @@ public static partial class LevelBuilder
         // Orden del juego: Menu, Intro, niveles..., Final.
         // Los secretos van al final (para que los números de la historia no cambien).
         var levels = files.Select(Parse).OrderBy(l => l.secret).ToList();
-        var scenes = new List<EditorBuildSettingsScene> { new EditorBuildSettingsScene(BuildMenu(levels), true) };
+        // Orden: pantalla de inicio (la primera que se abre), menú, intro, niveles, final...
+        string menuPath = BuildMenu(levels);
+        var scenes = new List<EditorBuildSettingsScene> { new EditorBuildSettingsScene(BuildSplash(), true), new EditorBuildSettingsScene(menuPath, true) };
         string intro = BuildIntro();
         if (intro != null) scenes.Add(new EditorBuildSettingsScene(intro, true));
         for (int i = 0; i < levels.Count; i++)
@@ -118,7 +120,7 @@ public static partial class LevelBuilder
         EditorBuildSettings.scenes = scenes.ToArray();
         WriteCatalog(levels);
         AssetDatabase.SaveAssets();
-        EditorSceneManager.OpenScene(scenes[0].path);
+        EditorSceneManager.OpenScene(menuPath);
         Debug.Log($"Generados {levels.Count} niveles en {ScenesFolder}.");
     }
 

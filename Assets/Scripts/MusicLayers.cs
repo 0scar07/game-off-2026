@@ -18,6 +18,16 @@ namespace Fase
         public AudioClip lineLayer;
         [Tooltip("Tambores que suenan mientras la Gran Sombra sigue en pie.")]
         public AudioClip bossLayer;
+        [Tooltip("Acorde final de la meta, en la tonalidad de la canción.")]
+        public AudioClip finale;
+        [Tooltip("Tono de la canción respecto a Re (la fanfarria de la meta se afina con esto).")]
+        public float keyRatio = 1f;
+
+        /// <summary>Tono de la música del nivel respecto a Re (1 = Re, 1,12 = Mi).</summary>
+        public static float KeyRatio { get; private set; } = 1f;
+
+        float fade = 1f;      // 1 = suena; baja a 0 en la meta
+        float duck = 1f;      // baja un poco con la voz o la fanfarria
         [Range(0f, 1f)] public float volume = 0.55f;
         [Range(0f, 1f)] public float ambienceVolume = 0.3f;
         [Tooltip("Lo rápido que sigue el volumen a la línea.")]
@@ -27,6 +37,35 @@ namespace Fase
         float nightAmount, onLine, bossAmount;
         Transform player;
         Boss boss;
+
+        void OnEnable()
+        {
+            KeyRatio = keyRatio;
+            GameEvents.GoalReached += OnGoal;
+            GameEvents.Collected += OnDuck;
+        }
+
+        void OnDisable()
+        {
+            GameEvents.GoalReached -= OnGoal;
+            GameEvents.Collected -= OnDuck;
+        }
+
+        bool ending;
+
+        /// <summary>Meta: la canción se apaga y resuelve en su acorde final.</summary>
+        void OnGoal()
+        {
+            ending = true;
+            // Fuente propia: las de la canción se están apagando y bajarían también el acorde.
+            if (finale == null) return;
+            var source = gameObject.AddComponent<AudioSource>();
+            source.spatialBlend = 0f;
+            source.PlayOneShot(finale, volume * Progress.MusicVolume * 1.4f);
+        }
+
+        // Al coger luna la música baja un momento para que se oiga el brillo.
+        void OnDuck() => duck = 0.6f;
 
         void Start()
         {
@@ -85,7 +124,9 @@ namespace Fase
         void Apply()
         {
             float dayGain = Mathf.Cos(nightAmount * Mathf.PI * 0.5f), nightGain = Mathf.Sin(nightAmount * Mathf.PI * 0.5f);
-            float master = volume * Progress.MusicVolume, ambience = ambienceVolume * Progress.SfxVolume;
+            if (ending) fade = Mathf.MoveTowards(fade, 0f, Time.unscaledDeltaTime / 1.2f);
+            duck = Mathf.MoveTowards(duck, 1f, Time.unscaledDeltaTime * 0.8f);
+            float master = volume * Progress.MusicVolume * fade * duck, ambience = ambienceVolume * Progress.SfxVolume;
             daySource.volume = dayGain * master;
             nightSource.volume = nightGain * master;
             ambienceDaySource.volume = dayGain * ambience;

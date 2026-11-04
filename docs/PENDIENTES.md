@@ -47,8 +47,8 @@ Ideas aprobadas para FASE y su estado. Las maquetas de referencia están en [`ma
 
 | # | Idea | Estado | Maqueta |
 |---|---|---|---|
-| 11 | Mezcla de sonido final | ⬜ | |
-| 12 | Pantalla de inicio con el logo partido por la línea | ⬜ | [pantalla-de-inicio](maquetas/pantalla-de-inicio.png) |
+| 11 | Mezcla de sonido final | ✅ todas las pistas al mismo volumen (`Tools/mezcla.py`), la música baja un poco al coger luna | |
+| 12 | Pantalla de inicio con el logo partido por la línea | ✅ | [pantalla-de-inicio](maquetas/pantalla-de-inicio.png) |
 | 13 | Créditos tipo película | ⬜ (para el final) | [creditos](maquetas/creditos.png) |
 | 14 | Página de itch cuidada | ⬜ (para el final) | |
 
@@ -59,7 +59,7 @@ Ideas aprobadas para FASE y su estado. Las maquetas de referencia están en [`ma
 | 16 | El mundo reacciona a la línea: hierba que se dobla, hojas, charcos que se congelan | ⬜ |
 | 17 | Lumi mira hacia lo importante (fragmentos cercanos, la línea al moverla) | ⬜ |
 | 18 | Al agarrar la línea se iluminan las piezas que van a cambiar | ⬜ |
-| 19 | La música resuelve en un acorde final en la meta | ⬜ |
+| 19 | La música resuelve en un acorde final en la meta | ✅ un acorde por capítulo en la tonalidad de su canción |
 | 20 | Celebración de capítulo: Lumi coloca su fragmento en la luna | ⬜ |
 | 21 | Accesibilidad: tamaño de texto y reducir destellos y temblores | ⬜ |
 | 22 | Vista previa del nivel en el mapa de viaje | ⬜ |

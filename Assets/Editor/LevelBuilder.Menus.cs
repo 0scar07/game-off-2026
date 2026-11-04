@@ -24,6 +24,22 @@ public static partial class LevelBuilder
     [MenuItem("Fase/Abrir menú del juego")]
     static void OpenMenu() => OpenScene($"Assets/Scenes/{MenuSceneName}.unity");
 
+    /// <summary>Pantalla de inicio: el logo partido por la línea antes del menú (SplashScreen).</summary>
+    static string BuildSplash()
+    {
+        var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        var cam = new GameObject("Camara") { tag = "MainCamera" }.AddComponent<Camera>();
+        cam.clearFlags = CameraClearFlags.SolidColor;
+        cam.backgroundColor = Color.black;
+        cam.gameObject.AddComponent<AudioListener>();
+        var splash = new GameObject("Inicio").AddComponent<SplashScreen>();
+        splash.nextScene = MenuSceneName;
+        splash.chord = MusicClip("final_pradera");
+        string path = "Assets/Scenes/Inicio.unity";
+        EditorSceneManager.SaveScene(scene, path);
+        return path;
+    }
+
     /// <summary>Solo el menú (mucho más rápido que regenerar todos los niveles).</summary>
     [MenuItem("Fase/Generar solo el menú")]
     static void BuildMenuOnly()
@@ -34,6 +50,9 @@ public static partial class LevelBuilder
         AssetDatabase.SaveAssets();
         Debug.Log("Menú generado.");
     }
+
+    [MenuItem("Fase/Abrir inicio")]
+    static void OpenSplash() => OpenScene("Assets/Scenes/Inicio.unity");
 
     [MenuItem("Fase/Abrir jefe")]
     static void OpenBoss() => OpenScene($"{ScenesFolder}/12-la-gran-sombra.unity");

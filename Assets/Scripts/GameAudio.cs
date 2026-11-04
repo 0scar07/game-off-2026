@@ -119,7 +119,8 @@ namespace Fase
         }
         void OnGoal()
         {
-            Play(goal, 0.9f, 0f);
+            // La fanfarria está en Re: se afina a la tonalidad de la canción del nivel.
+            Play(goal, 0.75f, 0f, MusicLayers.KeyRatio);
             Play(voiceGoal, 0.6f, 0f);
         }
 
