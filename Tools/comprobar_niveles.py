@@ -103,6 +103,16 @@ def check(path):
         for cx, cy in find(chars):
             if not near(cx, cy, reach):
                 problems.append(f"{name} inalcanzable (columna {cx}, fila {cy})")
+    # Ritmo: más de 18 columnas seguidas sin nada que hacer (unos 2,5 s corriendo) se hace largo.
+    interesting = set("DdNn~^FMBXK*OYZWGCHJPR")
+    run = 0
+    for x in range(W):
+        if any(g[y][x] in interesting for y in range(H)):
+            run = 0
+        else:
+            run += 1
+            if run == 19:
+                notes.append(f"tramo largo sin nada que hacer hacia la columna {x}")
     if not find("JPR") and not header.get("secreto") and not find("*K"):
         notes.append("no tiene fragmentos de luna")
     return problems, notes

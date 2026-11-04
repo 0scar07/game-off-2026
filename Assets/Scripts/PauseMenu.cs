@@ -49,6 +49,8 @@ namespace Fase
         public void Restart()
         {
             SetPaused(false);
+            // Reiniciar es empezar de cero, no desde el último punto de control.
+            if (Hud.Instance != null) SaveGuard.ClearCheckpoint(Hud.Instance.levelNumber);
             SceneFader.Load(SceneManager.GetActiveScene().name);
         }
 

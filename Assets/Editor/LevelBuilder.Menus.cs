@@ -378,8 +378,8 @@ public static partial class LevelBuilder
         intro.subtitle = subtitle;
         intro.slides = slides;
         intro.linesEs = IntroEs;
-        intro.voiceEs = Enumerable.Range(0, 4).Select(i => AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/Voz/intro_es_{i}.wav")).ToArray();
-        intro.voiceEn = Enumerable.Range(0, 4).Select(i => AssetDatabase.LoadAssetAtPath<AudioClip>($"Assets/Audio/Voz/intro_en_{i}.wav")).ToArray();
+        intro.voiceEs = Enumerable.Range(0, 4).Select(i => Clip($"Assets/Audio/Voz/intro_es_{i}.wav")).ToArray();
+        intro.voiceEn = Enumerable.Range(0, 4).Select(i => Clip($"Assets/Audio/Voz/intro_en_{i}.wav")).ToArray();
         intro.linesEn = IntroEn;
         intro.nextScene = Path.GetFileNameWithoutExtension(Directory.GetFiles(LevelsFolder, "*.txt").OrderBy(f => f, System.StringComparer.Ordinal).First());
         UnityEventTools.AddPersistentListener(skip.onClick, intro.Skip);

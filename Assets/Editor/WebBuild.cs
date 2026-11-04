@@ -5,7 +5,7 @@ using UnityEngine;
 
 /// <summary>
 /// Menú Fase → Exportar web: compila la versión WebGL en Builds/Web, lista para subir a itch.io
-/// (comprimir la carpeta en un .zip, o subirla con butler). Usa Gzip con "decompression fallback",
+/// (comprimir la carpeta en un .zip, o subirla con butler). Usa Brotli con "decompression fallback",
 /// que funciona en itch y en cualquier servidor sin configurar nada.
 /// </summary>
 public static class WebBuild
@@ -34,7 +34,10 @@ public static class WebBuild
     {
         PlayerSettings.productName = "FASE";
         PlayerSettings.companyName = "0scar07";
-        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+        // Brotli comprime un 15-20 % más que Gzip; con "decompression fallback" funciona en itch
+        // y en cualquier servidor sin configurar nada.
+        PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Brotli;
+        PlayerSettings.stripEngineCode = true;
         PlayerSettings.WebGL.decompressionFallback = true;
         PlayerSettings.WebGL.dataCaching = true;
         PlayerSettings.defaultWebScreenWidth = 960;

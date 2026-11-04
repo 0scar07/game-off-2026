@@ -56,19 +56,38 @@ public static partial class LevelBuilder
         var importer = AssetImporter.GetAtPath(path) as AudioImporter;
         if (importer == null) { Debug.LogWarning("Falta la música " + path); return null; }
         var settings = importer.defaultSampleSettings;
-        if (settings.loadType != AudioClipLoadType.CompressedInMemory || settings.compressionFormat != AudioCompressionFormat.Vorbis)
+        // Calidad 0,45: casi igual al oído y bastante más ligera para la web.
+        if (settings.loadType != AudioClipLoadType.CompressedInMemory || settings.compressionFormat != AudioCompressionFormat.Vorbis || settings.quality > 0.46f)
         {
             settings.loadType = AudioClipLoadType.CompressedInMemory;
             settings.compressionFormat = AudioCompressionFormat.Vorbis;
-            settings.quality = 0.55f;
+            settings.quality = 0.45f;
             importer.defaultSampleSettings = settings;
             importer.SaveAndReimport();
         }
         return AssetDatabase.LoadAssetAtPath<AudioClip>(path);
     }
 
+    /// <summary>
+    /// Efecto o voz: en mono y comprimido (Vorbis) para que la web pese menos; se descomprime al
+    /// cargar porque son cortos y suenan muchas veces.
+    /// </summary>
     static AudioClip Clip(string path)
     {
+        var importer = AssetImporter.GetAtPath(path) as AudioImporter;
+        if (importer != null)
+        {
+            var settings = importer.defaultSampleSettings;
+            if (!importer.forceToMono || settings.compressionFormat != AudioCompressionFormat.Vorbis || settings.quality > 0.46f)
+            {
+                importer.forceToMono = true;
+                settings.loadType = AudioClipLoadType.DecompressOnLoad;
+                settings.compressionFormat = AudioCompressionFormat.Vorbis;
+                settings.quality = 0.45f;
+                importer.defaultSampleSettings = settings;
+                importer.SaveAndReimport();
+            }
+        }
         var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
         if (clip == null) Debug.LogWarning("No encuentro el sonido " + path);
         return clip;

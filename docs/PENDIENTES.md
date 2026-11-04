@@ -33,15 +33,15 @@ Ideas aprobadas para FASE y su estado. Las maquetas de referencia están en [`ma
 |---|---|---|---|
 | 5 | Tutorial sin texto en el nivel 1 (flecha, mano fantasma, puente que aparece) |✅ | [tutorial-nivel-1](maquetas/tutorial-nivel-1.png) |
 | 6 | Curva de dificultad y tiempos de medalla | ⬜ 🙋 con tus partidas | |
-| 7 | Ritmo de los niveles: recortar tramos vacíos y poner respiros | ⬜ | |
+| 7 | Ritmo de los niveles: recortar tramos vacíos y poner respiros | ✅ revisado (ningún tramo vacío pasa de 15 columnas); el comprobador avisa si aparece uno | |
 
 ## Que funcione en cualquier sitio
 
 | # | Idea | Estado |
 |---|---|---|
 | 8 | Rendimiento en móvil a 60 fps | ⬜ 🙋 probar en un móvil |
-| 9 | Carga más rápida de la web (comprimir música y texturas) | ⬜ |
-| 10 | Guardado a prueba de fallos | ⬜ |
+| 9 | Carga más rápida de la web (comprimir música y texturas) | ✅ Brotli, código del motor recortado, efectos y voz en mono comprimidos, música a calidad 0,45 (el ahorro se mide en la próxima exportación) |
+| 10 | Guardado a prueba de fallos | ✅ se guarda cada 10 s, al cambiar de pestaña y al cerrar; se sigue desde el último punto de control |
 
 ## Sonido y presentación
 

@@ -86,7 +86,28 @@ namespace Fase
             }
         }
 
-        void OnCheckpoint() => deathStreak = 0;
+        void OnCheckpoint()
+        {
+            deathStreak = 0;
+            // Si se cierra a mitad del nivel, se sigue desde aquí (y con el tiempo que llevaba).
+            var player = FindAnyObjectByType<PlayerController>();
+            if (!sandbox && !daily && player != null) SaveGuard.SaveCheckpoint(levelNumber, player.transform.position, elapsed);
+        }
+
+        /// <summary>Al empezar: si quedó un punto de control guardado, Lumi aparece allí.</summary>
+        void Resume()
+        {
+            if (sandbox || daily || !SaveGuard.TryLoadCheckpoint(levelNumber, out var at, out float time)) return;
+            var player = FindAnyObjectByType<PlayerController>();
+            if (player == null) return;
+            player.transform.position = at;
+            player.GetComponent<Rigidbody2D>().position = at;
+            player.SetCheckpoint(at);
+            elapsed = time;
+            resumed = true;
+        }
+
+        bool resumed;
 
         void OnGrab()
         {
@@ -98,9 +119,10 @@ namespace Fase
 
         void Start()
         {
+            Resume();
             string name = sandbox ? Loc.Pick(levelName, levelNameEn) : daily ? $"{Loc.Get("daily")} · {Loc.Pick(levelName, levelNameEn)}" : $"{levelNumber}. {Loc.Pick(levelName, levelNameEn)}";
             title.text = name;
-            hintText.text = Loc.Pick(hint, hintEn);
+            hintText.text = resumed ? Loc.Pick("Sigues desde el último punto de control.", "Picking up from your last checkpoint.") : Loc.Pick(hint, hintEn);
             corner.text = name;
             banner.text = "";
             UpdateCounter();
@@ -164,6 +186,7 @@ namespace Fase
         void OnGoal()
         {
             finished = true;
+            SaveGuard.ClearCheckpoint(levelNumber);
             bool record = Progress.SaveTime(levelNumber, elapsed);
             string text = Loc.Get("complete");
             if (fragmentsTotal > 0 && fragments == fragmentsTotal) text += "\n" + Loc.Get("allmoon");
