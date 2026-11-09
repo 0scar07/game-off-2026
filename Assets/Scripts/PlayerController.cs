@@ -215,7 +215,8 @@ namespace Fase
             v.x = Mathf.MoveTowards(v.x - carried, input * speed, accel * Time.fixedDeltaTime);
             // Encima de una plataforma que se mueve: Lumi viaja con ella.
             carried = grounded ? PlatformSpeed() : Mathf.MoveTowards(carried, 0f, 20f * Time.fixedDeltaTime);
-            v.x += carried;
+            v.x += carried + Wind.Velocity(body.position);
+
             // Corrientes de aire de día: empujan hacia arriba.
             v.y += AirCurrent.Lift(body.position) * Time.fixedDeltaTime;
 

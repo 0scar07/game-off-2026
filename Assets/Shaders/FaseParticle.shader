@@ -42,7 +42,7 @@ Shader "Fase/Particle"
 
             float _LineCount;
             float _DayOnLeft;
-            float4 _LineP, _LineN, _Bubble;
+            float4 _LineP, _LineN, _Bubble, _Zone;
 
             struct Attributes { float4 positionOS : POSITION; float4 color : COLOR; float2 uv : TEXCOORD0; };
             struct Varyings { float4 positionCS : SV_POSITION; float4 color : COLOR; float2 uv : TEXCOORD0; };
@@ -66,6 +66,7 @@ Shader "Fase/Particle"
                     float crossed = step(0.0, dot(q - _LineP.xy, _LineN.xy)) + (_LineCount > 1.5 ? step(0.0, dot(q - _LineP.zw, _LineN.xy)) : 0.0);
                     bool odd = fmod(crossed, 2.0) > 0.5;
                     bool night = _DayOnLeft > 0.5 ? odd : !odd;
+                    if (_Zone.w > 0.5 && distance(q, _Zone.xy) < _Zone.z) night = _Zone.w > 1.5;
                     if (_Bubble.w > 0.5 && distance(q, _Bubble.xy) < _Bubble.z) night = true;
                     clip((_World < 0.5) != night ? 1 : -1);
                 }

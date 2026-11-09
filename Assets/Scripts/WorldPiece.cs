@@ -42,12 +42,16 @@ namespace Fase
             float left = alongX ? center.x - half.x : center.y - half.y;
             float right = alongX ? center.x + half.x : center.y + half.y;
 
-            // Burbuja de noche del farol: si cubre el centro de la pieza, manda ella.
-            bool bubble = LanternPower.Contains(center);
+            // Burbuja de noche del farol (o zona de un mundo): si cubre el centro de la pieza, manda ella.
+            bool lantern = LanternPower.Contains(center);
+            bool zone = !lantern && WorldZone.Contains(center);
+            bool bubble = lantern || zone;
             if (bubble)
             {
-                if (world == World.Day) right = left;
+                bool night = lantern || WorldZone.Night;
+                if ((world == World.Day) == night) right = left;
             }
+
             else
             {
                 // Trozos del mundo de esta pieza entre las líneas; con dos líneas puede haber

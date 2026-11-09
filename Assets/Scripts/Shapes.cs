@@ -42,6 +42,7 @@ namespace Fase
             {
                 PrimitiveType.Sphere => Sphere(16, 12),
                 PrimitiveType.Cylinder => Cylinder(20),
+                PrimitiveType.Cube => Cube(),
                 _ => Quad(),
             };
             mesh.name = type.ToString();
@@ -49,7 +50,74 @@ namespace Fase
             return mesh;
         }
 
+        /// <summary>Cubo de 1×1×1 centrado.</summary>
+        static Mesh Cube()
+        {
+            var vertices = new List<Vector3>();
+            var triangles = new List<int>();
+            var uvs = new List<Vector2>();
+            Vector3[] normals = { Vector3.forward, Vector3.back, Vector3.up, Vector3.down, Vector3.right, Vector3.left };
+            foreach (var n in normals)
+            {
+                Vector3 u = n.y != 0f ? Vector3.right : Vector3.up;
+                Vector3 v = Vector3.Cross(n, u);
+                int start = vertices.Count;
+                vertices.Add((n - u - v) * 0.5f); vertices.Add((n + u - v) * 0.5f); vertices.Add((n + u + v) * 0.5f); vertices.Add((n - u + v) * 0.5f);
+                uvs.Add(new Vector2(0, 0)); uvs.Add(new Vector2(1, 0)); uvs.Add(new Vector2(1, 1)); uvs.Add(new Vector2(0, 1));
+                triangles.AddRange(new[] { start, start + 2, start + 1, start, start + 3, start + 2 });
+            }
+            var mesh = new Mesh();
+            mesh.SetVertices(vertices);
+            mesh.SetUVs(0, uvs);
+            mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+
+        /// <summary>Bloque de color con luz (para las piezas de las mecánicas nuevas).</summary>
+        public static GameObject Block(Transform parent, string name, Vector3 center, Vector3 size, Color color)
+        {
+            var go = Create(PrimitiveType.Cube, name);
+            go.transform.SetParent(parent, false);
+            go.transform.position = center;
+            go.transform.localScale = size;
+            var block = new MaterialPropertyBlock();
+            block.SetColor("_BaseColor", color);
+            go.GetComponent<MeshRenderer>().SetPropertyBlock(block);
+            return go;
+        }
+
+        /// <summary>Plano de la línea (shader Fase/Particle): brillos, rayos, iconos. world: 0 día, 1 noche, 2 siempre.</summary>
+        public static GameObject Glow(Transform parent, string name, Vector3 center, Vector2 size, Color color, float world = 2f, bool additive = true, Texture texture = null)
+        {
+            var go = Create(PrimitiveType.Quad, name);
+            go.transform.SetParent(parent, false);
+            go.transform.position = center;
+            go.transform.localScale = new Vector3(size.x, size.y, 1f);
+            var shader = Shader.Find("Fase/Particle");
+            if (shader != null)
+            {
+                var mat = new Material(shader);
+                mat.SetTexture("_MainTex", texture != null ? texture : UiKit.Rounded.texture);
+                mat.SetColor("_Color", color);
+                mat.SetFloat("_World", world);
+                mat.SetFloat("_Additive", additive ? 1f : 0f);
+                if (!additive)
+                {
+                    mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                    mat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                }
+                mat.renderQueue = 3000;
+                var r = go.GetComponent<MeshRenderer>();
+                r.sharedMaterial = mat;
+                r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
+            return go;
+        }
+
         /// <summary>Plano de 1×1 mirando hacia -z (como el Quad de Unity).</summary>
+
         static Mesh Quad()
         {
             var mesh = new Mesh

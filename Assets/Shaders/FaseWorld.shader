@@ -38,6 +38,8 @@ Shader "Fase/World"
         float4 _LineN;    // normal en pantalla (xy) y en el mundo (zw)
         float4 _Bubble;   // burbuja de noche del farol en pantalla: centro (xy), radio (z), activa (w)
         float4 _BubbleW;  // la misma burbuja en el mundo
+        float4 _Zone;     // zona de mundo (espejos, línea curva) en pantalla: centro (xy), radio (z), 0 apagada / 1 día / 2 noche (w)
+        float4 _ZoneW;    // la misma zona en el mundo
 
         // Cada línea cruzada cambia de mundo (con dos líneas: día | noche | día).
         bool NightFromCrossings(float crossed)
@@ -64,6 +66,7 @@ Shader "Fase/World"
         {
             float2 q = ScreenPoint(positionCS);
             if (_Bubble.w > 0.5 && distance(q, _Bubble.xy) < _Bubble.z) return true;
+            if (_Zone.w > 0.5 && distance(q, _Zone.xy) < _Zone.z) return _Zone.w > 1.5;
             float crossed = step(0.0, dot(q - _LineP.xy, _LineN.xy)) + (_LineCount > 1.5 ? step(0.0, dot(q - _LineP.zw, _LineN.xy)) : 0.0);
             return NightFromCrossings(crossed);
         }
@@ -72,6 +75,7 @@ Shader "Fase/World"
         bool IsNightInWorld(float3 positionWS)
         {
             if (_BubbleW.w > 0.5 && distance(positionWS.xy, _BubbleW.xy) < _BubbleW.z) return true;
+            if (_ZoneW.w > 0.5 && distance(positionWS.xy, _ZoneW.xy) < _ZoneW.z) return _ZoneW.w > 1.5;
             float d = dot(positionWS.xy, _LineN.zw);
             float crossed = step(_ShiftX, d) + (_LineCount > 1.5 ? step(_ShiftX2, d) : 0.0);
             return NightFromCrossings(crossed);
@@ -84,6 +88,7 @@ Shader "Fase/World"
             float d = abs(dot(q - _LineP.xy, _LineN.xy));
             if (_LineCount > 1.5) d = min(d, abs(dot(q - _LineP.zw, _LineN.xy)));
             if (_Bubble.w > 0.5) d = min(d, abs(distance(q, _Bubble.xy) - _Bubble.z));
+            if (_Zone.w > 0.5) d = min(d, abs(distance(q, _Zone.xy) - _Zone.z));
             return d * _ScreenParams.y;
         }
         ENDHLSL

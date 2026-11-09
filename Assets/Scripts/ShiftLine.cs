@@ -37,6 +37,7 @@ namespace Fase
             if (Instance == null) return true;
             var line = Instance;
             if (LanternPower.Contains(point)) return false;
+            if (WorldZone.Contains(point)) return !WorldZone.Night;
             float d = Vector2.Dot(point, line.Normal);
             int crossed = (d >= line.x ? 1 : 0) + (line.hasSecond && d >= line.x2 ? 1 : 0);
             // Cada línea cruzada cambia de mundo.
@@ -97,6 +98,14 @@ namespace Fase
         static readonly int LineNId = Shader.PropertyToID("_LineN");
         static readonly int BubbleId = Shader.PropertyToID("_Bubble");
         static readonly int BubbleWId = Shader.PropertyToID("_BubbleW");
+        static readonly int ZoneId = Shader.PropertyToID("_Zone");
+        static readonly int ZoneWId = Shader.PropertyToID("_ZoneW");
+
+        /// <summary>Se está moviendo la línea a mano (teclado, mando, ratón o dedo).</summary>
+        public bool Holding => wasHolding;
+
+        /// <summary>Si es true, el jugador no puede moverla (la mueve otro script: persecución).</summary>
+        [System.NonSerialized] public bool locked;
 
         Camera cam;
         Transform player;
@@ -160,6 +169,7 @@ namespace Fase
                 wasHolding = false;
                 return;
             }
+            if (locked) { wasHolding = false; return; }
             float move = 0f;
             if (Settings.Held(Settings.Action.LineLeft)) move -= 1f;
             if (Settings.Held(Settings.Action.LineRight)) move += 1f;
@@ -322,6 +332,22 @@ namespace Fase
                 Shader.SetGlobalVector(BubbleId, Vector4.zero);
                 Shader.SetGlobalVector(BubbleWId, Vector4.zero);
             }
+
+            // Zona de mundo (espejos, línea curva).
+            if (WorldZone.Active)
+            {
+                Vector2 c = WorldZone.Center;
+                Vector2 sc = ToScreenSpace(c), edge = ToScreenSpace(c + Vector2.right * WorldZone.Radius);
+                float kind = WorldZone.Night ? 2f : 1f;
+                Shader.SetGlobalVector(ZoneId, new Vector4(sc.x, sc.y, (edge - sc).magnitude, kind));
+                Shader.SetGlobalVector(ZoneWId, new Vector4(c.x, c.y, WorldZone.Radius, kind));
+            }
+            else
+            {
+                Shader.SetGlobalVector(ZoneId, Vector4.zero);
+                Shader.SetGlobalVector(ZoneWId, Vector4.zero);
+            }
+
         }
     }
 }
