@@ -20,7 +20,8 @@ namespace Fase
         Transform guide;
         Text guideText;
         ParticleSystem rain, snow;
-        float weatherClock;
+        float weatherClock, sleep;
+
 
         IEnumerator Start()
         {
@@ -35,6 +36,12 @@ namespace Fase
             gameObject.AddComponent<LineReactor>();
             gameObject.AddComponent<PieceHighlight>();
             if (player.GetComponent<LumiGaze>() == null) player.gameObject.AddComponent<LumiGaze>();
+            // Se duerme si no la mueves, ánimo tras muchas caídas, mantener R, estrellas fugaces e iconos de las piezas.
+            if (player.GetComponent<LumiSleep>() == null) player.gameObject.AddComponent<LumiSleep>();
+            gameObject.AddComponent<Encouragement>();
+            gameObject.AddComponent<HoldToReturn>();
+            gameObject.AddComponent<ShootingStars>();
+            gameObject.AddComponent<PieceIcons>();
 
             GameEvents.Died += OnDied;
             GameEvents.CheckpointReached += OnCheckpoint;
@@ -141,7 +148,9 @@ namespace Fase
                 float nearest = 99f;
                 foreach (var f in fragments) if (f != null) nearest = Mathf.Min(nearest, Vector2.Distance(f.transform.position, player.transform.position));
                 float k = 1f - Mathf.Clamp01((nearest - 2f) / 8f);
-                lantern.size = lanternSize * (1f + k * 0.6f);
+                // Dormida, el farol casi se apaga.
+                sleep = Mathf.MoveTowards(sleep, player.Sleeping ? 1f : 0f, Time.deltaTime * (player.Sleeping ? 0.5f : 3f));
+                lantern.size = lanternSize * (1f + k * 0.6f) * Mathf.Lerp(1f, 0.2f, sleep);
                 lantern.pulse = 0.08f + k * 0.2f;
                 lantern.pulseSpeed = 3f + k * 6f;
             }

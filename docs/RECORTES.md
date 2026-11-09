@@ -19,14 +19,14 @@ para después de la jam (sigue en [`PENDIENTES.md`](PENDIENTES.md)).
 
 | # | Idea | Coste | Maqueta |
 |---|---|---|---|
-| 98 | Mantener R para volver al último punto de control | Muy bajo | [idea-97-98](maquetas/idea-97-98.png) |
-| 97 | Mensaje de ánimo tras muchas caídas seguidas | Muy bajo | [idea-97-98](maquetas/idea-97-98.png) |
-| 94 | Estrellas fugaces en el cielo de noche | Muy bajo | [idea-30-94](maquetas/idea-30-94.png) |
-| 104 | Lunas que faltan marcadas en el mapa de pausa | Bajo | [idea-104](maquetas/idea-104.png) |
-| 130 | Ajuste de brillo en Opciones | Bajo | [idea-41-130](maquetas/idea-41-130.png) |
-| 41 | Piezas de noche con un icono además del color | Bajo | [idea-41-130](maquetas/idea-41-130.png) |
-| 30 | Lumi bosteza y se duerme si estás quieto | Bajo | [idea-30-94](maquetas/idea-30-94.png) |
-| 37 | Transición entre niveles con la línea barriendo la pantalla | Medio | [idea-37](maquetas/idea-37.png) |
+| 98 | Mantener R para volver al último punto de control | ✅ Muy bajo | [idea-97-98](maquetas/idea-97-98.png) |
+| 97 | Mensaje de ánimo tras muchas caídas seguidas | ✅ Muy bajo | [idea-97-98](maquetas/idea-97-98.png) |
+| 94 | Estrellas fugaces en el cielo de noche | ✅ Muy bajo | [idea-30-94](maquetas/idea-30-94.png) |
+| 104 | Lunas que faltan marcadas en el mapa de pausa | ✅ Bajo | [idea-104](maquetas/idea-104.png) |
+| 130 | Ajuste de brillo en Opciones | ✅ Bajo | [idea-41-130](maquetas/idea-41-130.png) |
+| 41 | Piezas de noche con un icono además del color | ✅ Bajo | [idea-41-130](maquetas/idea-41-130.png) |
+| 30 | Lumi bosteza y se duerme si estás quieto | ✅ Bajo | [idea-30-94](maquetas/idea-30-94.png) |
+| 37 | Transición entre niveles con la línea barriendo la pantalla | ✅ Medio | [idea-37](maquetas/idea-37.png) |
 | 62 | Botón "Danos tu opinión" al acabar el juego que abre la prueba de juego | Muy bajo (cuando el repo sea público) | |
 
 ## Semana 3 · 24-30 nov · Cierre

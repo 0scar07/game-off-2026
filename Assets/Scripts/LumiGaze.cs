@@ -31,7 +31,8 @@ namespace Fase
 
         void LateUpdate()
         {
-            if (head == null || player == null) return;
+            if (head == null || player == null || player.Sleeping) return;
+
             Vector3? target = null;
             var line = ShiftLine.Instance;
             if (ShiftLine.Speed > 1.5f) lineTimer = 0.8f; else lineTimer -= Time.deltaTime;

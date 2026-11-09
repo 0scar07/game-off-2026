@@ -86,6 +86,9 @@ namespace Fase
             ["contrast"] = ("Alto contraste", "High contrast"),
             ["reduceeffects"] = ("Menos destellos", "Fewer flashes"),
             ["textsize"] = ("Tamaño del texto", "Text size"),
+            ["pieceicons"] = ("Formas en las piezas", "Shapes on pieces"),
+            ["brightness"] = ("Brillo", "Brightness"),
+
             ["trivia"] = ("¿Sabías qué?", "Did you know?"),
 
             ["vibration"] = ("Vibración", "Vibration"),

@@ -16,7 +16,7 @@ namespace Fase
         RectTransform map, lumiDot;
         Text missing;
         Rect world;
-        readonly List<(Transform target, Text dot)> fragments = new List<(Transform, Text)>();
+        readonly List<(Transform target, Text dot, Image halo)> fragments = new List<(Transform, Text, Image)>();
         Transform player;
         bool built;
 
@@ -74,8 +74,13 @@ namespace Fase
 
         void AddFragment(Transform target)
         {
-            var dot = UiKit.Text(map, "Fragmento", "★", new Vector2(0f, 0f), ToMap(target.position), new Vector2(30f, 30f), 28, TextAnchor.MiddleCenter, new Color(1f, 0.85f, 0.35f));
-            fragments.Add((target, dot));
+            // Luna que late con un halo si falta; apagada si ya la tienes.
+            var halo = UiKit.Box(map, "Halo", new Vector2(0f, 0f), ToMap(target.position), new Vector2(56f, 56f), new Color(1f, 0.85f, 0.4f, 0.35f));
+            halo.type = Image.Type.Simple;
+            var dot = UiKit.Text(map, "Fragmento", "☾", new Vector2(0f, 0f), ToMap(target.position), new Vector2(36f, 36f), 32, TextAnchor.MiddleCenter, new Color(1f, 0.85f, 0.35f));
+            halo.rectTransform.pivot = dot.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            fragments.Add((target, dot, halo));
+
         }
 
         Vector2 Scale => new Vector2(MapW / world.width, MapH / world.height);
@@ -86,11 +91,16 @@ namespace Fase
             if (map == null) return;
             if (player != null) lumiDot.anchoredPosition = ToMap(player.position);
             int left = 0;
-            foreach (var (target, dot) in fragments)
+            float pulse = 1f + 0.18f * Mathf.Sin(Time.unscaledTime * 5f);
+            foreach (var (target, dot, halo) in fragments)
             {
                 var chest = target != null ? target.GetComponent<ChestPickup>() : null;
                 bool taken = target == null || (chest != null && chest.Opened);
-                dot.color = taken ? new Color(0.5f, 0.5f, 0.6f, 0.5f) : new Color(1f, 0.85f, 0.35f);
+                dot.color = taken ? new Color(1f, 1f, 1f, 0.3f) : new Color(1f, 0.85f, 0.35f);
+                dot.transform.localScale = Vector3.one * (taken ? 1f : pulse);
+                halo.enabled = !taken;
+                halo.transform.localScale = Vector3.one * pulse;
+
                 if (!taken) left++;
             }
             missing.text = left == 0 ? Loc.Pick("¡Tienes toda la luna!", "You have the whole moon!")

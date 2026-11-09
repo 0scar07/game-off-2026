@@ -237,22 +237,27 @@ namespace Fase
         GameObject BuildAccess()
         {
             var panel = Panel("Accesibilidad", "controls", out var content);
-            // Columna izquierda: ocho ajustes, de 82 en 82.
-            float row = 282f;
+            // Columna izquierda: nueve ajustes, de 74 en 74.
+            float row = 292f;
             Toggle(content, "assist", new Vector2(-350f, row), () => Settings.Assist, v => Settings.Assist = v);
-            Toggle(content, "contrast", new Vector2(-350f, row -= 82f), () => Settings.HighContrast, v => Settings.HighContrast = v);
-            Toggle(content, "reduceeffects", new Vector2(-350f, row -= 82f), () => Settings.ReduceEffects, v => Settings.ReduceEffects = v);
+            Toggle(content, "contrast", new Vector2(-350f, row -= 74f), () => Settings.HighContrast, v => Settings.HighContrast = v);
+            Toggle(content, "reduceeffects", new Vector2(-350f, row -= 74f), () => Settings.ReduceEffects, v => Settings.ReduceEffects = v);
             // Tamaño del texto: cada clic pasa al siguiente (se ve al momento en todo el menú).
-            Toggle(content, "textsize", new Vector2(-350f, row -= 82f), () => Settings.TextSize == 2, _ => Settings.TextSize++, null,
+            Toggle(content, "textsize", new Vector2(-350f, row -= 74f), () => Settings.TextSize == 2, _ => Settings.TextSize++, null,
                 _ => Loc.Pick(new[] { "Normal", "Grande", "Muy grande" }[Settings.TextSize], new[] { "Normal", "Large", "Extra large" }[Settings.TextSize]));
-            Toggle(content, "vibration", new Vector2(-350f, row -= 82f), () => Settings.Vibration, v => Settings.Vibration = v);
-            Toggle(content, "mirror", new Vector2(-350f, row -= 82f), () => MirrorMode.Enabled, v => MirrorMode.Enabled = v, () => MirrorMode.Unlocked);
-            Toggle(content, "coop", new Vector2(-350f, row -= 82f), () => Settings.Coop, v => Settings.Coop = v);
+            // Icono de sol o luna en las piezas, para no depender del color.
+            Toggle(content, "pieceicons", new Vector2(-350f, row -= 74f), () => Settings.PieceIcons, v => Settings.PieceIcons = v);
+            Toggle(content, "vibration", new Vector2(-350f, row -= 74f), () => Settings.Vibration, v => Settings.Vibration = v);
+            Toggle(content, "mirror", new Vector2(-350f, row -= 74f), () => MirrorMode.Enabled, v => MirrorMode.Enabled = v, () => MirrorMode.Unlocked);
+            Toggle(content, "coop", new Vector2(-350f, row -= 74f), () => Settings.Coop, v => Settings.Coop = v);
             // Velocidad de la línea: cada clic pasa a la siguiente.
-            Toggle(content, "linespeed", new Vector2(-350f, row -= 82f), () => Settings.LineSpeed == 2, _ => Settings.LineSpeed++, null,
+            Toggle(content, "linespeed", new Vector2(-350f, row -= 74f), () => Settings.LineSpeed == 2, _ => Settings.LineSpeed++, null,
                 _ => Loc.Pick(new[] { "Lenta", "Normal", "Rápida" }[Settings.LineSpeed], new[] { "Slow", "Normal", "Fast" }[Settings.LineSpeed]));
             // Vista previa del tamaño del texto.
-            var sample = UiKit.Text(content, "Muestra", "", new Vector2(0.5f, 0.5f), new Vector2(400f, -320f), new Vector2(560f, 50f), 28, TextAnchor.MiddleCenter, UiKit.Soft);
+            var sample = UiKit.Text(content, "Muestra", "", new Vector2(0.5f, 0.5f), new Vector2(400f, -330f), new Vector2(560f, 50f), 28, TextAnchor.MiddleCenter, UiKit.Soft);
+            // Brillo: cada clic sube un 10 % (de 80 % a 130 % y vuelta a empezar).
+            Toggle(content, "brightness", new Vector2(400f, -262f), () => Settings.BrightnessStep == 5, _ => Settings.BrightnessStep++, null,
+                _ => $"{Settings.BrightnessPercent} %");
             refreshers.Add(() => sample.text = Loc.Pick("Así se verá el texto", "This is how text will look"));
 
 
@@ -262,14 +267,14 @@ namespace Fase
             {
                 var action = actions[i];
                 string key = keys[i];
-                float y = 260f - i * 100f;
+                float y = 280f - i * 88f;
                 var label = UiKit.Text(content, "Accion" + key, "", new Vector2(0.5f, 0.5f), new Vector2(260f, y), new Vector2(260f, 60f), 32, TextAnchor.MiddleRight);
                 var button = UiKit.Button(content, "Tecla" + key, "", new Vector2(0.5f, 0.5f), new Vector2(520f, y), new Vector2(220f, 80f), null, 32);
                 var text = button.GetComponentInChildren<Text>();
                 button.onClick.AddListener(() => { rebinding = action; rebindLabel = text; text.text = Loc.Get("presskey"); });
                 refreshers.Add(() => { label.text = Loc.Get(key); if (rebinding != action) text.text = Settings.KeyName(Settings.GetKey(action)); });
             }
-            var reset = UiKit.Button(content, "Reiniciar", Loc.Get("resetkeys"), new Vector2(0.5f, 0.5f), new Vector2(400f, -250f), new Vector2(440f, 80f), () => { Settings.ResetKeys(); Refresh(); }, 30);
+            var reset = UiKit.Button(content, "Reiniciar", Loc.Get("resetkeys"), new Vector2(0.5f, 0.5f), new Vector2(400f, -170f), new Vector2(440f, 76f), () => { Settings.ResetKeys(); Refresh(); }, 30);
             var resetLabel = reset.GetComponentInChildren<Text>();
             refreshers.Add(() => resetLabel.text = Loc.Get("resetkeys"));
 
@@ -288,7 +293,7 @@ namespace Fase
         void Toggle(RectTransform parent, string key, Vector2 position, System.Func<bool> get, System.Action<bool> set, System.Func<bool> available = null,
             System.Func<bool, string> valueText = null)
         {
-            var button = UiKit.Button(parent, key, "", new Vector2(0.5f, 0.5f), position, new Vector2(560f, 80f), null, 28);
+            var button = UiKit.Button(parent, key, "", new Vector2(0.5f, 0.5f), position, new Vector2(560f, 68f), null, 28);
             var text = button.GetComponentInChildren<Text>();
             button.onClick.AddListener(() => { set(!get()); Refresh(); });
             refreshers.Add(() =>

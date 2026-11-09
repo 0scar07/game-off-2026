@@ -47,6 +47,12 @@ namespace Fase
         bool braking;
         bool celebrating;
         float idleTime, boredLeft;
+        // Quieta mucho rato: bosteza y se duerme (se despierta con cualquier movimiento).
+        float stillTime;
+        const float YawnAt = 18f, SleepAt = 20f;
+
+        /// <summary>Lumi está dormida (lleva un rato sin moverse).</summary>
+        public bool Sleeping => stillTime >= SleepAt;
         string boredState = "Yes";
         const float stepInterval = 0.3f;
         string currentState = "";
@@ -155,10 +161,15 @@ namespace Fase
             landLeft -= Time.deltaTime;
             bool still = grounded && Mathf.Abs(v.x) < 0.5f && landLeft <= 0f && !celebrating;
             idleTime = still ? idleTime + Time.deltaTime : 0f;
+            float before = stillTime;
+            stillTime = still && MoveInput() == 0f && !JumpHeld() && ShiftLine.Speed < 0.3f ? stillTime + Time.deltaTime : 0f;
+            // Bostezo: se estira hacia arriba justo antes de dormirse.
+            if (before < YawnAt && stillTime >= YawnAt) squash = new Vector2(0.86f, 1.18f);
             // Parado mucho rato: mira alrededor (asiente o niega) cada pocos segundos.
             if (idleTime > 7f) { idleTime = 2f; boredLeft = 1.6f; boredState = Random.value < 0.5f ? "Yes" : "No"; }
             boredLeft = still ? boredLeft - Time.deltaTime : 0f;
             string state = celebrating ? "Wave"
+                : Sleeping ? "Death"
                 : !grounded ? (v.y > 2f ? "Jump" : "Jump_Idle")
                 : landLeft > 0f && Mathf.Abs(v.x) < 0.5f ? "Jump_Land"
                 : Mathf.Abs(v.x) > 0.5f ? "Run"
@@ -234,8 +245,20 @@ namespace Fase
             bufferLeft = 0f;
         }
 
+        /// <summary>Vuelve al último punto de control sin contar como caída (mantener R).</summary>
+        public void ReturnToCheckpoint()
+        {
+            body.linearVelocity = Vector2.zero;
+            body.position = checkpoint;
+            transform.position = checkpoint;
+            coyoteLeft = bufferLeft = carried = lastFallSpeed = landLeft = 0f;
+            grounded = braking = false;
+            stillTime = 0f;
+        }
+
         public void Die()
         {
+
             body.linearVelocity = Vector2.zero;
             body.position = checkpoint;
             transform.position = checkpoint;

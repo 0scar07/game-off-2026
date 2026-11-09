@@ -79,6 +79,24 @@ namespace Fase
 
         public static float TextScale => new[] { 1f, 1.15f, 1.3f }[TextSize];
 
+        /// <summary>Icono de sol o luna en las piezas (para no depender del color).</summary>
+        public static bool PieceIcons
+        {
+            get => PlayerPrefs.GetInt("fase_iconos_piezas", 0) == 1;
+            set => SetBool("fase_iconos_piezas", value);
+        }
+
+        /// <summary>Brillo en pasos: 0 = 80 %, 2 = 100 %, 5 = 130 %.</summary>
+        public static int BrightnessStep
+        {
+            get => PlayerPrefs.GetInt("fase_brillo", 2);
+            set { PlayerPrefs.SetInt("fase_brillo", (value % 6 + 6) % 6); PlayerPrefs.Save(); Changed?.Invoke(); }
+        }
+
+        public static int BrightnessPercent => 80 + BrightnessStep * 10;
+        public static float BrightnessFactor => BrightnessPercent / 100f;
+
+
         public static bool Vibration
         {
 

@@ -69,6 +69,30 @@ namespace Fase
             glow.anchorMax = new Vector2(1f, 1f);
             glow.sizeDelta = new Vector2(70f, 0f);
             glow.gameObject.AddComponent<Image>().color = new Color(1f, 0.85f, 0.6f, 0.25f);
+            // La misma línea en el borde izquierdo: la cortina entra por la derecha y sale por la izquierda.
+            foreach (var (name, width, color) in new[] { ("LineaIzq", 10f, new Color(1f, 0.97f, 0.9f)), ("HaloIzq", 70f, new Color(1f, 0.85f, 0.6f, 0.25f)) })
+            {
+                var left = new GameObject(name, typeof(RectTransform)).GetComponent<RectTransform>();
+                left.SetParent(curtain, false);
+                left.anchorMin = new Vector2(0f, 0f);
+                left.anchorMax = new Vector2(0f, 1f);
+                left.sizeDelta = new Vector2(width, 0f);
+                left.gameObject.AddComponent<Image>().color = color;
+            }
+            // Número y nombre del nivel que viene.
+            var title = new GameObject("Titulo", typeof(RectTransform)).GetComponent<RectTransform>();
+            title.SetParent(curtain, false);
+            title.anchorMin = new Vector2(0.05f, 0.5f);
+            title.anchorMax = new Vector2(0.95f, 0.5f);
+            title.sizeDelta = new Vector2(0f, 260f);
+            title.anchoredPosition = new Vector2(0f, 60f);
+            instance.title = title.gameObject.AddComponent<Text>();
+            instance.title.font = UiKit.Font;
+            UiKit.SetSize(instance.title, 64);
+            instance.title.alignment = TextAnchor.MiddleCenter;
+            instance.title.color = Color.white;
+            instance.title.horizontalOverflow = HorizontalWrapMode.Wrap;
+            instance.title.verticalOverflow = VerticalWrapMode.Overflow;
 
             // Consejo en la cortina mientras carga.
             var tip = new GameObject("Consejo", typeof(RectTransform)).GetComponent<RectTransform>();
@@ -102,15 +126,34 @@ namespace Fase
         /// La cortina se despliega como una página: entra doblándose desde el borde izquierdo y
         /// sale plegándose hacia el derecho. Una sombra marca el pliegue.
         /// </summary>
+        /// <summary>
+        /// Barrido con la línea: t = -1 fuera por la derecha, 0 tapando la pantalla, 1 fuera por la
+        /// izquierda. La cortina entra empujada por su línea izquierda y sale dejando ver el nivel nuevo
+        /// detrás de su línea derecha.
+        /// </summary>
         void SetCover(float t)
         {
-            bool entering = t <= 0f;
-            curtain.pivot = new Vector2(entering ? 0f : 1f, 0.5f);
-            curtain.anchoredPosition = Vector2.zero;
-            float angle = entering ? -t * 90f : t * 90f;
-            curtain.localRotation = Quaternion.Euler(0f, entering ? angle : -angle, 0f);
-            if (fold != null) fold.color = new Color(0f, 0f, 0.05f, Mathf.Sin(angle * Mathf.Deg2Rad) * 0.6f);
+            float width = ((RectTransform)transform).rect.width + 160f;
+            curtain.pivot = new Vector2(0.5f, 0.5f);
+            curtain.localRotation = Quaternion.identity;
+            curtain.anchoredPosition = new Vector2(-t * width, 0f);
+            if (fold != null) fold.color = Color.clear;
             curtain.gameObject.SetActive(t > -0.999f && t < 0.999f);
+        }
+
+        Text title;
+
+        /// <summary>"2 · Noche estrellada" si la escena es un nivel de la historia (★ si es secreto).</summary>
+        static string TitleFor(string scene)
+        {
+            var levels = LevelCatalog.Get.levels;
+            for (int i = 0; i < levels.Length; i++)
+            {
+                if (levels[i].scene != scene) continue;
+                string number = levels[i].secret ? "★" : (i + 1).ToString();
+                return $"<size=150>{number}</size>\n{Loc.Pick(levels[i].name, levels[i].nameEn)}";
+            }
+            return "";
         }
 
         Image fold;
@@ -170,6 +213,8 @@ namespace Fase
             Time.timeScale = 1f;
             var t0 = Tips[Random.Range(0, Tips.Length)];
             if (tip != null) tip.text = $"{Loc.Get("tip")}: {Loc.Pick(t0.es, t0.en)}";
+            if (title != null) title.text = TitleFor(scene);
+
             for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime / Duration)
             {
                 SetCover(Mathf.SmoothStep(-1f, 0f, t));

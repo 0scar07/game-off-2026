@@ -70,7 +70,7 @@ mientras le da el sol, un lago helado solo te sostiene mientras hay luna.
 | Saltar | Espacio / W / ↑ | botón en pantalla | A / ✕ |
 | Mover la línea | Q / E o Shift | arrastrar la línea | — |
 | Burbuja de noche | L | botón del farol | Y / △ |
-| Pausa · reintentar · foto | Esc · R · F | botón de pausa | Start |
+| Pausa · volver al punto de control · foto | Esc · mantener R · F | botón de pausa | Start · mantener Select |
 
 ---
 
@@ -86,7 +86,7 @@ shines on it. A frozen lake only holds you while the moon is up.
 **two endings**, photo mode and accessibility options. Original music, sound and voice.
 
 **Controls:** A/D or arrows to move · Space/W/↑ to jump · Q/E or Shift to move the line (or drag
-it) · L for the night bubble · Esc to pause · R to retry · F for photo mode.
+it) · L for the night bubble · Esc to pause · hold R to go back to the checkpoint · F for photo mode.
 
 ---
 
