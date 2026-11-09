@@ -911,6 +911,87 @@ const scenes = {
     }
     label('Idea 69: cada logro tiene su propio dibujo (sol, luna, árbol, cofre, línea...) en vez de una estrella genérica');
   },
+  52() { // Tanda B: animales y reacciones (29, 50)
+    const LX = 640, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 91);
+    // pájaros de día, búho de noche
+    [[200, 160], [260, 190], [320, 150]].forEach(([x, y]) => { g.save(); g.strokeStyle = '#3a3a5a'; g.lineWidth = 3; g.beginPath(); g.moveTo(x - 14, y); g.quadraticCurveTo(x - 7, y - 10, x, y); g.quadraticCurveTo(x + 7, y - 10, x + 14, y); g.stroke(); g.restore(); });
+    text('pájaros de día', 260, 230, 18, '#fff', 'center', '400');
+    // búho en una rama
+    rect(900, 300, 160, 8, '#4b3a66');
+    circle(980, 270, 30, '#6a5a8a'); circle(968, 262, 10, '#ffe27a'); circle(992, 262, 10, '#ffe27a'); circle(968, 262, 4, '#1a1030'); circle(992, 262, 4, '#1a1030');
+    poly([[958, 240], [962, 228], [970, 242]], '#6a5a8a'); poly([[1002, 240], [998, 228], [990, 242]], '#6a5a8a');
+    text('...que de noche son búhos', 980, 340, 18, '#fff', 'center', '400');
+    // Lumi tiembla en la noche
+    lumi(820, TOP - 62, 1, true, -1);
+    g.save(); g.strokeStyle = 'rgba(200,230,255,0.9)'; g.lineWidth = 2; [-1, 1].forEach(s => { g.beginPath(); g.moveTo(820 + s * 50, 440); g.lineTo(820 + s * 58, 450); g.lineTo(820 + s * 50, 460); g.lineTo(820 + s * 58, 470); g.stroke(); }); g.restore();
+    text('tiembla de frío', 820, 410, 18, '#dfe6ff', 'center', '400');
+    // Lumi se sacude la lluvia
+    lumi(400, TOP - 62, 1, false, 1);
+    seed = 5; for (let i = 0; i < 14; i++) { const a = R(0, 6.28); circle(400 + Math.cos(a) * R(50, 80), 470 + Math.sin(a) * R(30, 60), 3, 'rgba(140,200,255,0.9)'); }
+    text('se sacude la lluvia', 400, 410, 18, '#fff', 'center', '400');
+    lineBeam(LX); bloomPass(); vignette(0.45);
+    label('Ideas 29 y 50: pájaros de día que son búhos de noche, y Lumi tiembla de frío o se sacude el agua');
+  },
+  53() { // Tanda B: movimiento (73, 74, 102)
+    const LX = 700, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 92);
+    // rastro de luz al correr
+    for (let i = 0; i < 8; i++) { g.save(); g.globalAlpha = 0.08 + i * 0.07; lumi(150 + i * 28, TOP - 62, 0.9, false, 1); g.restore(); }
+    g.save(); g.globalCompositeOperation = 'lighter'; rect(120, TOP - 70, 250, 14, lin(120, 0, 370, 0, [[0, 'rgba(255,220,150,0)'], [1, 'rgba(255,230,170,0.7)']])); g.restore();
+    lumi(380, TOP - 62, 0.9, false, 1);
+    text('rastro de luz a toda velocidad', 260, 420, 18, '#fff', 'center', '400');
+    // anillo al saltar
+    g.save(); g.strokeStyle = 'rgba(255,240,200,0.9)'; g.lineWidth = 4; g.beginPath(); g.ellipse(560, TOP + 2, 60, 12, 0, 0, 7); g.stroke(); g.restore();
+    text('anillo al saltar', 560, TOP + 40, 18, '#fff', 'center', '400');
+    // cámara lenta al cruzar la línea en el aire
+    lumi(LX + 10, 320, 1, true, 1);
+    g.save(); g.strokeStyle = 'rgba(255,255,255,0.6)'; g.lineWidth = 2; g.setLineDash([6, 8]); g.beginPath(); g.moveTo(560, TOP - 30); g.quadraticCurveTo(LX, 220, 860, TOP - 30); g.stroke(); g.restore();
+    rect(0, 0, W, 50, 'rgba(0,0,0,0.85)'); rect(0, H - 50, W, 50, 'rgba(0,0,0,0.85)');
+    text('cámara lenta: ¡justo a tiempo!', LX + 10, 220, 24, '#ffd98a', 'center');
+    lineBeam(LX); bloomPass(); vignette(0.5);
+    label('Ideas 73, 74 y 102: rastro de luz al correr, anillo al saltar y cámara lenta al cruzar la línea en el último momento');
+  },
+  54() { // Tanda B: color de la línea por capítulo (76)
+    rect(0, 0, W, H, '#0b0a20');
+    const panels = [[PAL.day, PAL.night, '#fff6c8', 'I · La Pradera', 'dorada'], [PAL.autumn, PAL.autumnNight, '#ffb070', 'II · El Bosque', 'ámbar'], [PAL.snow, PAL.snowNight, '#a8e6ff', 'III · La Cumbre', 'hielo']];
+    panels.forEach(([d, n, col, name, kind], i) => {
+      const x0 = 30 + i * 410, w = 390;
+      g.save(); g.beginPath(); g.roundRect(x0, 90, w, 470, 18); g.clip();
+      g.translate(x0, 90); g.scale(w / W, 470 / H);
+      base(W / 2, 560, d, n, 30 + i);
+      g.restore();
+      const lx = x0 + w / 2;
+      g.save(); g.globalCompositeOperation = 'lighter'; rect(lx - 30, 90, 60, 470, lin(lx - 30, 0, lx + 30, 0, [[0, 'rgba(0,0,0,0)'], [0.5, col], [1, 'rgba(0,0,0,0)']])); g.restore();
+      rect(lx - 3, 90, 6, 470, col);
+      text(name, x0 + w / 2, 600, 26, '#fff', 'center');
+      text('línea ' + kind, x0 + w / 2, 635, 20, col, 'center', '400');
+    });
+    text('Cada capítulo con su línea', 640, 50, 34, '#fff', 'center');
+    label('Idea 76: la línea cambia de color en cada capítulo: dorada en la Pradera, ámbar en el Bosque y azul hielo en la Cumbre');
+  },
+  55() { // Tanda B: secretos del mundo (101, 128, 129, 132)
+    const LX = 760, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 93);
+    // pétalos al florecer cuando llega el día
+    seed = 6; for (let i = 0; i < 18; i++) { const x = R(120, 420), y = R(380, 540); g.save(); g.translate(x, y); g.rotate(R(0, 6)); poly([[0, -6], [4, 0], [0, 6], [-4, 0]], R(0, 1) < 0.5 ? '#ffb0d0' : '#fff0a0'); g.restore(); }
+    text('pétalos al llegar el día', 270, 360, 18, '#fff', 'center', '400');
+    // piedra con mensaje escondido
+    poly([[520, TOP], [540, TOP - 70], [600, TOP - 80], [630, TOP]], '#8a8aa0');
+    text('L+O', 576, TOP - 38, 18, '#4a4a60', 'center', '700', false);
+    text('mensajes grabados', 575, TOP - 110, 18, '#fff', 'center', '400');
+    // flor donde más caes
+    rect(900, TOP - 40, 4, 40, '#3fa857'); circle(902, TOP - 46, 12, '#ff7ab0'); circle(902, TOP - 46, 5, '#ffe27a');
+    glow(902, TOP - 46, 40, 'rgba(255,150,200,0.7)');
+    text('aquí te caíste 7 veces', 902, TOP - 90, 18, '#ffd6ea', 'center', '400');
+    // cueva con sonido distinto
+    poly([[1040, TOP], [1060, 380], [1200, 360], [1240, TOP]], '#141030');
+    poly([[1080, TOP], [1100, 440], [1180, 430], [1200, TOP]], '#05040f');
+    g.save(); g.strokeStyle = 'rgba(200,210,255,0.8)'; g.lineWidth = 2.5; [14, 26, 38].forEach(r => { g.beginPath(); g.arc(1140, 470, r, -0.7, 0.7); g.stroke(); }); g.restore();
+    text('eco en la cueva', 1140, 340, 18, '#fff', 'center', '400');
+    lineBeam(LX); bloomPass(); vignette(0.45);
+    label('Ideas 101, 128, 129 y 132: pétalos al florecer, eco en zonas cerradas, mensajes grabados y una flor donde más caes');
+  },
 };
 
 

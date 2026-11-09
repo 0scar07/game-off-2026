@@ -27,7 +27,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 125 | Reloj de arena en la pausa con lo que llevas jugando hoy |
 | 126 | Nubes que tapan el sol y oscurecen un poco el día |
 
-## Tanda B · El mundo y Lumi
+## Tanda B · El mundo y Lumi · maquetas: tanda-b-*.png
 
 | # | Idea |
 |---|---|
@@ -38,7 +38,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 76 | Un color de línea propio por capítulo |
 | 101 | Pétalos cuando las plantas florecen al pasar el día |
 | 102 | Anillo de luz en el suelo al saltar |
-| 107 | El clima cambia con la línea |
+| 107 | El clima cambia con la línea · ✅ ya existía (lluvia de día, nieve de noche, recortadas por la línea) |
 | 128 | Sonido ambiente distinto en zonas cerradas |
 | 129 | Mensajes escondidos en el decorado |
 | 132 | Una flor donde más veces te caes |
