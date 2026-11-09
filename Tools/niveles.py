@@ -25,6 +25,9 @@ class Level:
     def put(self, char, col, row):
         if 0 <= row < ROWS:
             self.grid[row][col] = char
+        elif char in "*KGHSC":
+            # Un fragmento o una meta fuera del mapa se perdía sin avisar (pasó en el Jardín del viento).
+            raise ValueError(f"'{char}' fuera del mapa (columna {col}, fila {row})")
 
     def fill(self, char, cols, rows):
         for r in rows:
@@ -180,9 +183,11 @@ class Level:
 
     # ───────────── Tramos de la segunda tanda ─────────────
 
-    def sun_gap(self, w=9):
+    def sun_gap(self, w=9, star=False):
         """Hueco con un reloj de sol: la plataforma solo se mueve mientras le da el día."""
         self.put("O", self.x + w // 2, self.top)
+        if star:
+            self.put("*", self.x + w // 2, self.top - 4)
         self.x += w
         return self.flat(3)
 
@@ -262,8 +267,10 @@ save("01-amanecer.txt", 1, "Amanecer", "Daybreak",
      "A la izquierda de la línea es de día; a la derecha, de noche.\\nMuévela con Shift (o Q/E), o arrastrándola.",
      "Left of the line is day; right of it, night.\\nMove it with Shift (or Q/E), or drag it.", 4, L)
 
-L = Level().start().flat(4).ice_bridge(5).flat(5).ice_steps(star=True).check().flat(3).ice_bridge(8).flat(4)
-L.ice_steps().flat(3).secret_ledge("n").ice_bridge(6).goal(alt=True)
+# Dos muros de hielo: el primero pide dejar la línea justo entre el muro y el puente; el segundo,
+# devolverla a la derecha después de las placas. Así hay que colocarla, no solo moverla una vez.
+L = Level().start().flat(4).ice_bridge(5).flat(5).ice_steps(star=True).check().night_wall().ice_bridge(8).flat(4)
+L.ice_steps().night_wall().secret_ledge("n").ice_bridge(6).goal(alt=True)
 save("02-noche-estrellada.txt", 1, "Noche estrellada", "Starry Night",
      "Lo que brilla en azul solo existe de noche.", "What glows blue only exists at night.", 60, L)
 
@@ -357,7 +364,7 @@ save("12-la-gran-sombra.txt", 3, "La Gran Sombra", "The Great Shadow",
 
 # ───────────────────────── Niveles secretos ─────────────────────────
 
-L = Level().start().updraft(6).sun_gap(11).bridge(7).updraft(4).sun_gap(13).spikes(star=True).flat(3).goal()
+L = Level().start().updraft(6).sun_gap(11, star=True).bridge(7).updraft(4).sun_gap(13).spikes().flat(3).goal()
 save("90-secreto-jardin-del-viento.txt", 1, "Jardín del viento", "Wind Garden",
      "Nivel secreto. Todo el viento de la pradera.", "Secret level. All the meadow's wind.", 3, L, "secreto: si\n")
 
@@ -453,8 +460,8 @@ save("11b-cuesta-de-la-luna.txt", 3, "Cuesta de la luna", "Moon Slope",
 
 L = Level().start().flat(4).box_wall().check().flat(6).boss_arena("P", "N")
 save("04c-garra-del-alba.txt", 1, "Garra del Alba", "Dawn Talon",
-     "Un pájaro enorme que solo vive de día. Llévale la noche para dormirlo\ny sube por el hielo hasta su cabeza. Dos veces.",
-     "A huge bird that only lives by day. Bring it night to put it to sleep\nand climb the ice to its head. Twice.", 26, L, "dia: derecha\n")
+     "Ojo: aquí el día está a la DERECHA. Un pájaro enorme que solo vive de día:\nllévale la noche para dormirlo y sube por el hielo hasta su cabeza. Dos veces.",
+     "Careful: here day is on the RIGHT. A huge bird that only lives by day:\nbring it night to put it to sleep and climb the ice to its head. Twice.", 26, L, "dia: derecha\n")
 
 L = Level().start().flat(4).check().flat(6).boss_arena("R", "D")
 save("08c-reina-de-escarcha.txt", 2, "Reina de Escarcha", "Frost Queen",
