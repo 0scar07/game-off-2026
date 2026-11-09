@@ -1,9 +1,7 @@
 nombre: Relojes de sol
 name: Sundials
-pista: Las plataformas con engranaje solo se mueven de día.
-El aire de día te eleva.
-hint: Geared platforms only move by day.
-Daytime air lifts you up.
+pista: Las plataformas con engranaje solo se mueven de día.\nEl aire de día te eleva.
+hint: Geared platforms only move by day.\nDaytime air lifts you up.
 capitulo: 1
 linea: 3
 ---

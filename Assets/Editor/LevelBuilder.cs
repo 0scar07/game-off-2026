@@ -413,6 +413,7 @@ public static partial class LevelBuilder
             {
                 // Puente de madera de Quaternius: piezas modulares, con barandilla.
                 var solid = Solid("TablaDia", new Vector2(center, bottom + 0.85f), new Vector2(width, 0.3f), World.Day, parent);
+                OneWay(solid);
                 for (int col = from; col <= to; col++)
                     Fit(Quat + "Bridge_Modular_Center.fbx", new Vector3(col + 0.5f, bottom + 0.55f, 0f), new Vector3(1.02f, 0.75f, 1.6f), Day, solid.transform);
                 break;
@@ -420,6 +421,7 @@ public static partial class LevelBuilder
             case 'n':
             {
                 var solid = Solid("TablaNoche", new Vector2(center, bottom + 0.85f), new Vector2(width, 0.3f), World.Night, parent);
+                OneWay(solid);
                 for (int col = from; col <= to; col++)
                     Fit(Platformer + "block-snow-low.fbx", new Vector3(col + 0.5f, bottom + 0.7f, 0f), new Vector3(1f, 0.3f, 1.3f), Night, solid.transform, biome.nightTint, IceGlow);
                 var glow = Glow("BrilloHielo", new Vector3(center, bottom + 0.85f, -0.2f), width * 0.9f + 1f, new Color(0.4f, 0.6f, 1.6f, 0.5f), Night, solid.transform);
@@ -702,6 +704,20 @@ public static partial class LevelBuilder
         solid.AddComponent<BoxCollider2D>().size = size;
         if (world.HasValue) solid.AddComponent<WorldPiece>().world = world.Value;
         return solid;
+    }
+
+    /// <summary>
+    /// Tabla que se atraviesa desde abajo y por los lados (solo se pisa desde arriba): Lumi mide 1,8
+    /// y una tabla dos filas por encima del suelo quedaba a 1,7, como una pared invisible.
+    /// </summary>
+    static void OneWay(GameObject solid)
+    {
+        solid.GetComponent<BoxCollider2D>().usedByEffector = true;
+        var effector = solid.AddComponent<PlatformEffector2D>();
+        effector.useOneWay = true;
+        effector.surfaceArc = 150f;
+        effector.useSideFriction = false;
+        effector.useSideBounce = false;
     }
 
     static GameObject Trigger(string name, Vector3 center, Vector2 size, Transform parent)

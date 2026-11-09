@@ -1,9 +1,7 @@
 nombre: La Gran Sombra
 name: The Great Shadow
-pista: Dale luz de día para volverla piedra.
-Sube a su cabeza y toca el fragmento. Tres veces.
-hint: Give it daylight to turn it to stone.
-Climb to its head and touch the fragment. Three times.
+pista: Dale luz de día para volverla piedra.\nSube a su cabeza y toca el fragmento. Tres veces.
+hint: Give it daylight to turn it to stone.\nClimb to its head and touch the fragment. Three times.
 capitulo: 3
 linea: 8
 ---

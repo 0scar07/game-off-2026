@@ -31,12 +31,18 @@ def load(path):
 def check(path):
     header, g = load(path)
     H, W = len(g), len(g[0])
+    head_lines = open(path, encoding="utf-8").read().split("---", 1)[0].splitlines()
     at = lambda x, y: g[y][x] if 0 <= y < H and 0 <= x < W else (" " if y < 0 else "#")
     stand_on = lambda x, y: at(x, y) in STAND
     blocked = lambda x, y: at(x, y) in WALL
     free = lambda x, y: not blocked(x, y) and not blocked(x, y - 1)
     find = lambda chars: [(x, y) for y in range(H) for x in range(W) if g[y][x] in chars]
     problems, notes = [], []
+
+    # Una pista partida en varias líneas: el juego solo lee la primera.
+    for line in head_lines:
+        if line.strip() and ":" not in line:
+            problems.append(f"línea de cabecera sin clave (¿pista partida?): {line.strip()[:40]}")
 
     starts = find("S")
     if not starts:

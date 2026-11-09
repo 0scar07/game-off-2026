@@ -233,6 +233,8 @@ class Level:
 
 def save(file, chapter, name, name_en, hint, hint_en, line, level, extra=""):
     os.makedirs(os.path.dirname(os.path.join(OUT, file)), exist_ok=True)
+    # Una pista con saltos de línea iría en varias líneas y el juego solo leería la primera.
+    hint, hint_en = hint.replace("\n", "\\n"), hint_en.replace("\n", "\\n")
     body = (f"nombre: {name}\nname: {name_en}\npista: {hint}\nhint: {hint_en}\n"
             f"capitulo: {chapter}\nlinea: {line}\n{extra}---\n{level.text()}\n")
     with open(os.path.join(OUT, file), "w", encoding="utf-8", newline="\n") as f:
@@ -427,6 +429,8 @@ def vertical_tower():
 
 
 def save_text(file, chapter, name, name_en, hint, hint_en, line, text, extra=""):
+    # Una pista con saltos de línea iría en varias líneas y el juego solo leería la primera.
+    hint, hint_en = hint.replace("\n", "\\n"), hint_en.replace("\n", "\\n")
     body = (f"nombre: {name}\nname: {name_en}\npista: {hint}\nhint: {hint_en}\n"
             f"capitulo: {chapter}\nlinea: {line}\n{extra}---\n{text}\n")
     with open(os.path.join(OUT, file), "w", encoding="utf-8", newline="\n") as f:

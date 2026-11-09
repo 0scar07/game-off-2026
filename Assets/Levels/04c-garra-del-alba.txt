@@ -1,9 +1,7 @@
 nombre: Garra del Alba
 name: Dawn Talon
-pista: Un pájaro enorme que solo vive de día. Llévale la noche para dormirlo
-y sube por el hielo hasta su cabeza. Dos veces.
-hint: A huge bird that only lives by day. Bring it night to put it to sleep
-and climb the ice to its head. Twice.
+pista: Un pájaro enorme que solo vive de día. Llévale la noche para dormirlo\ny sube por el hielo hasta su cabeza. Dos veces.
+hint: A huge bird that only lives by day. Bring it night to put it to sleep\nand climb the ice to its head. Twice.
 capitulo: 1
 linea: 26
 dia: derecha

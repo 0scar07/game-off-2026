@@ -277,14 +277,24 @@ namespace Fase
         {
             Bounds b = capsule.bounds;
             Vector2 feet = new Vector2(b.center.x, b.min.y);
-            return Solid(Physics2D.OverlapBoxAll(feet, new Vector2(b.size.x * 0.85f, 0.1f), 0f, groundMask));
+            foreach (var hit in Physics2D.OverlapBoxAll(feet, new Vector2(b.size.x * 0.85f, 0.1f), 0f, groundMask))
+            {
+                if (hit.isTrigger || hit.attachedRigidbody == body) continue;
+                // Tablas que se atraviesan desde abajo: solo son suelo si Lumi baja y tiene los pies encima.
+                if (hit.usedByEffector && (body.linearVelocity.y > 0.05f || b.min.y < hit.bounds.max.y - 0.15f)) continue;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>Hay algo sólido en el centro del personaje: un trozo de mundo apareció encima.</summary>
         bool IsCrushed()
         {
             Bounds b = capsule.bounds;
-            return Solid(Physics2D.OverlapBoxAll(b.center, b.size * 0.5f, 0f, groundMask));
+            foreach (var hit in Physics2D.OverlapBoxAll(b.center, b.size * 0.5f, 0f, groundMask))
+                // Una tabla que aparece a la altura de Lumi no la aplasta: se atraviesa.
+                if (!hit.isTrigger && hit.attachedRigidbody != body && !hit.usedByEffector) return true;
+            return false;
         }
 
         /// <summary>Algún collider sólido que no sea del propio personaje.</summary>
