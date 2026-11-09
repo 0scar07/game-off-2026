@@ -62,13 +62,11 @@ namespace Fase
                 {
                     hat = new GameObject("Gorro");
                     hat.transform.SetParent(head, false);
-                    var cone = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    Destroy(cone.GetComponent<Collider>());
+                    var cone = Shapes.Create(PrimitiveType.Cylinder);
                     cone.transform.SetParent(hat.transform, false);
                     cone.transform.localPosition = new Vector3(0f, 0.55f, 0f);
                     cone.transform.localScale = new Vector3(0.62f, 0.22f, 0.62f);
-                    var pompom = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                    Destroy(pompom.GetComponent<Collider>());
+                    var pompom = Shapes.Create(PrimitiveType.Sphere);
                     pompom.transform.SetParent(hat.transform, false);
                     pompom.transform.localPosition = new Vector3(0f, 0.85f, 0f);
                     pompom.transform.localScale = Vector3.one * 0.22f;

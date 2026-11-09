@@ -1,0 +1,9 @@
+{
+  "name": "fase-prueba-web",
+  "private": true,
+  "type": "module",
+  "description": "Prueba de humo de la versión web de FASE en un Chrome sin ventana",
+  "dependencies": {
+    "playwright": "1.48.2"
+  }
+}

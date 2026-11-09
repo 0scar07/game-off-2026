@@ -1,4 +1,5 @@
-# Sube la versión web de FASE a itch.io cuando se publica una release con el archivo FASE-web.zip.
+# Prueba la versión web de FASE y, si va bien, la sube a itch.io cuando se publica una release
+# con el archivo FASE-web.zip.
 #
 # Cómo usarlo:
 #   1. En Unity: menú Fase → Exportar web (genera Builds/Web).
@@ -23,7 +24,47 @@ on:
         required: true
 
 jobs:
+  probar:
+    # Antes de subir: abre la web en un Chrome sin ventana, pasa el inicio, entra a jugar y pulsa
+    # unas teclas. Si hay errores o la imagen no se mueve, no se sube a itch. Las capturas quedan
+    # como artefacto del run.
+    if: startsWith(github.event.release.tag_name || inputs.tag, 'web-')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: Tools/prueba_web
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Descargar FASE-web.zip de la release
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern FASE-web.zip
+          mkdir web && unzip -q FASE-web.zip -d web
+      - name: Preparar Chrome
+        working-directory: Tools/prueba_web
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Probar la web
+        working-directory: Tools/prueba_web
+        run: |
+          (cd "$GITHUB_WORKSPACE/web" && python3 -m http.server 8000 >/dev/null 2>&1 &)
+          sleep 2
+          node prueba.mjs http://localhost:8000/ capturas
+      - name: Guardar capturas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capturas-${{ env.TAG }}
+          path: Tools/prueba_web/capturas
+
   upload:
+    needs: probar
     # Solo las releases de la web (web-AAAAMMDD-N); las versiones del juego (v1.0...) no tocan itch.
     if: startsWith(github.event.release.tag_name || inputs.tag, 'web-')
     runs-on: ubuntu-24.04

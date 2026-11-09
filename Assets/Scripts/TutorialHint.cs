@@ -40,7 +40,11 @@ namespace Fase
             UiKit.Box(hand, "Dedo", new Vector2(0.5f, 1f), new Vector2(0f, 0f), new Vector2(30f, 70f), new Color(1f, 1f, 1f, 0.8f));
 
             // En el ordenador, además, las teclas.
-            if (Touchscreen.current == null)
+            if (Gamepad.current != null)
+            {
+                UiKit.Text(root, "Mando", Loc.Pick("Línea · stick derecho / LB + RB", "Line · right stick / LB + RB"), new Vector2(0.5f, 0.5f), new Vector2(140f, -165f), new Vector2(640f, 90f), 30);
+            }
+            else if (Touchscreen.current == null)
             {
                 Key(root, Settings.KeyName(Settings.GetKey(Settings.Action.LineLeft)), new Vector2(110f, -165f));
                 Key(root, Settings.KeyName(Settings.GetKey(Settings.Action.LineRight)), new Vector2(205f, -165f));
@@ -56,7 +60,12 @@ namespace Fase
         void Update()
         {
             if (root == null) return;
-            age += Time.unscaledDeltaTime;
+            if (PauseMenu.Paused || PhotoMode.Active)
+            {
+                group.alpha = 0f;
+                return;
+            }
+            age += Time.deltaTime;
             var line = ShiftLine.Instance;
             if (line == null) return;
             if (!done && Mathf.Abs(ShiftLine.X - startX) > 2.5f)

@@ -187,7 +187,8 @@ namespace Fase
         {
             finished = true;
             SaveGuard.ClearCheckpoint(levelNumber);
-            bool record = Progress.SaveTime(levelNumber, elapsed);
+            IsRecord = !sandbox && !daily && !Settings.Assist && Progress.SaveTime(levelNumber, elapsed);
+            bool record = IsRecord;
             string text = Loc.Get("complete");
             if (fragmentsTotal > 0 && fragments == fragmentsTotal) text += "\n" + Loc.Get("allmoon");
             if (record) text += "\n" + Loc.Get("record") + "  " + FormatTime(elapsed);

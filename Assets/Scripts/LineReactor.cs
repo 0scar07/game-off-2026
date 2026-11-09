@@ -175,8 +175,7 @@ namespace Fase
 
         void Puddle(Vector3 at, Material material)
         {
-            var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            Destroy(quad.GetComponent<Collider>());
+            var quad = Shapes.Create(PrimitiveType.Quad);
             quad.name = "Charco";
             quad.transform.SetParent(transform, false);
             // Tumbado sobre el suelo, un poco inclinado hacia la cámara para que se vea.

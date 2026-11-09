@@ -29,6 +29,10 @@ namespace Fase
 
         public static event System.Action Changed;
 
+        // En cooperativo, la actividad del segundo mando no cambia quién lleva a Lumi.
+        public static Gamepad PlayerGamepad => Coop && Gamepad.all.Count > 0
+            ? Gamepad.all[0] : Gamepad.current;
+
         /// <summary>Salto más largo, más margen para saltar y el juego un poco más lento. Sin medallas.</summary>
         public static bool Assist
         {

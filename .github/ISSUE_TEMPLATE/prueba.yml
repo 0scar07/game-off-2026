@@ -1,0 +1,58 @@
+name: Prueba de juego · Playtest
+description: Cuéntanos cómo te fue jugando a FASE · Tell us how playing FASE went
+labels: [prueba]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ¡Gracias por jugar! No hace falta rellenarlo todo: lo que te acuerdes vale.
+        Thanks for playing! You don't need to fill in everything.
+  - type: dropdown
+    id: plataforma
+    attributes:
+      label: Dónde jugaste · Platform
+      options: [Navegador en ordenador, Navegador en móvil, Windows, Otro]
+    validations:
+      required: true
+  - type: input
+    id: hasta
+    attributes:
+      label: Hasta dónde llegaste y cuánto tiempo · How far and how long
+      placeholder: "Nivel 8, unos 25 minutos"
+  - type: dropdown
+    id: entendi
+    attributes:
+      label: ¿Entendiste cómo mover la línea sin que nadie te lo explicara? · Did you get the line without help?
+      options: [Sí, enseguida, Me costó un poco, No lo entendí]
+  - type: textarea
+    id: gusto
+    attributes:
+      label: Lo que más te gustó · What you liked most
+  - type: textarea
+    id: atasco
+    attributes:
+      label: Dónde te atascaste o te frustraste · Where you got stuck or frustrated
+      placeholder: "En el nivel 5 no sabía qué hacer con los relojes de sol"
+  - type: textarea
+    id: confuso
+    attributes:
+      label: Algo que no entendiste o que te pareció raro · Anything confusing or odd
+  - type: dropdown
+    id: dificultad
+    attributes:
+      label: Dificultad · Difficulty
+      options: [Muy fácil, Fácil, Justa, Difícil, Demasiado difícil]
+  - type: dropdown
+    id: rendimiento
+    attributes:
+      label: ¿Iba fluido? · Did it run smoothly?
+      options: [Sí, A veces daba tirones, Iba lento casi siempre]
+  - type: textarea
+    id: cambiaria
+    attributes:
+      label: Una cosa que cambiarías · One thing you'd change
+  - type: dropdown
+    id: seguir
+    attributes:
+      label: ¿Seguirías jugando? · Would you keep playing?
+      options: [Sí, Quizás, No]

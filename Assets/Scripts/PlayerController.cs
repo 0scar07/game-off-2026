@@ -102,7 +102,11 @@ namespace Fase
         }
 
         /// <summary>En la meta: deja de responder a los controles, mira a la cámara y saluda.</summary>
-        public void Celebrate() => celebrating = true;
+        public void Celebrate()
+        {
+            celebrating = true;
+            bufferLeft = 0f;
+        }
 
         /// <summary>Hacia dónde mira: 1 derecha, -1 izquierda (0 si mira a la cámara celebrando).</summary>
         public float Facing => celebrating ? 0f : facing;
@@ -110,6 +114,12 @@ namespace Fase
 
         void Update()
         {
+            if (PauseMenu.Paused || PhotoMode.Active || UiKit.Typing || celebrating)
+            {
+                bufferLeft = 0f;
+                MobileInput.ConsumeJump();
+                return;
+            }
             if (JumpPressed()) bufferLeft = jumpBuffer;
             else bufferLeft -= Time.deltaTime;
 
@@ -198,7 +208,7 @@ namespace Fase
             // Corrientes de aire de día: empujan hacia arriba.
             v.y += AirCurrent.Lift(body.position) * Time.fixedDeltaTime;
 
-            if (bufferLeft > 0f && coyoteLeft > 0f)
+            if (!celebrating && bufferLeft > 0f && coyoteLeft > 0f)
             {
                 v.y = jumpSpeed;
                 bufferLeft = 0f;
@@ -227,7 +237,11 @@ namespace Fase
         public void Die()
         {
             body.linearVelocity = Vector2.zero;
+            body.position = checkpoint;
             transform.position = checkpoint;
+            coyoteLeft = bufferLeft = carried = lastFallSpeed = landLeft = 0f;
+            grounded = braking = false;
+            MobileInput.ConsumeJump();
             Died?.Invoke();
             GameEvents.RaiseDied();
         }
@@ -286,7 +300,7 @@ namespace Fase
             float x = MobileInput.Move;
             if (Settings.Held(Settings.Action.Left)) x -= 1f;
             if (Settings.Held(Settings.Action.Right)) x += 1f;
-            var pad = Settings.Coop && Gamepad.all.Count > 0 ? Gamepad.all[0] : Gamepad.current;
+            var pad = Settings.PlayerGamepad;
             if (pad != null) x += pad.leftStick.x.ReadValue();
             // En modo espejo "derecha" es la derecha de la pantalla, que en el mundo es la izquierda.
             return Mathf.Clamp(x, -1f, 1f) * MirrorMode.Sign;
@@ -294,7 +308,7 @@ namespace Fase
 
         static bool JumpPressed()
         {
-            var pad = Gamepad.current;
+            var pad = Settings.PlayerGamepad;
             return MobileInput.ConsumeJump()
                 || Settings.Pressed(Settings.Action.Jump)
                 || (pad != null && pad.buttonSouth.wasPressedThisFrame);
@@ -302,7 +316,7 @@ namespace Fase
 
         static bool JumpHeld()
         {
-            var pad = Gamepad.current;
+            var pad = Settings.PlayerGamepad;
             return MobileInput.JumpHeld
                 || Settings.Held(Settings.Action.Jump)
                 || (pad != null && pad.buttonSouth.isPressed);

@@ -25,6 +25,7 @@ namespace Fase
         }
 
         bool held;
+        int pointerId = int.MinValue;
         Image image;
         Color idleColor;
 
@@ -42,14 +43,40 @@ namespace Fase
             Set(false);
         }
 
-        public void OnPointerDown(PointerEventData _) => Set(true);
-        public void OnPointerUp(PointerEventData _) => Set(false);
-        public void OnPointerExit(PointerEventData _) => Set(false);
+        public void OnPointerDown(PointerEventData pointer)
+        {
+            if (held || PauseMenu.Paused || PhotoMode.Active) return;
+            pointerId = pointer.pointerId;
+            Set(true);
+        }
+
+        public void OnPointerUp(PointerEventData pointer)
+        {
+            if (pointer.pointerId == pointerId) Set(false);
+        }
+
+        public void OnPointerExit(PointerEventData pointer) => OnPointerUp(pointer);
+
+        void Update()
+        {
+            if (PauseMenu.Paused || PhotoMode.Active) Set(false);
+        }
+
+        void OnApplicationFocus(bool focused)
+        {
+            if (!focused) Set(false);
+        }
+
+        void OnApplicationPause(bool paused)
+        {
+            if (paused) Set(false);
+        }
 
         void Set(bool pressed)
         {
             if (held == pressed) return;
             held = pressed;
+            if (!pressed) pointerId = int.MinValue;
             if (image != null) image.color = pressed ? new Color(1f, 1f, 1f, 0.55f) : idleColor;
             transform.localScale = Vector3.one * (pressed ? 0.92f : 1f);
             switch (kind)

@@ -36,3 +36,5 @@ Trailer/*.mp4
 
 # Archivos que genera Unity al compilar para la web
 /Data/
+Tools/prueba_web/node_modules/
+Tools/prueba_web/capturas/

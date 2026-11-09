@@ -30,8 +30,7 @@ namespace Fase
             var root = new GameObject("Huellas").transform;
             for (int i = 0; i < count; i++)
             {
-                var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                Destroy(quad.GetComponent<Collider>());
+                var quad = Shapes.Create(PrimitiveType.Quad);
                 quad.name = "Huella";
                 quad.transform.SetParent(root);
                 quad.transform.rotation = Quaternion.Euler(90f, 0f, 0f);

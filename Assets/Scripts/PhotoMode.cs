@@ -57,6 +57,12 @@ namespace Fase
 
         void Update()
         {
+            var pad = Gamepad.current;
+            if (Active && pad != null && pad.buttonEast.wasPressedThisFrame)
+            {
+                Exit();
+                return;
+            }
             var kb = Keyboard.current;
             if (kb == null) return;
             if (!Active && kb.fKey.wasPressedThisFrame && !PauseMenu.Paused && !UiKit.Typing && FindAnyObjectByType<ResultsScreen>() == null) Enter();
@@ -108,6 +114,7 @@ namespace Fase
 
         void Exit()
         {
+            if (!Active) return;
             Active = false;
             SetFilter(0);
             if (lumiHidden) ToggleLumi();
@@ -129,6 +136,7 @@ namespace Fase
             UiKit.Text(box.transform, "Ayuda", Loc.Pick("Mover: WASD · Zoom: rueda o +/-\nInclinar: Q/E · Filtros: 1-4\nOcultar a Lumi: H · Salir: F",
                 "Move: WASD · Zoom: wheel or +/-\nTilt: Q/E · Filters: 1-4\nHide Lumi: H · Exit: F"), new Vector2(0.5f, 0.5f), new Vector2(0f, 10f), new Vector2(520f, 140f), 24, TextAnchor.MiddleCenter, UiKit.Soft);
             filterLabel = UiKit.Text(box.transform, "Filtro", "", new Vector2(0.5f, 0f), new Vector2(0f, 50f), new Vector2(500f, 40f), 28);
+            UiKit.Button(ui.transform, "Salir", Loc.Pick("Volver al juego", "Back to game"), new Vector2(0f, 1f), new Vector2(40f, -40f), new Vector2(440f, 100f), Exit, 36);
             UiKit.Button(ui.transform, "Capturar", Loc.Pick("Capturar (Espacio)", "Capture (Space)"), new Vector2(0.5f, 0f), new Vector2(0f, 60f), new Vector2(460f, 100f), () => StartCoroutine(Capture()), 40);
             SetFilter(0);
         }

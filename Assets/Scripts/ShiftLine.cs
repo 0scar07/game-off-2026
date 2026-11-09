@@ -152,12 +152,28 @@ namespace Fase
                 x = Mathf.Clamp(sweepCenter + Mathf.Sin(Time.time * sweepSpeed) * sweepAmplitude, minX, maxX);
                 return;
             }
-            if (PauseMenu.Paused || PhotoMode.Active) return;
+            if (PauseMenu.Paused || PhotoMode.Active || UiKit.Typing)
+            {
+                draggingMouse = false;
+                dragTouch = -1;
+                if (wasHolding) GameEvents.RaiseLineReleased();
+                wasHolding = false;
+                return;
+            }
             float move = 0f;
             if (Settings.Held(Settings.Action.LineLeft)) move -= 1f;
             if (Settings.Held(Settings.Action.LineRight)) move += 1f;
-            // Cooperativo con mandos: el segundo mando mueve la línea.
-            if (Settings.Coop && Gamepad.all.Count > 1) move += Gamepad.all[1].leftStick.x.ReadValue();
+            // Solo: stick derecho o botones superiores. En cooperativo, el segundo mando.
+            var linePad = Settings.Coop
+                ? (Gamepad.all.Count > 1 ? Gamepad.all[1] : null)
+                : Gamepad.current;
+            if (linePad != null)
+            {
+                move += Settings.Coop ? linePad.leftStick.x.ReadValue() : linePad.rightStick.x.ReadValue();
+                if (linePad.leftShoulder.isPressed) move -= 1f;
+                if (linePad.rightShoulder.isPressed) move += 1f;
+            }
+            move = Mathf.Clamp(move, -1f, 1f);
             float before = x + x2;
             int keyLine = KeyboardLine();
             // Tumbada, "derecha" sube la línea; en modo espejo se invierte lo horizontal.
