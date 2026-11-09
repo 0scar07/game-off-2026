@@ -59,7 +59,14 @@ namespace Fase
             ["noctambulo"] = ((x, y) => (Circle(x, y, -0.32f, 0.05f, 0.3f) && !Circle(x, y, -0.32f, 0.05f, 0.12f)) || (Circle(x, y, 0.32f, 0.05f, 0.3f) && !Circle(x, y, 0.32f, 0.05f, 0.12f)) || Tri(x, y, -0.1f, -0.25f, 0.1f, -0.25f, 0f, -0.5f), new Color(0.65f, 0.75f, 1f)),
             ["saltarin"] = ((x, y) => Tri(x, y, -0.6f, 0.05f, 0.6f, 0.05f, 0f, 0.7f) || Tri(x, y, -0.6f, -0.55f, 0.6f, -0.55f, 0f, 0.1f), new Color(0.5f, 0.95f, 0.75f)),
             ["lector"] = ((x, y) => (Box(x, y, -0.8f, -0.55f, -0.05f, 0.55f) || Box(x, y, 0.05f, -0.55f, 0.8f, 0.55f)) && !(Mathf.Abs(y - 0.25f) < 0.05f || Mathf.Abs(y) < 0.05f || Mathf.Abs(y + 0.25f) < 0.05f), new Color(0.95f, 0.88f, 0.7f)),
-            ["fotografo"] = ((x, y) => (Box(x, y, -0.8f, -0.5f, 0.8f, 0.4f) || Box(x, y, -0.3f, 0.4f, 0.3f, 0.6f)) && !(Circle(x, y, 0, -0.05f, 0.3f) && !Circle(x, y, 0, -0.05f, 0.16f)), new Color(0.8f, 0.85f, 0.95f)),
+            ["dormilon"] = ((x, y) => (Mathf.Abs(y - 0.45f) < 0.08f && Mathf.Abs(x + 0.3f) < 0.3f) || (Mathf.Abs(y + 0.35f) < 0.08f && Mathf.Abs(x + 0.3f) < 0.3f) || (Mathf.Abs((y - 0.05f) + (x + 0.3f) * 1.33f) < 0.1f && Mathf.Abs(x + 0.3f) < 0.3f) || Circle(x, y, 0.45f, 0.45f, 0.14f) || Circle(x, y, 0.62f, 0.75f, 0.09f), new Color(0.8f, 0.85f, 1f)),
+            ["grabados"] = ((x, y) => Tri(x, y, -0.8f, -0.6f, -0.4f, 0.55f, 0.85f, -0.6f) && !(Mathf.Abs(y + 0.1f) < 0.05f && Mathf.Abs(x) < 0.3f) && !(Mathf.Abs(y + 0.32f) < 0.05f && Mathf.Abs(x) < 0.4f), new Color(0.7f, 0.7f, 0.78f)),
+            ["cueva"] = ((x, y) => (Circle(x, y, 0, -0.3f, 0.85f) && y > -0.65f) && !(Circle(x, y, 0, -0.45f, 0.5f) && y > -0.65f), new Color(0.6f, 0.55f, 0.8f)),
+            ["flor"] = ((x, y) => Circle(x, y, 0f, 0.55f, 0.18f) || Circle(x, y, 0.25f, 0.3f, 0.18f) || Circle(x, y, -0.25f, 0.3f, 0.18f) || Circle(x, y, 0.15f, 0.05f, 0.16f) || Circle(x, y, -0.15f, 0.05f, 0.16f) || Box(x, y, -0.04f, -0.8f, 0.04f, 0.1f), new Color(1f, 0.55f, 0.8f)),
+            ["plumas"] = ((x, y) => { float u = (x + y) * 0.7071f, v = (y - x) * 0.7071f; return u * u / 0.75f + v * v / 0.08f < 1f && !(Mathf.Abs(v) < 0.025f && u > -0.7f); }, new Color(1f, 0.97f, 0.9f)),
+            ["estiloso"] = ((x, y) => Star(x, y, 0.6f) || Circle(x, y, 0.62f, 0.6f, 0.12f) || Circle(x, y, -0.6f, -0.55f, 0.1f), new Color(1f, 0.75f, 0.95f)),
+            ["fotografo"] = 
+((x, y) => (Box(x, y, -0.8f, -0.5f, 0.8f, 0.4f) || Box(x, y, -0.3f, 0.4f, 0.3f, 0.6f)) && !(Circle(x, y, 0, -0.05f, 0.3f) && !Circle(x, y, 0, -0.05f, 0.16f)), new Color(0.8f, 0.85f, 0.95f)),
         };
 
         /// <summary>Dibujo del logro (null si no tiene uno propio).</summary>

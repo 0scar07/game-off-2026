@@ -138,6 +138,8 @@ namespace Fase
             flower.localScale = Vector3.one * (1f + 0.05f * Mathf.Sin(Time.time * 2f));
             bool near = Mathf.Abs(flower.position.x - player.position.x) < 3f;
             label.alpha = Mathf.MoveTowards(label.alpha, near ? 1f : 0f, Time.deltaTime * 2.5f);
+            if (near) Achievements.Unlock("flor");
+
             labelText.text = Loc.Pick($"Aquí te caíste {shownFalls} veces", $"You fell here {shownFalls} times");
         }
     }

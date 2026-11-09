@@ -72,6 +72,9 @@ namespace Fase
             }
             texts.alpha = 1f;
             texts.interactable = texts.blocksRaycasts = true;
+            // Tarjeta para compartir: el resumen de todo el viaje.
+            ShareCard.Show();
+
         }
 
         public void ToMenu() => SceneFader.Load(PauseMenu.MenuScene);

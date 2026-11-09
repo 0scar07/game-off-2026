@@ -36,7 +36,9 @@ namespace Fase
             new Item { id = "cumbre", nameEs = "Nieve", nameEn = "Snow", howEs = "Termina el capítulo III", howEn = "Finish chapter III", color = new Color(0.92f, 0.97f, 1f), color2 = new Color(0.55f, 0.85f, 1f), unlocked = () => LevelCatalog.Get.ChapterDone(3) },
             new Item { id = "oro", nameEs = "Dorada", nameEn = "Golden", howEs = "5 medallas de oro", howEn = "5 gold medals", color = new Color(1f, 0.84f, 0.3f), color2 = new Color(1f, 0.65f, 0.15f), unlocked = () => Medals.CountAtLeast(Medals.Gold, Levels) >= 5 },
             new Item { id = "arcoiris", nameEs = "Arcoíris", nameEn = "Rainbow", howEs = "Todos los fragmentos", howEn = "Every fragment", color = new Color(1f, 0.35f, 0.4f), color2 = new Color(0.35f, 0.6f, 1f), unlocked = () => Achievements.Has("coleccionista") },
-            new Item { id = "luna", nameEs = "Luz de luna", nameEn = "Moonlight", howEs = "Una medalla de Luna", howEn = "A Moon medal", color = new Color(0.75f, 0.88f, 1f), color2 = new Color(1f, 1f, 1f), unlocked = () => Medals.CountAtLeast(Medals.Moon, Levels) >= 1 },
+            new Item { id = "rayas", nameEs = "Rayas", nameEn = "Stripes", howEs = "Completa los retos de una semana", howEn = "Complete a week's challenges", color = new Color(0.95f, 0.95f, 1f), color2 = new Color(0.9f, 0.3f, 0.4f), unlocked = () => WeeklyChallenges.EverCompleted },
+            new Item { id = "luna", nameEs = "Luz de luna",
+ nameEn = "Moonlight", howEs = "Una medalla de Luna", howEn = "A Moon medal", color = new Color(0.75f, 0.88f, 1f), color2 = new Color(1f, 1f, 1f), unlocked = () => Medals.CountAtLeast(Medals.Moon, Levels) >= 1 },
         };
 
         public static readonly Item[] Lanterns =

@@ -27,6 +27,22 @@ namespace Fase
             int hour = System.DateTime.Now.Hour;
             var line = FindAnyObjectByType<ShiftLine>();
             if (line != null) line.sweepCenter = hour >= 7 && hour < 19 ? dayCenter : nightCenter;
+            // Amanecer (6-8 h) y atardecer (18-20 h): la línea en medio y un tono cálido.
+            bool dawn = hour >= 6 && hour < 8, dusk = hour >= 18 && hour < 20;
+            if (dawn || dusk)
+            {
+                if (line != null) line.sweepCenter = (dayCenter + nightCenter) * 0.5f;
+                tint = dusk ? new Color(1f, 0.82f, 0.68f) : new Color(1f, 0.9f, 0.82f);
+            }
+        }
+
+        Color tint = Color.white;
+
+        // Después de que Brightness aplique lo suyo al cargar la escena.
+        void Start()
+        {
+            if (tint != Color.white) Brightness.SetTint(tint);
+
         }
     }
 }

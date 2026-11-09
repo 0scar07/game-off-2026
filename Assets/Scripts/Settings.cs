@@ -79,7 +79,15 @@ namespace Fase
 
         public static float TextScale => new[] { 1f, 1.15f, 1.3f }[TextSize];
 
+        /// <summary>Correr contra el fantasma de tu récord (se activa o quita desde El viaje).</summary>
+        public static bool GhostRace
+        {
+            get => PlayerPrefs.GetInt("fase_fantasma", 1) == 1;
+            set => SetBool("fase_fantasma", value);
+        }
+
         /// <summary>Icono de sol o luna en las piezas (para no depender del color).</summary>
+
         public static bool PieceIcons
         {
             get => PlayerPrefs.GetInt("fase_iconos_piezas", 0) == 1;

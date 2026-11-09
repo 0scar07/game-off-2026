@@ -41,3 +41,11 @@ t2 = np.arange(int(SR * 0.22)) / SR
 hiss = rng.uniform(-1, 1, len(t2))
 hiss = np.convolve(hiss, [1, -0.95], mode="same") * np.exp(-t2 * 16) * np.minimum(1, t2 / 0.004)
 save("estornudo", np.concatenate([breath + voice, np.zeros(int(SR * 0.04)), hiss]), 0.55)
+
+# Nota de campana (Do agudo): cada fragmento la toca subiendo por la escala (MusicLayers).
+save("nota", bell(1046.5, 1.2, 4.5), 0.5)
+
+# Pluma, hoja o copo: un brillo corto de dos notas.
+x = bell(1568, 0.5, 9)
+x[int(SR * 0.07):] += bell(2093, 0.5 - 0.07, 9) * 0.8
+save("pluma", x, 0.4)

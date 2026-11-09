@@ -32,6 +32,8 @@ namespace Fase
             bool left = Solid(Physics2D.Raycast(head, Vector2.left, 7f));
             bool right = Solid(Physics2D.Raycast(head, Vector2.right, 7f));
             Active = roof && (left || right);
+            if (Active) Achievements.Unlock("cueva");
+
         }
 
         static bool Solid(RaycastHit2D hit) => hit.collider != null && !hit.collider.isTrigger && hit.collider.GetComponent<PlayerController>() == null;

@@ -26,6 +26,8 @@ namespace Fase
         {
             if (player == null || cam == null) return;
             if (!player.Sleeping) { next = 0.4f; return; }
+            Achievements.Unlock("dormilon");
+
             next -= Time.deltaTime;
             if (next > 0f) return;
             next = 0.9f;

@@ -26,7 +26,8 @@ namespace Fase
             if (Hud.Instance == null || Hud.Instance.Daily) { enabled = false; return; }
             level = Hud.Instance.levelNumber;
             best = Load(level);
-            if (best != null && best.Length > 1) ghost = BuildGhost();
+            if (best != null && best.Length > 1 && Settings.GhostRace) ghost = BuildGhost();
+
         }
 
         void OnEnable() => GameEvents.GoalReached += OnGoal;

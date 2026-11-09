@@ -43,7 +43,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 129 | Mensajes escondidos en el decorado |
 | 132 | Una flor donde más veces te caes |
 
-## Tanda C · Menú, progreso y extras · maquetas: tanda-c-*.png
+## Tanda C · Menú, progreso y extras · ✅ programada (falta probar en Unity)
 
 | # | Idea |
 |---|---|
@@ -52,7 +52,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 40 | Música interactiva: cada fragmento añade un instrumento |
 | 53 | Medallas de estilo |
 | 55 | Pantalla de estadísticas |
-| 68 | El menú sigue la hora real del PC |
+| 68 | El menú sigue la hora real del PC · ya lo hacía (día de 7 a 19 h); añadidos amanecer y atardecer |
 | 70 | Tarjeta para compartir al terminar el juego |
 | 78 | Reproductor de la banda sonora |
 | 99 | Los fragmentos forman una melodía |

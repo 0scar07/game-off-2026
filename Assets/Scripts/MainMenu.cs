@@ -25,7 +25,12 @@ namespace Fase
         public Text infoTitle, infoDetail;
         public Button infoPlay;
 
+        [Header("Banda sonora (Extras)")]
+        public AudioClip[] soundtrack;
+        public string[] soundtrackNames, soundtrackNamesEn;
+
         [Header("Opciones")]
+
         public Slider music, sfx;
         public Text playLabel;
         [Tooltip("Debajo de Continuar: nivel por el que vas y luna reunida.")]

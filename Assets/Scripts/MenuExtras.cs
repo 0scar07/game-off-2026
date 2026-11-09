@@ -10,7 +10,7 @@ namespace Fase
     /// niveles secretos del mapa de viaje.
     /// </summary>
     [RequireComponent(typeof(MainMenu))]
-    public class MenuExtras : MonoBehaviour
+    public partial class MenuExtras : MonoBehaviour
     {
         MainMenu menu;
         GameObject achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel, triviaPanel;
@@ -28,9 +28,12 @@ namespace Fase
             diaryPanel = BuildDiary();
             shopPanel = BuildShop();
             triviaPanel = BuildTrivia();
+            BuildExtras();
             BuildJourneyExtras();
             BuildJourneyPreview();
             foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel, triviaPanel }) menu.AddPanel(panel);
+            foreach (var panel in extraPanels) menu.AddPanel(panel);
+
             BuildGreeting();
             BuildNameOption();
             // Lumi del fondo: saluda al volver y suelta alguna frase mientras se ve el menú principal.
@@ -73,18 +76,19 @@ namespace Fase
                 ("∞", "endless", () => SceneFader.Load("SinFin")),
                 ("☾", "shop", () => menu.Show(shopPanel)),
                 ("?", "trivia", () => menu.Show(triviaPanel)),
+                ("✦", "extras", () => menu.Show(extrasPanel)),
                 ("⚙", "options", menu.ShowOptions),
             };
             for (int i = 0; i < items.Length; i++)
             {
                 var (icon, key, action) = items[i];
-                float x = (i - (items.Length - 1) * 0.5f) * 182f;
-                var button = UiKit.Button(dock.transform, key, "", new Vector2(0.5f, 0.5f), new Vector2(x, 0f), new Vector2(172f, 112f), action, 24);
+                float x = (i - (items.Length - 1) * 0.5f) * 164f;
+                var button = UiKit.Button(dock.transform, key, "", new Vector2(0.5f, 0.5f), new Vector2(x, 0f), new Vector2(156f, 112f), action, 22);
                 var image = button.GetComponent<Image>();
                 image.color = new Color(1f, 1f, 1f, 0.02f);
                 var label = button.GetComponentInChildren<Text>();
                 label.rectTransform.anchoredPosition = new Vector2(0f, -26f);
-                var glyph = UiKit.Text(button.transform, "Icono", icon, new Vector2(0.5f, 0.5f), new Vector2(0f, 16f), new Vector2(172f, 60f), 46, TextAnchor.MiddleCenter, UiKit.Gold);
+                var glyph = UiKit.Text(button.transform, "Icono", icon, new Vector2(0.5f, 0.5f), new Vector2(0f, 16f), new Vector2(156f, 60f), 46, TextAnchor.MiddleCenter, UiKit.Gold);
                 glyph.fontStyle = FontStyle.Normal;
                 string k = key;
                 refreshers.Add(() => label.text = k == "daily" ? Loc.Pick("Desafío", "Daily") : k == "trivia" ? Loc.Pick("Curiosidades", "Trivia") : Loc.Get(k));
@@ -207,7 +211,10 @@ namespace Fase
 
         // ───────── Panel base ─────────
 
-        GameObject Panel(string name, string titleKey, out RectTransform content)
+        GameObject Panel(string name, string titleKey, out RectTransform content) => Panel(name, titleKey, out content, null);
+
+        /// <summary>Panel base; `back` es adónde lleva "Volver" (por defecto, al menú principal).</summary>
+        GameObject Panel(string name, string titleKey, out RectTransform content, UnityEngine.Events.UnityAction back)
         {
             var panel = UiKit.Fill(transform, name).gameObject;
             var background = panel.AddComponent<Image>();
@@ -216,8 +223,8 @@ namespace Fase
             var title = UiKit.Text(box.transform, "Titulo", Loc.Get(titleKey), new Vector2(0.5f, 1f), new Vector2(0f, -70f), new Vector2(1200f, 100f), 76);
             refreshers.Add(() => title.text = Loc.Get(titleKey));
             content = UiKit.Rect(box.transform, "Contenido", new Vector2(0.5f, 0.5f), new Vector2(0f, -10f), new Vector2(1400f, 680f));
-            var back = UiKit.Button(box.transform, "Volver", Loc.Get("back"), new Vector2(0.5f, 0f), new Vector2(0f, 36f), new Vector2(380f, 90f), menu.ShowMain, 42);
-            var backLabel = back.GetComponentInChildren<Text>();
+            var backButton = UiKit.Button(box.transform, "Volver", Loc.Get("back"), new Vector2(0.5f, 0f), new Vector2(0f, 36f), new Vector2(380f, 90f), back ?? menu.ShowMain, 42);
+            var backLabel = backButton.GetComponentInChildren<Text>();
             refreshers.Add(() => backLabel.text = Loc.Get("back"));
             return panel;
         }
@@ -232,8 +239,8 @@ namespace Fase
             for (int i = 0; i < all.Length; i++)
             {
                 var info = all[i];
-                float x = (i % 4 - 1.5f) * 350f, y = 250f - (i / 4) * 98f;
-                var card = UiKit.Box(content, info.id, new Vector2(0.5f, 0.5f), new Vector2(x, y - 30f), new Vector2(336f, 84f), Color.white);
+                float x = (i % 4 - 1.5f) * 350f, y = 250f - (i / 4) * 88f;
+                var card = UiKit.Box(content, info.id, new Vector2(0.5f, 0.5f), new Vector2(x, y - 30f), new Vector2(336f, 80f), Color.white);
                 var star = UiKit.Box(card.transform, "Estrella", new Vector2(0f, 0.5f), new Vector2(46f, 0f), new Vector2(60f, 60f), Color.white);
                 var icon = UiKit.Text(card.transform, "Icono", "", new Vector2(0f, 0.5f), new Vector2(46f, 2f), new Vector2(60f, 60f), 34);
                 // Dibujo propio del logro; la estrella solo queda para los que aún no tienes.

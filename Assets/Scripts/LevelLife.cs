@@ -45,6 +45,10 @@ namespace Fase
             gameObject.AddComponent<HiddenMessages>();
             gameObject.AddComponent<FallFlower>();
             gameObject.AddComponent<Enclosure>();
+            // Medallas de estilo y la pluma (hoja, copo) escondida del nivel.
+            gameObject.AddComponent<StyleTracker>();
+            Feather.Place(transform);
+
 
             gameObject.AddComponent<Encouragement>();
             gameObject.AddComponent<HoldToReturn>();

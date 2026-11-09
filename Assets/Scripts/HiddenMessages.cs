@@ -24,6 +24,8 @@ namespace Fase
 
         readonly System.Collections.Generic.List<(Transform rock, CanvasGroup group)> carved = new System.Collections.Generic.List<(Transform, CanvasGroup)>();
         Transform player;
+        readonly System.Collections.Generic.HashSet<Transform> read = new System.Collections.Generic.HashSet<Transform>();
+
 
         void Start()
         {
@@ -75,6 +77,19 @@ namespace Fase
                 if (rock == null || group == null) continue;
                 float d = Mathf.Abs(rock.position.x - player.position.x);
                 group.alpha = Mathf.MoveTowards(group.alpha, d < 3.5f ? 1f : 0f, Time.deltaTime * 2f);
+                // Leído: cuenta para el logro "Arqueólogo" (una vez por roca).
+                if (group.alpha >= 1f && !read.Contains(rock))
+                {
+                    read.Add(rock);
+                    string key = $"fase_grabado_{(Hud.Instance != null ? Hud.Instance.levelNumber : 0)}_{Mathf.RoundToInt(rock.position.x)}";
+                    if (PlayerPrefs.GetInt(key, 0) == 0)
+                    {
+                        PlayerPrefs.SetInt(key, 1);
+                        int total = PlayerPrefs.GetInt("fase_grabados_leidos", 0) + 1;
+                        PlayerPrefs.SetInt("fase_grabados_leidos", total);
+                        if (total >= 5) Achievements.Unlock("grabados");
+                    }
+                }
             }
         }
     }

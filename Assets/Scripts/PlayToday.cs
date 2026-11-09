@@ -13,7 +13,8 @@ namespace Fase
 
         static float seconds;
         static string date;
-        float saveIn = 15f;
+        float saveIn = 15f, total;
+
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Create() => DontDestroyOnLoad(new GameObject("TiempoDeHoy").AddComponent<PlayToday>().gameObject);
@@ -27,18 +28,23 @@ namespace Fase
 
         static string Today => DateTime.Now.ToString("yyyy-MM-dd");
 
+        /// <summary>Minutos jugados en total (desde que existe este contador).</summary>
+        public static int TotalMinutes => Mathf.FloorToInt(PlayerPrefs.GetFloat("fase_tiempo_total", 0f) / 60f);
+
         /// <summary>Minutos jugados hoy.</summary>
         public static int Minutes => Mathf.FloorToInt(seconds / 60f);
 
         void Update()
         {
             if (date != Today) { date = Today; seconds = 0f; }
-            if (!PauseMenu.Paused && Application.isFocused) seconds += Time.unscaledDeltaTime;
+            if (!PauseMenu.Paused && Application.isFocused) { seconds += Time.unscaledDeltaTime; total += Time.unscaledDeltaTime; }
             saveIn -= Time.unscaledDeltaTime;
             if (saveIn > 0f) return;
             saveIn = 15f;
             PlayerPrefs.SetString(DateKey, date);
             PlayerPrefs.SetFloat(SecondsKey, seconds);
+            PlayerPrefs.SetFloat("fase_tiempo_total", PlayerPrefs.GetFloat("fase_tiempo_total", 0f) + total);
+            total = 0f;
         }
     }
 }

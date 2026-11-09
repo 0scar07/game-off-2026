@@ -163,6 +163,8 @@ namespace Fase
             var shot = ScreenCapture.CaptureScreenshotAsTexture();
             ui.enabled = true;
             Share.SavePicture(shot);
+            Album.Add(shot);
+
             Achievements.Unlock("fotografo");
             Destroy(shot);
             if (filterLabel != null) filterLabel.text = Loc.Pick("¡Foto guardada!", "Photo saved!");

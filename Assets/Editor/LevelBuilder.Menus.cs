@@ -140,6 +140,14 @@ public static partial class LevelBuilder
         var menu = canvas.gameObject.AddComponent<MainMenu>();
         new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem), typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
         menu.introScene = IntroScene;
+        // Banda sonora para Extras → Banda sonora.
+        var tracks = new[] { ("dia", "Pradera · día", "Meadow · day"), ("noche", "Pradera · noche", "Meadow · night"), ("otono_dia", "Bosque · día", "Forest · day"),
+            ("otono_noche", "Bosque · noche", "Forest · night"), ("nieve_dia", "Cumbre · día", "Summit · day"), ("nieve_noche", "Cumbre · noche", "Summit · night"),
+            ("jefe_tambores", "Tambores de la Gran Sombra", "Drums of the Great Shadow"), ("final_cumbre", "La luna entera", "The whole moon") };
+        menu.soundtrack = tracks.Select(t => MusicClip(t.Item1)).ToArray();
+        menu.soundtrackNames = tracks.Select(t => t.Item2).ToArray();
+        menu.soundtrackNamesEn = tracks.Select(t => t.Item3).ToArray();
+
 
         // Sombra suave a la izquierda para que se lea el texto sobre el paisaje.
         var shade = new GameObject("SombraIzquierda", typeof(RectTransform));

@@ -43,6 +43,8 @@ namespace Fase
             KeyRatio = keyRatio;
             GameEvents.GoalReached += OnGoal;
             GameEvents.Collected += OnDuck;
+            Muted = false;
+
         }
 
         void OnDisable()
@@ -65,7 +67,20 @@ namespace Fase
         }
 
         // Al coger luna la música baja un momento para que se oiga el brillo.
-        void OnDuck() => duck = 0.6f;
+        /// <summary>Lo pone el reproductor de la banda sonora del menú para callar esta música.</summary>
+        public static bool Muted;
+
+        // Música interactiva: cada fragmento suena como una nota (subiendo por la escala, en el tono
+        // del capítulo) y deja sonando un poco más la capa de campanitas.
+        static readonly float[] Scale = { 1f, 1.125f, 1.25f, 1.5f, 1.6667f, 2f, 2.25f, 2.5f };
+        int collected;
+
+        void OnDuck()
+        {
+            duck = 0.6f;
+            Sfx.Play("nota", 0.55f, Scale[Mathf.Min(collected, Scale.Length - 1)] * KeyRatio);
+            collected++;
+        }
 
         void Start()
         {
@@ -126,12 +141,13 @@ namespace Fase
             float dayGain = Mathf.Cos(nightAmount * Mathf.PI * 0.5f), nightGain = Mathf.Sin(nightAmount * Mathf.PI * 0.5f);
             if (ending) fade = Mathf.MoveTowards(fade, 0f, Time.unscaledDeltaTime / 1.2f);
             duck = Mathf.MoveTowards(duck, 1f, Time.unscaledDeltaTime * 0.8f);
-            float master = volume * Progress.MusicVolume * fade * duck, ambience = ambienceVolume * Progress.SfxVolume;
+            float master = volume * Progress.MusicVolume * fade * duck * (Muted ? 0f : 1f), ambience = ambienceVolume * Progress.SfxVolume * (Muted ? 0f : 1f);
             daySource.volume = dayGain * master;
             nightSource.volume = nightGain * master;
             ambienceDaySource.volume = dayGain * ambience;
             ambienceNightSource.volume = nightGain * ambience;
-            lineSource.volume = onLine * master * 0.7f;
+            lineSource.volume = Mathf.Max(onLine * 0.7f, Mathf.Min(collected, 3) * 0.12f) * master;
+
             bossSource.volume = bossAmount * master;
         }
     }

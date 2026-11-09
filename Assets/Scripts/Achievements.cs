@@ -44,6 +44,14 @@ namespace Fase
             Secret("saltarin", "Saltarín", "Bouncy", "Salta 15 veces en 8 segundos", "Jump 15 times in 8 seconds"),
             Secret("lector", "Lector", "Bookworm", "Encuentra 5 páginas del diario", "Find 5 diary pages"),
             Secret("fotografo", "Fotógrafo", "Photographer", "Haz una foto en el modo foto", "Take a picture in photo mode"),
+            // Logros de exploración.
+            New("dormilon", "Dormilón", "Sleepyhead", "Deja que Lumi se duerma", "Let Lumi fall asleep"),
+            New("grabados", "Arqueólogo", "Archaeologist", "Lee 5 mensajes grabados en las rocas", "Read 5 messages carved in rocks"),
+            New("cueva", "Eco", "Echo", "Escucha el eco bajo techo", "Hear the echo under a roof"),
+            New("flor", "Donde caíste", "Where you fell", "Encuentra la flor de tus caídas", "Find the flower of your falls"),
+            New("plumas", "Coleccionista de plumas", "Feather collector", "Encuentra 10 plumas, hojas o copos", "Find 10 feathers, leaves or snowflakes"),
+            New("estiloso", "Con mucho estilo", "Stylish", "Consigue una medalla de estilo", "Earn a style medal"),
+
         };
 
         static Info Secret(string id, string nameEs, string nameEn, string descEs, string descEn)
@@ -85,6 +93,8 @@ namespace Fase
         public static void PassedSleepingShadow()
         {
             if (AddCounter("sombras") >= 10) Unlock("piedra");
+            WeeklyChallenges.PassedShadow();
+
         }
 
         // ───────── Seguimiento ─────────

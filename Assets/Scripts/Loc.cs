@@ -86,7 +86,15 @@ namespace Fase
             ["contrast"] = ("Alto contraste", "High contrast"),
             ["reduceeffects"] = ("Menos destellos", "Fewer flashes"),
             ["textsize"] = ("Tamaño del texto", "Text size"),
-            ["pieceicons"] = ("Formas en las piezas", "Shapes on pieces"),
+            ["extras"] = ("Extras", "Extras"),
+            ["stats"] = ("Estadísticas", "Statistics"),
+            ["soundtrack"] = ("Banda sonora", "Soundtrack"),
+            ["gallery"] = ("Galería", "Gallery"),
+            ["album"] = ("Álbum", "Album"),
+            ["chaptermap"] = ("Mapa de capítulos", "Chapter map"),
+            ["weekly"] = ("Retos de la semana", "Weekly challenges"),
+            ["pieceicons"] = 
+("Formas en las piezas", "Shapes on pieces"),
             ["brightness"] = ("Brillo", "Brightness"),
 
             ["trivia"] = ("¿Sabías qué?", "Did you know?"),

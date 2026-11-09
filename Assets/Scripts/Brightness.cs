@@ -18,10 +18,19 @@ namespace Fase
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Init()
         {
-            SceneManager.sceneLoaded += (_, _) => { gray = false; Apply(); };
+            SceneManager.sceneLoaded += (_, _) => { gray = false; tint = Color.white; Apply(); };
             Settings.Changed += Apply;
             Apply();
         }
+
+        /// <summary>Tinte de color de la escena (el menú al amanecer o al atardecer). Blanco = sin tinte.</summary>
+        public static void SetTint(Color color)
+        {
+            tint = color;
+            Apply();
+        }
+
+        static Color tint = Color.white;
 
         /// <summary>Quita el color a la escena (pausa) o lo devuelve.</summary>
         public static void SetGray(bool value)
@@ -31,7 +40,7 @@ namespace Fase
             Apply();
         }
 
-        static readonly Dictionary<VolumeProfile, (float exposure, float saturation)> original = new Dictionary<VolumeProfile, (float, float)>();
+        static readonly Dictionary<VolumeProfile, (float exposure, float saturation, bool hasFilter, Color filter)> original = new Dictionary<VolumeProfile, (float, float, bool, Color)>();
 
         static void Apply()
         {
@@ -46,13 +55,18 @@ namespace Fase
                 if (!original.TryGetValue(profile, out var start))
                 {
                     start = (color.postExposure.overrideState ? color.postExposure.value : 0f,
-                             color.saturation.overrideState ? color.saturation.value : 0f);
+                             color.saturation.overrideState ? color.saturation.value : 0f,
+                             color.colorFilter.overrideState, color.colorFilter.value);
                     original[profile] = start;
                 }
                 color.postExposure.overrideState = true;
                 color.postExposure.value = start.exposure + stops;
                 color.saturation.overrideState = true;
                 color.saturation.value = gray ? -100f : start.saturation;
+                // El tinte se multiplica por el filtro que ya trajera el capítulo.
+                color.colorFilter.overrideState = start.hasFilter || tint != Color.white;
+                color.colorFilter.value = (start.hasFilter ? start.filter : Color.white) * tint;
+
                 break;
             }
         }
