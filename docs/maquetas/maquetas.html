@@ -821,6 +821,96 @@ const scenes = {
     pill(470, 480, 340, 70, '#ffe27a'); text('Seguir', 640, 515, 30, '#3a2400', 'center', '700', false);
     label('Idea 104: el mapa de pausa marca las lunas que te faltan (y las que ya cogiste, apagadas)');
   },
+  47() { // Tanda A: menú (63, 64, 65, 66, 93, 100, 124)
+    base(700, 560, PAL.day, PAL.night, 31); lineBeam(700);
+    text('FASE', 80, 150, 120, '#fff6d6', 'left');
+    text('¡Hola, Oscar!', 84, 235, 30, '#ffd98a', 'left');
+    // botón Continuar inclinado hacia el ratón
+    g.save(); g.translate(250, 320); g.rotate(-0.05); pill(-170, -38, 340, 76, '#fff27a'); text('▶  Continuar', 0, 0, 34, '#3a2400', 'center', '700', false); g.restore();
+    pill(80, 380, 340, 64, '#3a2d8a'); text('El viaje', 250, 412, 30, '#fff', 'center', '700', false);
+    // cursor dorado con forma de línea
+    g.save(); g.translate(372, 344); g.rotate(-0.5); rect(-3, -26, 6, 52, '#ffe27a'); g.restore(); glow(372, 344, 30, 'rgba(255,220,120,0.9)');
+    // ondas de sonido del botón
+    g.save(); g.strokeStyle = 'rgba(255,240,180,0.8)'; g.lineWidth = 3; [16, 28, 40].forEach(r => { g.beginPath(); g.arc(440, 320, r, -0.6, 0.6); g.stroke(); }); g.restore();
+    text('“tin”', 500, 320, 18, '#fff6d6', 'left', '400');
+    // Lumi saluda con bocadillo
+    lumi(980, 498, 1.1, true, -1);
+    panel(830, 330, 300, 70, 'rgba(255,255,255,0.92)'); poly([[960, 400], [990, 400], [975, 425]], 'rgba(255,255,255,0.92)');
+    text('¡Has vuelto! ¿Seguimos?', 980, 365, 21, '#3a2a60', 'center', '700', false);
+    text('saluda con la mano', 980, 650, 16, '#cfd3ff', 'center', '400');
+    // barra con racha en Desafío
+    pill(230, 575, 820, 64, 'rgba(10,8,30,0.75)');
+    ['Lumi', 'Logros', 'Diario', 'Desafío', 'Taller', 'Sin fin', 'Opciones'].forEach((t, i) => text(t, 290 + i * 115, 607, 18, '#fff', 'center', '400', false));
+    circle(655, 575, 16, '#ff8a3d'); text('5', 655, 576, 16, '#fff', 'center');
+    text('5 días seguidos', 655, 545, 15, '#ffd98a', 'center', '400');
+    label('Tanda A · menú: cursor dorado, sonido al pasar, botones que se inclinan, saludo, frases de Lumi y racha del desafío');
+  },
+  48() { // Tanda A: pantalla de carga (67)
+    rect(0, 0, W, H, '#07061a');
+    seed = 4; for (let i = 0; i < 120; i++) circle(R(0, W), R(0, H), R(0.5, 1.5), `rgba(255,255,255,${R(0.2, 0.7)})`);
+    rect(W - 10, 0, 10, H, '#fff'); glow(W - 5, H / 2, 120, 'rgba(255,255,255,0.5)');
+    text('5', 640, 220, 140, '#fff', 'center');
+    text('Relojes de sol', 640, 320, 48, '#fff', 'center');
+    pill(370, 380, 540, 70, 'rgba(255,255,255,0.08)');
+    text('⏱ Récord 0:48      ☾ te falta 1 de 2      ★ Plata', 640, 415, 24, '#ffd98a', 'center', '400', false);
+    text('Consejo: las plataformas con engranaje solo se mueven al sol.', 640, 620, 24, '#cfd3ff', 'center', '400');
+    label('Idea 67: la pantalla de carga enseña tu récord, las lunas que te faltan y tu medalla del nivel que viene');
+  },
+  49() { // Tanda A: pausa (96, 125)
+    base(640, 560, PAL.day, PAL.night, 77);
+    // todo gris salvo la línea
+    g.save(); g.globalCompositeOperation = 'saturation'; rect(0, 0, W, H, '#808080'); g.restore();
+    rect(0, 0, W, H, 'rgba(0,0,0,0.35)');
+    lineBeam(640);
+    text('Pausa', 640, 120, 54, '#fff', 'center');
+    ['Seguir', 'Reiniciar nivel', 'Menú'].forEach((t, i) => { pill(490, 210 + i * 90, 300, 66, i ? 'rgba(60,50,140,0.95)' : '#ffe27a'); text(t, 640, 243 + i * 90, 28, i ? '#fff' : '#3a2400', 'center', '700', false); });
+    // reloj de arena
+    poly([[1080, 80], [1140, 80], [1110, 120]], '#ffe27a'); poly([[1080, 160], [1140, 160], [1110, 120]], 'rgba(255,226,122,0.5)');
+    rect(1074, 74, 72, 8, '#fff'); rect(1074, 158, 72, 8, '#fff');
+    text('Hoy: 42 min', 1110, 195, 22, '#fff', 'center');
+    text('¿Un descanso?', 1110, 222, 16, '#cfd3ff', 'center', '400');
+    label('Ideas 96 y 125: al pausar el mundo se queda en gris salvo la línea, y un reloj de arena dice cuánto llevas hoy');
+  },
+  50() { // Tanda A: en el nivel (95, 123, 126)
+    const LX = 760, TOP = 560;
+    split(LX, () => { const p = PAL.day; sky(p, 300, 140, false); hills(p, 420, 3, 15); ground(p, -10, W + 10, TOP); },
+      () => { const p = PAL.snowNight || PAL.night; sky(p, 1000, 140, true); hills(p, 420, 3, 15); ground(p, -10, W + 10, TOP); });
+    // nube que tapa el sol y su sombra
+    cloud(220, 120, 1.6); rect(0, 0, LX, H, 'rgba(20,30,60,0.12)');
+    text('una nube tapa el sol: el día se apaga un poco', 380, 230, 18, '#fff', 'center', '400');
+    // Lumi camina con el farol que tintinea
+    lumi(420, TOP - 62, 1, false, 1);
+    g.save(); g.strokeStyle = 'rgba(255,240,180,0.9)'; g.lineWidth = 2.5; [10, 18].forEach(r => { g.beginPath(); g.arc(470, TOP - 40, r, -0.8, 0.8); g.stroke(); }); g.restore();
+    text('tin tin', 520, TOP - 70, 18, '#fff6d6', 'left', '400');
+    // estornudo al entrar en la nieve
+    lumi(860, TOP - 62, 1, true, 1);
+    panel(880, 360, 180, 64, 'rgba(255,255,255,0.92)');
+    text('¡Achís!', 970, 392, 28, '#3a2a60', 'center', '700', false);
+    seed = 9; for (let i = 0; i < 10; i++) circle(920 + R(0, 50), TOP - 90 + R(-15, 15), R(2, 4), 'rgba(255,255,255,0.9)');
+    lineBeam(LX); bloomPass(); vignette(0.45);
+    label('Ideas 95, 123 y 126: el farol tintinea al caminar, Lumi estornuda al entrar en la nieve y las nubes tapan el sol');
+  },
+  51() { // Tanda A: logros con dibujo (69)
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#120f33'], [1, '#2a1f5e']]));
+    text('Logros', 640, 80, 52, '#fff', 'center');
+    const draw = [
+      (x, y) => { circle(x, y, 22, '#ffe27a'); for (let a = 0; a < 8; a++) rect(x + Math.cos(a * 0.785) * 30 - 3, y + Math.sin(a * 0.785) * 30 - 3, 6, 6, '#ffe27a'); },
+      (x, y) => { circle(x, y, 24, '#e8eeff'); circle(x + 10, y - 6, 22, '#2a2458'); },
+      (x, y) => { poly([[x - 26, y + 18], [x, y - 26], [x + 26, y + 18]], '#7fdc6a'); rect(x - 4, y + 18, 8, 10, '#8a5a3a'); },
+      (x, y) => { rect(x - 22, y - 14, 44, 30, '#c98a5a'); rect(x - 22, y - 14, 44, 8, '#e0a070'); circle(x, y + 2, 5, '#ffe27a'); },
+      (x, y) => { rect(x - 2, y - 30, 4, 60, '#fff'); glow(x, y, 30, 'rgba(255,255,255,0.8)'); },
+      (x, y) => { poly([[x - 18, y + 20], [x - 18, y - 20], [x + 20, y]], '#ff8a8a'); },
+    ];
+    const names = ['Primer amanecer', 'Noctámbulo', 'Pradera completa', 'Cazatesoros', 'Maestro de la línea', '???'];
+    for (let i = 0; i < 6; i++) {
+      const x = 260 + (i % 3) * 380, y = 230 + Math.floor(i / 3) * 230, got = i < 5;
+      panel(x - 160, y - 80, 320, 180, got ? 'rgba(255,240,200,0.12)' : 'rgba(255,255,255,0.04)', got ? 'rgba(255,230,150,0.5)' : 'rgba(255,255,255,0.15)');
+      circle(x, y - 10, 46, got ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.05)');
+      g.save(); if (!got) g.globalAlpha = 0.3; draw[i](x, y - 10); g.restore();
+      text(names[i], x, y + 65, 22, got ? '#fff' : '#8a86b8', 'center');
+    }
+    label('Idea 69: cada logro tiene su propio dibujo (sol, luna, árbol, cofre, línea...) en vez de una estrella genérica');
+  },
 };
 
 
