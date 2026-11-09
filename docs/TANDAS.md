@@ -79,7 +79,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 88 | Más idiomas (portugués y francés; el japonés necesita otra fuente) · traducidos la interfaz fija, niveles, capítulos y pistas; el resto sale en inglés |
 | 137 | Modo de un solo toque para móvil |
 
-## Tanda E · Mecánicas nuevas (con niveles para usarlas)
+## Tanda E · Mecánicas nuevas (con niveles para usarlas) · maquetas: tanda-e-*.png
 
 | # | Idea |
 |---|---|

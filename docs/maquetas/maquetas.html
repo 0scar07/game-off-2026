@@ -21,6 +21,7 @@ function rad(x, y, r, stops) { const gr = g.createRadialGradient(x, y, 0, x, y, 
 function rect(x, y, w, h, fill) { g.fillStyle = fill; g.fillRect(x, y, w, h); }
 function poly(pts, fill) { g.beginPath(); g.moveTo(pts[0][0], pts[0][1]); pts.slice(1).forEach(p => g.lineTo(p[0], p[1])); g.closePath(); g.fillStyle = fill; g.fill(); }
 function glow(x, y, r, col, a = 1) { g.save(); g.globalAlpha = a; g.globalCompositeOperation = 'lighter'; g.fillStyle = rad(x, y, r, [[0, col], [0.35, col.replace(/[\d.]+\)$/, '0.35)')], [1, col.replace(/[\d.]+\)$/, '0)')]]); g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.restore(); }
+function ellipse(x, y, rx, ry, fill) { g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, 7); g.fillStyle = fill; g.fill(); }
 function circle(x, y, r, fill) { g.beginPath(); g.arc(x, y, r, 0, 7); g.fillStyle = fill; g.fill(); }
 function clipX(x0, x1, fn) { g.save(); g.beginPath(); g.rect(x0, 0, x1 - x0, H); g.clip(); fn(); g.restore(); }
 
@@ -1148,6 +1149,106 @@ const scenes = {
     ['· dos líneas a la vez', '· la burbuja de noche del farol (L)', '· saltar y mover la línea en el aire'].forEach((t, k) => text(t, 740, 395 + k * 38, 22, '#fff', 'left', '400', false));
     pill(830, 495, 240, 44, '#ffe27a'); text('Practicar', 950, 517, 22, '#3a2400', 'center', '700', false);
     label('Ideas 88 y 75: portugués y francés además de español e inglés, y un nivel opcional para practicar trucos avanzados');
+  },
+  66() { // Tanda E: atardecer (24, 106)
+    const LX = 640, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 101);
+    // franja de atardecer pegada a la línea
+    g.save(); g.globalCompositeOperation = 'lighter'; rect(LX - 90, 0, 180, H, lin(LX - 90, 0, LX + 90, 0, [[0, 'rgba(255,140,60,0)'], [0.5, 'rgba(255,150,80,0.35)'], [1, 'rgba(255,140,60,0)']])); g.restore();
+    // plataformas de atardecer: solo dentro de la franja
+    [[LX - 70, 420], [LX - 40, 330], [LX - 60, 240]].forEach(([x, y]) => { rect(x, y, 120, 18, '#ff9a55'); glow(x + 60, y + 9, 60, 'rgba(255,160,90,0.6)'); });
+    g.save(); g.setLineDash([8, 8]); g.strokeStyle = 'rgba(255,170,110,0.6)'; g.lineWidth = 2; g.strokeRect(LX + 160, 330, 120, 18); g.restore();
+    text('fuera de la franja no existe', LX + 220, 310, 16, '#ffd0a8', 'center', '400');
+    lumi(LX - 10, 300, 0.9, false, 1);
+    lineBeam(LX);
+    pill(60, 60, 470, 90, 'rgba(0,0,0,0.5)'); text('Piezas de atardecer', 295, 90, 26, '#ffb070', 'center'); text('solo existen pegadas a la línea', 295, 125, 18, '#fff', 'center', '400', false);
+    bloomPass(); vignette(0.45);
+    label('Ideas 24 y 106: piezas de atardecer que solo existen en la franja pegada a la línea: sube llevándola contigo');
+  },
+  67() { // Tanda E: espejos y luz del farol (25, 112)
+    const TOP = 560;
+    split(1100, () => { const p = PAL.night; sky(p, 300, 140, true); hills(p, 420, 3, 102); ground(p, -10, W + 10, TOP); },
+      () => { const p = PAL.day; sky(p, 1000, 140, false); hills(p, 420, 3, 102); ground(p, -10, W + 10, TOP); });
+    // rayo de sol rebotando en espejos
+    g.save(); g.globalCompositeOperation = 'lighter'; g.strokeStyle = 'rgba(255,230,150,0.85)'; g.lineWidth = 10;
+    g.beginPath(); g.moveTo(1180, 120); g.lineTo(820, 200); g.lineTo(560, 120); g.lineTo(380, 420); g.stroke(); g.restore();
+    [[820, 200, 0.6], [560, 120, -0.6]].forEach(([x, y, a]) => { g.save(); g.translate(x, y); g.rotate(a); rect(-40, -6, 80, 12, '#cfe8ff'); g.restore(); });
+    // círculo de día donde cae el rayo
+    g.save(); g.beginPath(); g.ellipse(380, 470, 130, 110, 0, 0, 7); g.clip(); const p = PAL.day; rect(250, 360, 260, 220, lin(0, 360, 0, 580, [[0, p.sky[2]], [0.6, p.hill[0]], [1, p.grass]])); rect(320, 470, 120, 20, '#c98a5a'); g.restore();
+    text('el rayo crea día lejos de la línea', 380, 330, 18, '#fff', 'center', '400');
+    // farol
+    lumi(700, TOP - 62, 1, true, -1); glow(650, 490, 60, 'rgba(255,200,120,0.9)');
+    g.save(); g.globalCompositeOperation = 'lighter'; g.strokeStyle = 'rgba(255,200,120,0.5)'; g.lineWidth = 4; g.setLineDash([4, 8]); g.beginPath(); g.moveTo(650, 490); g.lineTo(560, 125); g.stroke(); g.restore();
+    text('o refleja la luz del farol', 760, 430, 16, '#ffd98a', 'left', '400');
+    lineBeam(1100); bloomPass(); vignette(0.45);
+    label('Ideas 25 y 112: espejos que rebotan el sol (o la luz del farol) y crean un trozo de día lejos de la línea');
+  },
+  68() { // Tanda E: línea con peso, persecución e interruptores (26, 27, 28)
+    const TOP = 560;
+    base(520, TOP, PAL.day, PAL.night, 103);
+    // línea con peso: inclinada como un péndulo
+    g.save(); g.translate(520, 40); g.rotate(-0.25); g.globalCompositeOperation = 'lighter'; rect(-30, 0, 60, 700, lin(-30, 0, 30, 0, [[0, 'rgba(255,255,255,0)'], [0.5, 'rgba(255,255,255,0.7)'], [1, 'rgba(255,255,255,0)']])); g.restore();
+    circle(520, 40, 14, '#ffe27a');
+    g.save(); g.strokeStyle = 'rgba(255,255,255,0.5)'; g.lineWidth = 3; g.beginPath(); g.arc(520, 40, 300, 1.2, 1.95); g.stroke(); g.restore();
+    text('la línea pesa y se balancea: sujétala', 420, 120, 18, '#fff', 'left', '400');
+    // la noche avanza sola
+    rect(0, 0, 160, H, 'rgba(10,10,40,0.6)');
+    text('◀ la noche', 80, 300, 20, '#cfd8ff', 'center');
+    text('avanza sola', 80, 330, 20, '#cfd8ff', 'center', '400');
+    lumi(320, TOP - 62, 0.9, false, 1);
+    // interruptor
+    rect(900, TOP - 50, 14, 50, '#6a5a8a'); g.save(); g.translate(907, TOP - 50); g.rotate(0.6); rect(-4, -40, 8, 40, '#ffe27a'); g.restore(); circle(907, TOP - 90, 10, '#ffe27a');
+    text('palanca: cambia día y noche', 907, TOP - 130, 18, '#fff', 'center', '400');
+    text('unos segundos', 907, TOP - 108, 16, '#ffd98a', 'center', '400');
+    bloomPass(); vignette(0.45);
+    label('Ideas 26, 27 y 28: la línea pesa como un péndulo, la noche avanza sola por detrás y palancas que cambian los mundos');
+  },
+  69() { // Tanda E: naturaleza (44, 45, 46, 47)
+    const LX = 640, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 104);
+    // plataformas que brotan de día
+    rect(140, 380, 8, 180, '#3fa857'); ellipse(144, 380, 70, 16, '#5ccf6d'); text('brota de día', 144, 350, 16, '#fff', 'center', '400');
+    // viento de día
+    g.save(); g.strokeStyle = 'rgba(255,255,255,0.7)'; g.lineWidth = 3; [300, 340, 380].forEach(y => { g.beginPath(); g.moveTo(260, y); g.bezierCurveTo(330, y - 20, 390, y + 20, 460, y); g.stroke(); }); g.restore();
+    text('viento solo de día →', 360, 280, 16, '#fff', 'center', '400');
+    // marea de noche
+    rect(LX, 480, W - LX, 80, 'rgba(90,140,255,0.45)'); rect(LX, 478, W - LX, 4, 'rgba(200,220,255,0.8)');
+    text('de noche sube la marea', 960, 455, 16, '#dfe6ff', 'center', '400');
+    // sombra sólida
+    rect(1000, 300, 80, 120, '#2a2458'); poly([[1000, 420], [1080, 420], [1180, 520], [1100, 520]], 'rgba(20,15,50,0.85)');
+    g.save(); g.setLineDash([6, 6]); g.strokeStyle = '#a8b8ff'; g.lineWidth = 2; g.beginPath(); g.moveTo(1100, 520); g.lineTo(1180, 520); g.stroke(); g.restore();
+    text('de noche, la sombra se pisa', 1090, 290, 16, '#dfe6ff', 'center', '400');
+    lineBeam(LX); bloomPass(); vignette(0.45);
+    label('Ideas 44, 45, 46 y 47: plataformas que brotan de día, marea que sube de noche, viento de día y sombras que se pisan de noche');
+  },
+  70() { // Tanda E: llaves, oscuridad, estaciones y llevar cosas (48, 49, 51, 114)
+    rect(0, 0, W, H, '#05040f');
+    // a oscuras: solo se ve el círculo del farol
+    g.save(); g.beginPath(); g.arc(380, 420, 200, 0, 7); g.clip(); base(380, 560, PAL.day, PAL.night, 105); g.restore();
+    rect(0, 0, W, H, rad(380, 420, 260, [[0.6, 'rgba(5,4,15,0)'], [1, 'rgba(5,4,15,1)']]));
+    lumi(380, 498, 1, true, 1); text('nivel a oscuras', 380, 180, 22, '#fff', 'center');
+    // llaves y puertas
+    text('☀', 760, 200, 40, '#ffd76a', 'center'); rect(820, 160, 60, 100, '#c98a5a'); text('☀', 850, 210, 26, '#fff', 'center');
+    text('☾', 960, 200, 40, '#a8c4ff', 'center'); rect(1020, 160, 60, 100, '#5a7dff'); text('☾', 1050, 210, 26, '#fff', 'center');
+    text('llave de día abre puerta de día', 920, 290, 18, '#fff', 'center', '400');
+    // llevar objetos
+    lumi(800, 470, 0.8, false, 1); rect(830, 400, 40, 34, '#c98a5a');
+    text('lleva la caja al otro mundo', 900, 540, 18, '#fff', 'center', '400');
+    // estaciones
+    [['#7fdc6a', 'verano'], ['#ff8a3d', 'otoño'], ['#e8f4ff', 'invierno']].forEach(([c, t], i) => { circle(1000 + i * 90, 620, 26, c); text(t, 1000 + i * 90, 665, 15, '#fff', 'center', '400'); });
+    text('la línea también cambia la estación', 1090, 580, 16, '#ffd98a', 'center', '400');
+    label('Ideas 48, 49, 51 y 114: llaves y puertas de cada mundo, nivel a oscuras, estaciones y llevar objetos de un mundo a otro');
+  },
+  71() { // Tanda E: niveles especiales (105, 110, 111, 113, 134, 135)
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#120f33'], [1, '#2a1f5e']]));
+    const card = (x, y, title, draw) => { panel(x, y, 380, 270, 'rgba(255,255,255,0.06)', 'rgba(255,255,255,0.2)'); text(title, x + 190, y + 30, 22, '#ffd98a', 'center'); draw(x, y); };
+    card(40, 60, 'Dos caminos', (x, y) => { g.save(); g.strokeStyle = '#7fdc6a'; g.lineWidth = 6; g.beginPath(); g.moveTo(x + 40, y + 220); g.lineTo(x + 190, y + 120); g.lineTo(x + 340, y + 220); g.stroke(); g.strokeStyle = '#ff7a7a'; g.beginPath(); g.moveTo(x + 40, y + 220); g.lineTo(x + 190, y + 240); g.lineTo(x + 340, y + 220); g.stroke(); g.restore(); text('fácil · difícil', x + 190, y + 90, 16, '#fff', 'center', '400'); });
+    card(450, 60, 'Enemigo de la línea', (x, y) => { rect(x + 220, y + 60, 4, 190, '#fff'); creature(x + 150, y + 200, 0.6, false); text('la sigue o la evita', x + 190, y + 250, 16, '#fff', 'center', '400'); });
+    card(860, 60, 'Nivel musical', (x, y) => { [0, 1, 2, 3, 4].forEach(i => { rect(x + 50 + i * 60, y + 200 - (i % 2) * 50, 50, 14, '#ffe27a'); text('♪', x + 75 + i * 60, y + 170 - (i % 2) * 50, 22, '#fff', 'center'); }); text('al ritmo de la canción', x + 190, y + 250, 16, '#fff', 'center', '400'); });
+    card(40, 370, 'Línea curva', (x, y) => { g.save(); g.strokeStyle = '#fff'; g.lineWidth = 5; g.beginPath(); g.arc(x + 190, y + 330, 200, 3.6, 5.8); g.stroke(); g.restore(); text('un arco en vez de una recta', x + 190, y + 250, 16, '#fff', 'center', '400'); });
+    card(450, 370, 'Puerta de ángulo', (x, y) => { g.save(); g.translate(x + 140, y + 160); g.rotate(0.6); rect(-2, -90, 4, 180, '#fff'); g.restore(); rect(x + 260, y + 90, 50, 130, '#8a7aba'); text('45°', x + 285, y + 155, 18, '#fff', 'center'); text('se abre con la línea a 45°', x + 190, y + 250, 16, '#fff', 'center', '400'); });
+    card(860, 370, 'Escalada', (x, y) => { [0, 1, 2, 3].forEach(i => rect(x + 80 + (i % 2) * 150, y + 220 - i * 45, 90, 12, i % 2 ? '#5a7dff' : '#c98a5a')); rect(x + 30, y + 150, 320, 3, '#fff'); text('más subidas con la línea tumbada', x + 190, y + 250, 16, '#fff', 'center', '400'); });
+    label('Ideas 105, 110, 111, 113, 134 y 135: dos caminos, un enemigo que sigue la línea, nivel musical, línea curva, puertas de ángulo y escalada');
   },
 };
 
