@@ -43,11 +43,11 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 129 | Mensajes escondidos en el decorado |
 | 132 | Una flor donde más veces te caes |
 
-## Tanda C · Menú, progreso y extras
+## Tanda C · Menú, progreso y extras · maquetas: tanda-c-*.png
 
 | # | Idea |
 |---|---|
-| 35 | Jugar contra tu mejor partida (fantasma) desde el mapa |
+| 35 | Jugar contra tu mejor partida (fantasma) desde el mapa · el fantasma del récord ya existía (`Ghost.cs`); falta el botón en el mapa |
 | 39 | Álbum con las fotos del modo foto |
 | 40 | Música interactiva: cada fragmento añade un instrumento |
 | 53 | Medallas de estilo |

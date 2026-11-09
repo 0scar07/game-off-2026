@@ -992,6 +992,83 @@ const scenes = {
     lineBeam(LX); bloomPass(); vignette(0.45);
     label('Ideas 101, 128, 129 y 132: pétalos al florecer, eco en zonas cerradas, mensajes grabados y una flor donde más caes');
   },
+  56() { // Tanda C: estadísticas y medallas de estilo (55, 53)
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#120f33'], [1, '#2a1f5e']]));
+    text('Estadísticas', 330, 70, 44, '#fff', 'center');
+    const stats = [['⏱', 'Tiempo jugado', '6 h 12 min'], ['☾', 'Lunas', '27 / 33'], ['↑', 'Saltos', '4.381'], ['|', 'Veces que moviste la línea', '1.902'], ['✖', 'Caídas', '312'], ['→', 'Recorrido', '18,4 km']];
+    stats.forEach(([i, n, v], k) => { const y = 140 + k * 78; panel(60, y, 540, 64, 'rgba(255,255,255,0.06)'); text(i, 100, y + 32, 30, '#ffd98a', 'center'); text(n, 140, y + 32, 22, '#cfd3ff', 'left', '400', false); text(v, 580, y + 32, 26, '#fff', 'right'); });
+    text('Medallas de estilo', 950, 70, 44, '#fff', 'center');
+    const style = [['Sin pisar la noche', 'Termina el nivel 3 sin tocar el lado de noche', true], ['Funambulista', 'Cruza la línea 50 veces en un nivel', true], ['Vuelo rasante', 'Recorre 10 casillas en el aire', false], ['Pies ligeros', 'Termina sin aterrizar fuerte', false]];
+    style.forEach(([n, d, got], k) => { const y = 140 + k * 118; panel(680, y, 540, 100, got ? 'rgba(255,240,200,0.12)' : 'rgba(255,255,255,0.04)', got ? 'rgba(255,230,150,0.5)' : 'rgba(255,255,255,0.15)'); circle(730, y + 50, 28, got ? '#ffe27a' : '#3a3560'); text(got ? '✦' : '?', 730, y + 52, 26, got ? '#7a5200' : '#8a86b8', 'center'); text(n, 780, y + 34, 24, got ? '#fff' : '#8a86b8', 'left'); text(d, 780, y + 68, 17, '#cfd3ff', 'left', '400', false); });
+    label('Ideas 55 y 53: pantalla de estadísticas (tiempo, saltos, caídas, recorrido...) y medallas de estilo por jugar de una forma concreta');
+  },
+  57() { // Tanda C: música (78, 40, 99)
+    const LX = 700, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 94); lineBeam(LX);
+    rect(0, 0, 560, H, 'rgba(8,6,25,0.82)');
+    text('Banda sonora', 280, 70, 38, '#fff', 'center');
+    ['Pradera · día', 'Pradera · noche', 'Bosque · día', 'Bosque · noche', 'Cumbre · día', 'La Gran Sombra'].forEach((t, k) => { const y = 120 + k * 64, on = k === 1; panel(40, y, 480, 52, on ? 'rgba(255,226,122,0.2)' : 'rgba(255,255,255,0.05)'); text(on ? '▶' : '♪', 74, y + 26, 22, on ? '#ffe27a' : '#cfd3ff', 'center', '700', false); text(t, 110, y + 26, 22, '#fff', 'left', '400', false); text(['2:41', '2:41', '3:02', '3:02', '3:25', '2:10'][k], 490, y + 26, 18, '#cfd3ff', 'right', '400', false); });
+    pill(60, 520, 440, 10, 'rgba(255,255,255,0.15)'); pill(60, 520, 170, 10, '#ffe27a');
+    text('◀◀     ❚❚     ▶▶', 280, 580, 30, '#fff', 'center');
+    // música interactiva en el nivel
+    lumi(900, TOP - 62, 1, true, 1); moonShard(960, 400, 0.8);
+    text('♪', 1010, 360, 40, '#ffd98a', 'center'); text('♫', 1060, 320, 34, '#ffd98a', 'center');
+    panel(860, 200, 330, 80, 'rgba(0,0,0,0.5)');
+    text('cada fragmento añade', 1025, 228, 18, '#fff', 'center', '400', false); text('un instrumento y una nota', 1025, 256, 18, '#fff', 'center', '400', false);
+    label('Ideas 78, 40 y 99: reproductor de la banda sonora; en el nivel, cada fragmento suena como una nota y añade un instrumento');
+  },
+  58() { // Tanda C: galería y álbum (109, 39)
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#0e0c2a'], [1, '#231a52']]));
+    text('Galería', 330, 70, 44, '#fff', 'center');
+    panel(60, 110, 540, 500, 'rgba(255,255,255,0.05)', 'rgba(255,255,255,0.2)');
+    glow(330, 360, 180, 'rgba(160,180,255,0.4)'); lumi(330, 420, 2.2, true, 1);
+    text('↻ arrastra para girar', 330, 560, 20, '#cfd3ff', 'center', '400');
+    text('◀  Lumi  ▶', 330, 150, 28, '#ffd98a', 'center');
+    text('Álbum', 950, 70, 44, '#fff', 'center');
+    for (let i = 0; i < 6; i++) {
+      const x = 700 + (i % 3) * 170, y = 120 + Math.floor(i / 3) * 210;
+      g.save(); g.beginPath(); g.roundRect(x, y, 150, 180, 10); g.clip();
+      g.translate(x, y); g.scale(150 / W, 180 / H); base(W / 2 + (i - 3) * 90, 560, i % 2 ? PAL.autumn : PAL.day, i % 3 ? PAL.night : PAL.snowNight, 40 + i); g.restore();
+      g.save(); g.strokeStyle = '#fff'; g.lineWidth = 4; g.strokeRect(x, y, 150, 180); g.restore();
+    }
+    text('Tus fotos del modo foto', 950, 590, 20, '#cfd3ff', 'center', '400');
+    label('Ideas 109 y 39: galería con los modelos (Lumi, Nox, Sombras, jefes) que se giran, y álbum con tus fotos del modo foto');
+  },
+  59() { // Tanda C: mapa de capítulo, coleccionables, fantasma y hora real (133, 103, 35, 68)
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#f6a36a'], [0.5, '#ffcf8f'], [1, '#c87a5a']]));
+    text('atardecer (son las 19:40)', 1100, 40, 18, '#5a2a10', 'center', '400', false);
+    text('I · La Pradera', 640, 70, 40, '#fff', 'center');
+    // mapa que se pinta
+    g.save(); g.beginPath(); g.roundRect(140, 110, 1000, 300, 20); g.clip();
+    rect(140, 110, 1000, 300, '#e9dcc2');
+    g.translate(140, 110); g.scale(1000 / W, 300 / H); base(W * 0.62, 560, PAL.day, PAL.night, 70); g.restore();
+    g.save(); g.beginPath(); g.roundRect(140, 110, 1000, 300, 20); g.clip();
+    rect(760, 110, 380, 300, 'rgba(233,220,194,0.92)');
+    g.strokeStyle = 'rgba(120,90,60,0.6)'; g.setLineDash([6, 8]); g.lineWidth = 3; g.beginPath(); g.moveTo(760, 330); g.lineTo(1120, 300); g.stroke();
+    g.restore();
+    text('se pinta a medida que avanzas', 950, 260, 20, '#7a5a3a', 'center', '400', false);
+    // coleccionables
+    text('Coleccionable del capítulo', 640, 450, 24, '#fff', 'center');
+    [0, 1, 2, 3, 4, 5].forEach(i => { const x = 470 + i * 68, got = i < 4; circle(x, 500, 26, got ? '#fff6d6' : 'rgba(255,255,255,0.3)'); text(got ? '🪶'.length > 1 ? '✦' : '✦' : '?', x, 502, 24, got ? '#c06a2a' : '#8a6a5a', 'center'); });
+    text('plumas: 4 / 6', 640, 545, 20, '#5a2a10', 'center', '400', false);
+    // fantasma
+    pill(470, 590, 340, 64, 'rgba(60,50,140,0.95)'); text('Correr contra mi récord', 640, 622, 24, '#fff', 'center', '700', false);
+    label('Ideas 133, 103, 35 y 68: mapa del capítulo que se pinta, una pluma por nivel, correr contra tu fantasma y el menú sigue la hora real');
+  },
+  60() { // Tanda C: retos semanales, logros de exploración y tarjeta final (131, 108, 70)
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#120f33'], [1, '#2a1f5e']]));
+    text('Retos de la semana', 330, 70, 40, '#fff', 'center');
+    [['Termina 3 niveles sin caer', 2, 3], ['Coge 10 fragmentos', 10, 10], ['Duerme a 2 Sombras', 0, 2]].forEach(([t, a, b], k) => { const y = 120 + k * 110; panel(60, y, 540, 90, 'rgba(255,255,255,0.06)'); text(t, 90, y + 30, 22, '#fff', 'left', '400', false); pill(90, y + 55, 400, 14, 'rgba(255,255,255,0.15)'); pill(90, y + 55, 400 * a / b, 14, a >= b ? '#7fdc6a' : '#ffe27a'); text(`${a}/${b}`, 570, y + 62, 18, '#cfd3ff', 'right', '400', false); });
+    panel(60, 470, 540, 80, 'rgba(255,226,122,0.15)', 'rgba(255,226,122,0.5)'); text('Premio: bufanda de rayas', 330, 510, 24, '#ffd98a', 'center');
+    text('¡Lo has terminado!', 950, 70, 40, '#fff', 'center');
+    panel(700, 110, 500, 420, 'rgba(255,255,255,0.95)');
+    g.save(); g.beginPath(); g.roundRect(720, 130, 460, 220, 12); g.clip(); g.translate(720, 130); g.scale(460 / W, 220 / H); base(W / 2, 560, PAL.day, PAL.night, 80); lineBeam(W / 2); g.restore();
+    text('FASE · 0scar07', 950, 385, 26, '#2a1f5e', 'center', '700', false);
+    text('⏱ 1 h 48 min   ☾ 33/33   ★ 12 oros', 950, 425, 22, '#5a4a8a', 'center', '400', false);
+    text('Logros de exploración: 4/6', 950, 465, 20, '#5a4a8a', 'center', '400', false);
+    pill(820, 485, 260, 34, '#2a1f5e'); text('Compartir', 950, 502, 20, '#fff', 'center', '700', false);
+    label('Ideas 131, 108 y 70: retos semanales con premio, logros de exploración y una tarjeta para compartir al terminar el juego');
+  },
 };
 
 
