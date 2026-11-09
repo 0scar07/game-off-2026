@@ -734,6 +734,93 @@ const scenes = {
     text('3 / 12', 1190, 630, 20, '#cfd3ff', 'right', '400', false);
     label('Idea 23: una galería de curiosidades del juego que se abren con logros, secretos y capítulos');
   },
+  42() { // Ideas 30 y 94: Lumi se duerme y estrellas fugaces
+    const LX = 360, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 44);
+    // estrellas fugaces en el lado de noche
+    [[760, 120, 1], [1010, 210, 0.7], [620, 260, 0.5]].forEach(([x, y, k]) => {
+      g.save(); g.globalCompositeOperation = 'lighter';
+      g.strokeStyle = lin(x, y, x - 220 * k, y - 90 * k, [[0, 'rgba(255,255,255,0.95)'], [1, 'rgba(160,190,255,0)']]);
+      g.lineWidth = 3 * k + 1; g.beginPath(); g.moveTo(x, y); g.lineTo(x - 220 * k, y - 90 * k); g.stroke(); g.restore();
+      glow(x, y, 26 * k + 8, 'rgba(255,255,255,0.9)');
+    });
+    text('estrella fugaz', 760, 160, 18, '#dfe6ff', 'center', '400');
+    // Lumi sentada y dormida, farol apagado
+    lumi(780, TOP - 50, 0.95, true, -1);
+    text('z', 830, 430, 30, '#cfd8ff', 'left'); text('z', 852, 398, 38, '#cfd8ff', 'left'); text('Z', 880, 360, 48, '#cfd8ff', 'left');
+    pill(640, 300, 300, 46, 'rgba(0,0,0,0.5)'); text('quieta 20 s: bosteza y se duerme', 790, 323, 18, '#fff', 'center', '400', false);
+    lineBeam(LX); bloomPass(); vignette(0.5);
+    label('Ideas 30 y 94: Lumi se duerme si no la mueves (el farol se apaga) y cruzan estrellas fugaces de noche');
+  },
+  43() { // Idea 37: transición entre niveles con la línea
+    const LX = 700;
+    split(LX, () => { const p = PAL.day; sky(p, 300, 140, false); hills(p, 420, 3, 11); ground(p, -10, W + 10, 560); seed = 3; for (let k = 0; k < 4; k++) tree(R(40, LX - 80), 560, R(140, 200), p); text('1 · Amanecer', 340, 300, 40, '#fff', 'center'); text('completado', 340, 345, 24, '#fff6d6', 'center', '400'); },
+      () => { const p = PAL.night; sky(p, 1000, 140, true); hills(p, 420, 3, 12); ground(p, -10, W + 10, 560); fireflies(LX, W, 200, 540, 16); text('2', 990, 270, 90, '#fff', 'center'); text('Noche estrellada', 990, 340, 36, '#fff', 'center'); });
+    lineBeam(LX);
+    g.save(); g.fillStyle = 'rgba(255,255,255,0.85)'; g.beginPath(); g.moveTo(LX - 90, 640); g.lineTo(LX - 30, 610); g.lineTo(LX - 30, 670); g.fill(); g.restore();
+    text('la línea barre la pantalla', LX - 280, 640, 20, '#fff', 'center', '400');
+    bloomPass(); vignette(0.45);
+    label('Idea 37: al pasar de nivel, la línea barre la pantalla y deja ver el siguiente (en vez de la cortina negra)');
+  },
+  44() { // Ideas 41 y 130: formas para daltónicos y brillo
+    base(640, 560, PAL.day, PAL.night, 21); lineBeam(640);
+    rect(0, 0, W, H, 'rgba(5,5,25,0.72)');
+    panel(140, 90, 1000, 520, 'rgba(25,22,60,0.96)', 'rgba(255,255,255,0.25)');
+    text('Accesibilidad', 640, 140, 34, '#fff', 'center');
+    // Brillo
+    text('Brillo', 200, 215, 24, '#fff', 'left', '400', false);
+    pill(360, 205, 360, 18, 'rgba(255,255,255,0.15)'); pill(360, 205, 230, 18, '#ffe27a'); circle(590, 214, 18, '#fff');
+    text('110 %', 760, 215, 22, '#ffd98a', 'left', '400', false);
+    // Formas
+    text('Formas en las piezas', 200, 285, 24, '#fff', 'left', '400', false);
+    pill(520, 265, 120, 40, '#ffe27a'); text('Sí', 580, 285, 20, '#3a2400', 'center', '700', false);
+    // vista previa de piezas con icono
+    const block = (x, y, col, icon) => { g.save(); g.fillStyle = col; g.beginPath(); g.roundRect(x, y, 90, 90, 12); g.fill(); g.restore(); text(icon, x + 45, y + 47, 44, 'rgba(255,255,255,0.95)', 'center', '700', false); };
+    block(220, 360, '#c98a5a', '☀'); text('caja de día', 265, 480, 18, '#cfd3ff', 'center', '400', false);
+    block(400, 360, '#5a7dff', '☾'); text('hielo de noche', 445, 480, 18, '#cfd3ff', 'center', '400', false);
+    block(580, 360, '#c98a5a', ''); text('antes: solo color', 625, 480, 18, '#8a86b8', 'center', '400', false);
+    g.save(); g.globalAlpha = 0.5; block(760, 360, '#5a7dff', ''); g.restore();
+    text('Los iconos dicen a qué mundo pertenece cada pieza sin depender del color.', 640, 560, 20, '#fff', 'center', '400', false);
+    label('Ideas 41 y 130: ajuste de brillo y un icono (sol o luna) en cada pieza para quien no distingue bien los colores');
+  },
+  45() { // Ideas 97 y 98: ánimo tras caídas y mantener R
+    const LX = 520, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 55); lineBeam(LX);
+    lumi(420, TOP - 62, 1, false, 1);
+    // mensaje de ánimo
+    panel(300, 300, 300, 80, 'rgba(255,255,255,0.92)'); poly([[400, 380], [430, 380], [410, 410]], 'rgba(255,255,255,0.92)');
+    text('¡Casi! Prueba a poner', 450, 325, 20, '#3a2a60', 'center', '700', false); text('la línea antes de saltar', 450, 355, 20, '#3a2a60', 'center', '400', false);
+    pill(355, 262, 190, 30, 'rgba(0,0,0,0.55)'); text('tras 5 caídas seguidas', 450, 277, 16, '#fff', 'center', '400', false);
+    // mantener R
+    const cx = 1080, cy = 120;
+    circle(cx, cy, 52, 'rgba(0,0,0,0.5)');
+    g.save(); g.strokeStyle = '#ffe27a'; g.lineWidth = 8; g.lineCap = 'round'; g.beginPath(); g.arc(cx, cy, 44, -Math.PI / 2, -Math.PI / 2 + Math.PI * 1.3); g.stroke(); g.restore();
+    text('R', cx, cy, 40, '#fff', 'center');
+    text('mantén para volver', cx, cy + 80, 18, '#fff', 'center', '400');
+    text('al punto de control', cx, cy + 102, 18, '#fff', 'center', '400');
+    bloomPass(); vignette(0.45);
+    label('Ideas 97 y 98: mensaje de ánimo tras muchas caídas y mantener R (con un círculo que se llena) para volver al punto de control');
+  },
+  46() { // Idea 104: lunas que faltan en el mapa de pausa
+    base(640, 560, PAL.day, PAL.night, 66);
+    rect(0, 0, W, H, 'rgba(5,5,25,0.7)');
+    text('Pausa', 640, 80, 44, '#fff', 'center');
+    panel(140, 140, 1000, 300, 'rgba(25,22,60,0.95)', 'rgba(255,255,255,0.25)');
+    // mini mapa
+    g.save(); g.beginPath(); g.roundRect(170, 170, 940, 240, 14); g.clip();
+    rect(170, 170, 470, 240, '#8fd0f5'); rect(640, 170, 470, 240, '#1a1846');
+    const ground = [[170, 330, 200], [400, 330, 130], [560, 300, 160], [760, 330, 140], [940, 300, 170]];
+    ground.forEach(([x, y, w]) => rect(x, y, w, 80, '#7a5a3a'));
+    rect(637, 170, 6, 240, '#fff');
+    g.restore();
+    circle(320, 318, 9, '#ff9fbf'); text('tú', 320, 296, 16, '#fff', 'center');
+    // lunas
+    const moon = (x, y, got) => { if (!got) glow(x, y, 34, 'rgba(255,220,120,0.8)'); text('☾', x, y, 30, got ? 'rgba(255,255,255,0.35)' : '#ffd76a', 'center'); };
+    moon(470, 250, true); moon(840, 230, false); moon(1040, 260, false);
+    text('ya cogida', 470, 285, 15, '#cfd3ff', 'center', '400'); text('falta', 840, 265, 15, '#ffd98a', 'center', '400'); text('falta (cofre)', 1040, 295, 15, '#ffd98a', 'center', '400');
+    pill(470, 480, 340, 70, '#ffe27a'); text('Seguir', 640, 515, 30, '#3a2400', 'center', '700', false);
+    label('Idea 104: el mapa de pausa marca las lunas que te faltan (y las que ya cogiste, apagadas)');
+  },
 };
 
 
