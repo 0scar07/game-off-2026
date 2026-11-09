@@ -17,6 +17,9 @@ namespace Fase
         float sunIntensity, night;
         Quaternion dayRotation, nightRotation;
         Transform player;
+        const float CloudTime = 7f;
+        float cloudWait = 15f, cloudLeft;
+
 
         void Start()
         {
@@ -37,7 +40,13 @@ namespace Fase
             night = Mathf.MoveTowards(night, target, Time.deltaTime * 1.2f);
             float k = Mathf.SmoothStep(0f, 1f, night);
             sun.color = Color.Lerp(sunColor, moon, k);
-            sun.intensity = Mathf.Lerp(sunIntensity, moonIntensity, k);
+            // De vez en cuando pasa una nube por delante del sol: el día se apaga un poco unos segundos.
+            cloudWait -= Time.deltaTime;
+            if (cloudWait <= 0f && cloudLeft <= 0f) { cloudLeft = CloudTime; cloudWait = Random.Range(22f, 40f); }
+            float cloud = 0f;
+            if (cloudLeft > 0f) { cloudLeft -= Time.deltaTime; cloud = Mathf.Sin(Mathf.PI * (1f - cloudLeft / CloudTime)); }
+            sun.intensity = Mathf.Lerp(sunIntensity * (1f - 0.35f * cloud), moonIntensity, k);
+
             transform.rotation = Quaternion.Slerp(dayRotation, nightRotation, k);
         }
     }

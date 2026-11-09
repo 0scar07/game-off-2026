@@ -245,7 +245,11 @@ namespace Fase
             bufferLeft = 0f;
         }
 
+        /// <summary>Estira o aplasta a Lumi un momento (vuelve sola a su forma): estornudos, sustos...</summary>
+        public void Squash(Vector2 shape) => squash = shape;
+
         /// <summary>Vuelve al último punto de control sin contar como caída (mantener R).</summary>
+
         public void ReturnToCheckpoint()
         {
             body.linearVelocity = Vector2.zero;

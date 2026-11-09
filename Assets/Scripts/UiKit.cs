@@ -130,7 +130,9 @@ Transform parent, string name, string text, Vector2 anchor, Vector2 position, Ve
             button.colors = colors;
             Text(image.transform, "Texto", text, new Vector2(0.5f, 0.5f), Vector2.zero, size, fontSize);
             if (onClick != null) button.onClick.AddListener(onClick);
+            button.gameObject.AddComponent<UiHover>();
             return button;
+
         }
 
         /// <summary>Se está escribiendo en un campo de texto (las teclas no deben mover el juego).</summary>

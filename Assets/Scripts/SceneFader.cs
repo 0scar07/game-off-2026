@@ -151,7 +151,18 @@ namespace Fase
             {
                 if (levels[i].scene != scene) continue;
                 string number = levels[i].secret ? "★" : (i + 1).ToString();
-                return $"<size=150>{number}</size>\n{Loc.Pick(levels[i].name, levels[i].nameEn)}";
+                string title = $"<size=150>{number}</size>\n{Loc.Pick(levels[i].name, levels[i].nameEn)}";
+                // Si ya lo has jugado: récord, lunas que faltan y medalla.
+                int level = i + 1;
+                float best = Progress.BestTime(level);
+                if (best <= 0f) return title;
+                var parts = new System.Collections.Generic.List<string> { $"⏱ {Loc.Pick("Récord", "Best")} {Hud.FormatTime(best)}" };
+                int have = Progress.Fragments(level), total = levels[i].fragments;
+                if (total > 0) parts.Add(have >= total ? Loc.Pick("☾ toda la luna", "☾ whole moon") : Loc.Pick($"☾ te falta{(total - have > 1 ? "n" : "")} {total - have} de {total}", $"☾ {total - have} of {total} left"));
+                int medal = Medals.Best(level);
+                if (medal > 0) parts.Add($"★ {Medals.Name(medal)}");
+                return title + $"\n<size=30><color=#ffd98a>{string.Join("      ", parts)}</color></size>";
+
             }
             return "";
         }

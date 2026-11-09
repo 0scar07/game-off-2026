@@ -8,7 +8,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 > mecánicas y niveles, así que lo que no esté probado antes del 27 de noviembre se queda en una
 > rama aparte y entra después de la jam (ver [`RECORTES.md`](RECORTES.md)).
 
-## Tanda A · Pulido rápido
+## Tanda A · Pulido rápido · ✅ programada (falta probar en Unity)
 
 | # | Idea |
 |---|---|

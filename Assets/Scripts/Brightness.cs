@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -6,20 +7,31 @@ using UnityEngine.SceneManagement;
 namespace Fase
 {
     /// <summary>
-    /// Brillo de Opciones: sube o baja la exposición del posprocesado de cada escena (sobre la que
-    /// ya trae cada capítulo). Se aplica al cargar escena y al cambiar el ajuste.
+    /// Ajusta el posprocesado de la escena: el brillo de Opciones (exposición sobre la que trae cada
+    /// capítulo) y el gris de la pausa (sin color, salvo la línea, que la pausa vuelve a dibujar
+    /// encima). Se aplica al cargar escena y al cambiar el ajuste.
     /// </summary>
     public static class Brightness
     {
+        static bool gray;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Init()
         {
-            SceneManager.sceneLoaded += (_, _) => Apply();
+            SceneManager.sceneLoaded += (_, _) => { gray = false; Apply(); };
             Settings.Changed += Apply;
             Apply();
         }
 
-        static readonly System.Collections.Generic.Dictionary<VolumeProfile, float> baseExposure = new System.Collections.Generic.Dictionary<VolumeProfile, float>();
+        /// <summary>Quita el color a la escena (pausa) o lo devuelve.</summary>
+        public static void SetGray(bool value)
+        {
+            if (gray == value) return;
+            gray = value;
+            Apply();
+        }
+
+        static readonly Dictionary<VolumeProfile, (float exposure, float saturation)> original = new Dictionary<VolumeProfile, (float, float)>();
 
         static void Apply()
         {
@@ -31,13 +43,16 @@ namespace Fase
                 var profile = volume.profile;
                 if (profile == null) continue;
                 if (!profile.TryGet(out ColorAdjustments color)) color = profile.Add<ColorAdjustments>(true);
-                if (!baseExposure.TryGetValue(profile, out float baseValue))
+                if (!original.TryGetValue(profile, out var start))
                 {
-                    baseValue = color.postExposure.overrideState ? color.postExposure.value : 0f;
-                    baseExposure[profile] = baseValue;
+                    start = (color.postExposure.overrideState ? color.postExposure.value : 0f,
+                             color.saturation.overrideState ? color.saturation.value : 0f);
+                    original[profile] = start;
                 }
                 color.postExposure.overrideState = true;
-                color.postExposure.value = baseValue + stops;
+                color.postExposure.value = start.exposure + stops;
+                color.saturation.overrideState = true;
+                color.saturation.value = gray ? -100f : start.saturation;
                 break;
             }
         }

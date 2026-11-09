@@ -178,7 +178,8 @@ namespace Fase
             if (hud == null) return;
             if (hud.Mirror) Unlock("espejo");
             if (hud.sandbox) return;
-            if (hud.Daily) { Unlock("diario"); return; }
+            if (hud.Daily) { Unlock("diario"); DailyStreak.Register(); return; }
+
             int level = hud.levelNumber;
             var catalog = LevelCatalog.Get;
             var entry = catalog.At(level);

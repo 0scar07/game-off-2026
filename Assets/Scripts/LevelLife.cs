@@ -43,8 +43,14 @@ namespace Fase
             gameObject.AddComponent<ShootingStars>();
             gameObject.AddComponent<PieceIcons>();
 
+            var hud = Hud.Instance;
+            var here = hud != null ? LevelCatalog.Get.At(hud.levelNumber) : null;
+            chapter = here != null ? here.chapter : 1;
+            wasDay = ShiftLine.IsDay(player.transform.position);
+
             GameEvents.Died += OnDied;
             GameEvents.CheckpointReached += OnCheckpoint;
+            GameEvents.Step += OnStep;
             yield return ChapterCard();
         }
 
@@ -52,7 +58,36 @@ namespace Fase
         {
             GameEvents.Died -= OnDied;
             GameEvents.CheckpointReached -= OnCheckpoint;
+            GameEvents.Step -= OnStep;
         }
+
+        // ───────── Farol y estornudos ─────────
+
+        int chapter, steps;
+        bool wasDay;
+        float sneezeWait = 8f;
+
+        /// <summary>El farol tintinea un paso sí y otro no.</summary>
+        void OnStep(bool night)
+        {
+            if (++steps % 2 == 0) Sfx.Play("farol", 0.18f, Random.Range(0.94f, 1.1f));
+        }
+
+        /// <summary>En la Cumbre Helada, al pasar del día a la nieve de noche, Lumi a veces estornuda.</summary>
+        void CheckSneeze()
+        {
+            sneezeWait -= Time.deltaTime;
+            bool day = ShiftLine.IsDay(player.transform.position);
+            if (chapter == 3 && wasDay && !day && sneezeWait <= 0f && Random.value < 0.45f)
+            {
+                sneezeWait = 45f;
+                Sfx.Play("estornudo", 0.7f, Random.Range(0.95f, 1.08f));
+                LumiBubble.Say(player.transform, Loc.Pick("¡Achís!", "Achoo!"), 1.6f);
+                player.Squash(new Vector2(1.25f, 0.78f));
+            }
+            wasDay = day;
+        }
+
 
         void OnDied() => deathsHere++;
         void OnCheckpoint() { deathsHere = 0; stuck = 0f; }
@@ -135,6 +170,8 @@ namespace Fase
         void Update()
         {
             if (player == null) return;
+            CheckSneeze();
+
 
             // El clima sube y baja en ciclos de unos 40 s.
             weatherClock += Time.deltaTime;

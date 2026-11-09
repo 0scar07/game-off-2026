@@ -16,7 +16,13 @@ namespace Fase
 
         public GameObject panel;
 
-        void Start() => SetPaused(false);
+        void Start()
+        {
+            // Pausa en gris (salvo la línea) y el reloj de lo jugado hoy.
+            if (GetComponent<PauseMood>() == null) gameObject.AddComponent<PauseMood>();
+            SetPaused(false);
+        }
+
 
         void OnDestroy()
         {

@@ -58,7 +58,11 @@ namespace Fase
             Play("Run");
         }
 
+        /// <summary>Se para y saluda con la mano unos segundos (lo usa MenuTalk al volver al menú).</summary>
+        public void Wave(float seconds) => pause = seconds + 1.6f;
+
         void Play(string next)
+
         {
             if (animator == null || next == state) return;
             state = next;

@@ -31,6 +31,18 @@ namespace Fase
             BuildJourneyExtras();
             BuildJourneyPreview();
             foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel, triviaPanel }) menu.AddPanel(panel);
+            BuildGreeting();
+            BuildNameOption();
+            // Lumi del fondo: saluda al volver y suelta alguna frase mientras se ve el menú principal.
+            var walker = FindAnyObjectByType<MenuWalker>();
+            if (walker != null)
+            {
+                var talk = walker.gameObject.AddComponent<MenuTalk>();
+                menu.Shown += panel => talk.visible = panel == menu.mainPanel;
+            }
+            // Todos los botones del menú (también los que monta el generador) suenan y se inclinan.
+            UiKit.EnsureEvents();
+            UiHover.AddTo(transform);
             menu.Shown += _ => Refresh();
             Loc.Changed += Refresh;
         }
@@ -76,10 +88,95 @@ namespace Fase
                 glyph.fontStyle = FontStyle.Normal;
                 string k = key;
                 refreshers.Add(() => label.text = k == "daily" ? Loc.Pick("Desafío", "Daily") : k == "trivia" ? Loc.Pick("Curiosidades", "Trivia") : Loc.Get(k));
+                if (key == "daily") StreakBadge(button.transform);
             }
         }
 
+        // ───────── Racha del desafío, saludo y nombre ─────────
+
+        /// <summary>Circulito naranja con los días seguidos sobre el botón del desafío (desde 2 días).</summary>
+        void StreakBadge(Transform button)
+        {
+            var holder = UiKit.Rect(button, "Racha", new Vector2(0.5f, 1f), new Vector2(0f, 6f), new Vector2(200f, 80f));
+            var dot = UiKit.Box(holder, "Circulo", new Vector2(0.5f, 0f), Vector2.zero, new Vector2(40f, 40f), new Color(1f, 0.55f, 0.24f));
+            dot.type = Image.Type.Simple;
+            var number = UiKit.Text(dot.transform, "Dias", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(40f, 40f), 24);
+            var caption = UiKit.Text(holder, "Texto", "", new Vector2(0.5f, 0f), new Vector2(0f, 52f), new Vector2(220f, 30f), 18, TextAnchor.MiddleCenter, UiKit.Gold);
+            refreshers.Add(() =>
+            {
+                int days = DailyStreak.Current;
+                holder.gameObject.SetActive(days >= 2);
+                number.text = days.ToString();
+                caption.text = Loc.Pick($"{days} días seguidos", $"{days}-day streak");
+            });
+        }
+
+        /// <summary>"¡Hola, Oscar!" debajo del lema, si el jugador ha puesto su nombre.</summary>
+        void BuildGreeting()
+        {
+            var column = menu.mainPanel.transform;
+            var hello = UiKit.Text(column, "Saludo", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(760f, 46f), 36, TextAnchor.MiddleLeft, UiKit.Gold);
+            var element = hello.gameObject.AddComponent<LayoutElement>();
+            element.preferredWidth = 760f;
+            element.preferredHeight = 46f;
+            var tagline = column.Find("Lema");
+            if (tagline != null) hello.transform.SetSiblingIndex(tagline.GetSiblingIndex() + 1);
+            refreshers.Add(() =>
+            {
+                hello.gameObject.SetActive(PlayerName.Has);
+                hello.text = Loc.Pick($"¡Hola, {PlayerName.Value}!", $"Hi, {PlayerName.Value}!");
+            });
+        }
+
+        /// <summary>En Opciones: "Tu nombre" abre un cuadro para escribirlo (o borrarlo).</summary>
+        void BuildNameOption()
+        {
+            var options = menu.optionsPanel.transform;
+            var overlay = UiKit.Fill(transform, "Nombre").gameObject;
+            overlay.AddComponent<Image>().color = new Color(0.02f, 0.02f, 0.08f, 0.8f);
+            var box = UiKit.Box(overlay.transform, "Caja", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(900f, 380f), UiKit.Panel);
+            var title = UiKit.Text(box.transform, "Titulo", "", new Vector2(0.5f, 1f), new Vector2(0f, -60f), new Vector2(800f, 70f), 50);
+            var fieldBack = UiKit.Box(box.transform, "Campo", new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), new Vector2(620f, 90f), new Color(1f, 1f, 1f, 0.95f));
+            fieldBack.raycastTarget = true;
+            var field = fieldBack.gameObject.AddComponent<InputField>();
+            var typed = UiKit.Text(fieldBack.transform, "Texto", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(580f, 80f), 42, TextAnchor.MiddleCenter, new Color(0.2f, 0.14f, 0.36f));
+            Destroy(typed.GetComponent<Shadow>());
+            typed.supportRichText = false;
+            var hint = UiKit.Text(fieldBack.transform, "Ejemplo", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(580f, 80f), 36, TextAnchor.MiddleCenter, new Color(0.5f, 0.48f, 0.6f));
+            Destroy(hint.GetComponent<Shadow>());
+            field.textComponent = typed;
+            field.placeholder = hint;
+            field.characterLimit = PlayerName.MaxLength;
+            var ok = UiKit.Button(box.transform, "Listo", "", new Vector2(0.5f, 0f), new Vector2(0f, 40f), new Vector2(320f, 84f), null, 40);
+            var okLabel = ok.GetComponentInChildren<Text>();
+            System.Action close = () => { PlayerName.Value = field.text; overlay.SetActive(false); Refresh(); };
+            ok.onClick.AddListener(() => close());
+            field.onSubmit.AddListener(_ => close());
+            overlay.SetActive(false);
+            refreshers.Add(() =>
+            {
+                title.text = Loc.Pick("¿Cómo te llamas?", "What's your name?");
+                hint.text = Loc.Pick("Escribe tu nombre", "Type your name");
+                okLabel.text = Loc.Pick("Listo", "Done");
+            });
+
+            var open = UiKit.Button(options, "TuNombre", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(620f, 80f), () =>
+            {
+                field.text = PlayerName.Value;
+                overlay.SetActive(true);
+                overlay.transform.SetAsLastSibling();
+                field.ActivateInputField();
+            }, 40);
+            var element = open.gameObject.AddComponent<LayoutElement>();
+            element.preferredWidth = 620f;
+            element.preferredHeight = 80f;
+            open.transform.SetSiblingIndex(Mathf.Max(0, options.childCount - 3));
+            var openLabel = open.GetComponentInChildren<Text>();
+            refreshers.Add(() => openLabel.text = PlayerName.Has ? Loc.Pick($"Tu nombre: {PlayerName.Value}", $"Your name: {PlayerName.Value}") : Loc.Pick("Tu nombre", "Your name"));
+        }
+
         // ───────── Tienda ─────────
+
 
         GameObject BuildShop()
         {
@@ -139,6 +236,11 @@ namespace Fase
                 var card = UiKit.Box(content, info.id, new Vector2(0.5f, 0.5f), new Vector2(x, y - 30f), new Vector2(336f, 84f), Color.white);
                 var star = UiKit.Box(card.transform, "Estrella", new Vector2(0f, 0.5f), new Vector2(46f, 0f), new Vector2(60f, 60f), Color.white);
                 var icon = UiKit.Text(card.transform, "Icono", "", new Vector2(0f, 0.5f), new Vector2(46f, 2f), new Vector2(60f, 60f), 34);
+                // Dibujo propio del logro; la estrella solo queda para los que aún no tienes.
+                var art = UiKit.Box(card.transform, "Dibujo", new Vector2(0f, 0.5f), new Vector2(46f, 0f), new Vector2(52f, 52f), Color.white, false);
+                art.sprite = AchievementIcons.Get(info.id);
+                art.preserveAspect = true;
+
                 var name = UiKit.Text(card.transform, "Nombre", "", new Vector2(0f, 0.5f), new Vector2(84f, 16f), new Vector2(240f, 40f), 24, TextAnchor.MiddleLeft);
                 name.rectTransform.pivot = new Vector2(0f, 0.5f);
                 var desc = UiKit.Text(card.transform, "Detalle", "", new Vector2(0f, 0.5f), new Vector2(84f, -18f), new Vector2(240f, 30f), 16, TextAnchor.MiddleLeft, UiKit.Soft);
@@ -148,7 +250,11 @@ namespace Fase
                     bool has = Achievements.Has(info.id);
                     card.color = has ? new Color(1f, 1f, 1f, 0.12f) : new Color(1f, 1f, 1f, 0.04f);
                     star.color = has ? new Color(1f, 0.84f, 0.35f) : new Color(0.25f, 0.24f, 0.4f);
-                    icon.text = has ? "★" : "?";
+                    bool drawn = has && art.sprite != null;
+                    art.enabled = drawn;
+                    icon.text = drawn ? "" : has ? "★" : "?";
+                    star.color = drawn ? new Color(1f, 1f, 1f, 0.12f) : star.color;
+
                     icon.color = has ? new Color(0.55f, 0.35f, 0.1f) : new Color(0.6f, 0.6f, 0.75f);
                     bool hidden = info.secret && !has;
                     name.text = hidden ? Loc.Pick("Logro secreto", "Secret achievement") : info.Name;
