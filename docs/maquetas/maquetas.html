@@ -1069,6 +1069,86 @@ const scenes = {
     pill(820, 485, 260, 34, '#2a1f5e'); text('Compartir', 950, 502, 20, '#fff', 'center', '700', false);
     label('Ideas 131, 108 y 70: retos semanales con premio, logros de exploración y una tarjeta para compartir al terminar el juego');
   },
+  61() { // Tanda D: ayudas (56, 57, 71)
+    const LX = 420, TOP = 560;
+    base(LX, TOP, PAL.day, PAL.night, 95); lineBeam(LX);
+    // línea fantasma: dónde conviene ponerla
+    g.save(); g.setLineDash([14, 12]); g.strokeStyle = 'rgba(255,240,180,0.85)'; g.lineWidth = 5; g.beginPath(); g.moveTo(760, 60); g.lineTo(760, H - 60); g.stroke(); g.restore();
+    glow(760, 300, 80, 'rgba(255,240,180,0.5)');
+    pill(780, 200, 330, 44, 'rgba(0,0,0,0.55)'); text('pista: pon la línea aquí', 945, 222, 20, '#fff6d6', 'center', '400', false);
+    // modo relajado: Lumi flota de vuelta
+    g.save(); g.globalAlpha = 0.85; lumi(600, 470, 0.9, false, -1); g.restore();
+    glow(600, 470, 70, 'rgba(255,255,255,0.6)');
+    g.save(); g.strokeStyle = 'rgba(255,255,255,0.7)'; g.setLineDash([5, 8]); g.lineWidth = 2.5; g.beginPath(); g.moveTo(640, 640); g.quadraticCurveTo(700, 520, 610, 480); g.stroke(); g.restore();
+    text('modo relajado: en vez de caer, flota de vuelta', 600, 400, 18, '#fff', 'center', '400');
+    // velocidad
+    pill(40, 40, 330, 60, 'rgba(0,0,0,0.6)'); text('Velocidad del juego: 80 %', 205, 70, 22, '#ffd98a', 'center', '700', false);
+    bloomPass(); vignette(0.45);
+    label('Ideas 56, 57 y 71: línea fantasma que enseña dónde ponerla, modo relajado sin caídas y velocidad del juego al 80 %');
+  },
+  62() { // Tanda D: mando y móvil (58, 59, 42, 137)
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#120f33'], [1, '#2a1f5e']]));
+    text('Con mando', 330, 70, 40, '#fff', 'center');
+    panel(60, 110, 540, 300, 'rgba(255,255,255,0.06)');
+    const btn = (x, y, t, col) => { circle(x, y, 26, col); text(t, x, y + 1, 24, '#fff', 'center'); };
+    btn(120, 170, 'A', '#3a9a4a'); text('Saltar', 160, 170, 24, '#fff', 'left', '400', false);
+    btn(120, 240, 'LB', '#5a5a7a'); btn(180, 240, 'RB', '#5a5a7a'); text('Mover la línea', 220, 240, 24, '#fff', 'left', '400', false);
+    btn(380, 170, '✕', '#3a6aba'); text('PlayStation', 420, 170, 20, '#cfd3ff', 'left', '400', false);
+    text('Los iconos cambian según tu mando', 330, 320, 20, '#cfd3ff', 'center', '400');
+    text('〰 vibra suave de día, grave de noche', 330, 370, 20, '#ffd98a', 'center', '400');
+    text('En el móvil', 950, 70, 40, '#fff', 'center');
+    // pantalla del móvil con botones movibles
+    panel(700, 110, 500, 300, '#1c1a40', 'rgba(255,255,255,0.3)');
+    g.save(); g.setLineDash([6, 6]); g.strokeStyle = '#ffe27a'; g.lineWidth = 2;
+    [[760, 340, 70], [860, 340, 70], [1120, 340, 80]].forEach(([x, y, s]) => { g.strokeRect(x - s / 2, y - s / 2, s, s); }); g.restore();
+    circle(760, 340, 28, 'rgba(255,255,255,0.3)'); text('◀', 760, 341, 24, '#fff', 'center');
+    circle(860, 340, 28, 'rgba(255,255,255,0.3)'); text('▶', 860, 341, 24, '#fff', 'center');
+    circle(1120, 340, 36, 'rgba(255,255,255,0.3)'); text('↑', 1120, 341, 28, '#fff', 'center');
+    text('arrastra y cambia el tamaño', 950, 170, 20, '#ffd98a', 'center', '400');
+    panel(700, 450, 500, 120, 'rgba(255,226,122,0.15)', 'rgba(255,226,122,0.5)');
+    text('Modo un toque', 950, 485, 26, '#ffd98a', 'center');
+    text('La línea sigue a Lumi; tú solo tocas para saltar', 950, 530, 18, '#fff', 'center', '400', false);
+    label('Ideas 58, 59, 42 y 137: iconos del mando, vibración por mundo, botones táctiles movibles y modo de un solo toque');
+  },
+  63() { // Tanda D: título trazado y narrador (60, 38)
+    const LX = 640;
+    base(LX, 560, PAL.autumn, PAL.autumnNight, 96);
+    rect(0, 0, W, H, 'rgba(10,5,20,0.35)');
+    // título que va trazando la línea
+    g.save(); g.font = `700 92px ${FONT}`; g.textAlign = 'center'; g.lineWidth = 4; g.strokeStyle = '#fff6d6'; g.setLineDash([900]); g.lineDashOffset = 260; g.strokeText('El Bosque Otoñal', 640, 260); g.restore();
+    glow(900, 230, 40, 'rgba(255,240,200,0.9)'); circle(900, 230, 6, '#fff');
+    text('el título se dibuja con la línea', 640, 330, 20, '#fff', 'center', '400');
+    // narrador de cuento
+    panel(240, 430, 800, 150, 'rgba(255,248,230,0.92)');
+    text('Capítulo II', 640, 470, 22, '#8a5a2a', 'center', '700', false);
+    text('“Las hojas recordaban el verano, y la noche', 640, 510, 22, '#4a3020', 'center', '400', false);
+    text('les susurraba que todo cambia.”', 640, 540, 22, '#4a3020', 'center', '400', false);
+    label('Ideas 60 y 38: el título del nivel aparece trazado por la línea, y un narrador cuenta el capítulo como un cuento');
+  },
+  64() { // Tanda D: escena tipo cuento entre capítulos (77)
+    rect(0, 0, W, H, '#2a1d14');
+    panel(120, 60, 1040, 600, '#f3e6c8');
+    rect(640, 60, 3, 600, 'rgba(120,90,60,0.4)');
+    // ilustración izquierda
+    g.save(); g.beginPath(); g.roundRect(160, 100, 440, 400, 12); g.clip(); g.translate(160, 100); g.scale(440 / W, 400 / H); base(W * 0.55, 560, PAL.autumn, PAL.snowNight, 97); g.restore();
+    g.save(); g.globalAlpha = 0.25; rect(160, 100, 440, 400, '#c8a070'); g.restore();
+    text('Lumi dejó atrás el bosque.', 900, 200, 30, '#4a3020', 'center', '700', false);
+    ['Arriba, en la Cumbre Helada,', 'el último trozo de luna', 'esperaba bajo la nieve.', '', 'Hacía frío. Mucho frío.'].forEach((t, i) => text(t, 900, 270 + i * 40, 24, '#5a4030', 'center', '400', false));
+    text('— 2 —', 380, 560, 20, '#8a6a4a', 'center', '400', false);
+    pill(980, 590, 150, 46, '#8a5a2a'); text('Seguir ▶', 1055, 613, 20, '#fff', 'center', '700', false);
+    label('Idea 77: entre capítulos, una página de cuento con dibujo y texto antes de seguir');
+  },
+  65() { // Tanda D: idiomas y trucos avanzados (88, 75)
+    rect(0, 0, W, H, lin(0, 0, 0, H, [[0, '#120f33'], [1, '#2a1f5e']]));
+    text('Idioma', 330, 80, 40, '#fff', 'center');
+    ['Español', 'English', 'Português', 'Français'].forEach((t, k) => { const y = 140 + k * 90, on = k === 2; pill(110, y, 440, 70, on ? '#ffe27a' : 'rgba(60,50,140,0.95)'); text(t, 330, y + 35, 28, on ? '#3a2400' : '#fff', 'center', '700', false); });
+    text('Nivel de trucos', 950, 80, 40, '#fff', 'center');
+    panel(700, 130, 500, 420, 'rgba(255,255,255,0.06)', 'rgba(255,255,255,0.25)');
+    g.save(); g.beginPath(); g.roundRect(730, 160, 440, 200, 12); g.clip(); g.translate(730, 160); g.scale(440 / W, 200 / H); base(W * 0.4, 560, PAL.day, PAL.night, 98); lineBeam(W * 0.4); lineBeam(W * 0.7); g.restore();
+    ['· dos líneas a la vez', '· la burbuja de noche del farol (L)', '· saltar y mover la línea en el aire'].forEach((t, k) => text(t, 740, 395 + k * 38, 22, '#fff', 'left', '400', false));
+    pill(830, 495, 240, 44, '#ffe27a'); text('Practicar', 950, 517, 22, '#3a2400', 'center', '700', false);
+    label('Ideas 88 y 75: portugués y francés además de español e inglés, y un nivel opcional para practicar trucos avanzados');
+  },
 };
 
 

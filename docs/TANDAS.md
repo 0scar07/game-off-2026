@@ -62,7 +62,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 131 | Retos semanales con premio de ropa |
 | 133 | Mapa del capítulo que se va pintando |
 
-## Tanda D · Ayudas, accesibilidad y presentación
+## Tanda D · Ayudas, accesibilidad y presentación · maquetas: tanda-d-*.png
 
 | # | Idea |
 |---|---|
