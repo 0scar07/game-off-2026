@@ -47,6 +47,11 @@ namespace Fase
             gameObject.AddComponent<Enclosure>();
             // Medallas de estilo y la pluma (hoja, copo) escondida del nivel.
             gameObject.AddComponent<StyleTracker>();
+            // Ayudas: pista de la línea y modo de un toque; el título del nivel trazado por la línea.
+            gameObject.AddComponent<LineHint>();
+            gameObject.AddComponent<OneTouchMode>();
+            gameObject.AddComponent<LevelTitle>();
+
             Feather.Place(transform);
 
 
@@ -124,9 +129,13 @@ namespace Fase
             // Una cabecera sobre el título del nivel deja libres la pista y el salto inicial.
             var strip = UiKit.Box(canvas.transform, "Cabecera", new Vector2(0.5f, 1f), new Vector2(0f, -120f), new Vector2(1200f, 90f), UiKit.Panel);
             var title = UiKit.Text(strip.transform, "Nombre", $"{Loc.Get("chapter")} {numbers[c]} · {names[c]}", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1140f, 80f), 42, TextAnchor.MiddleCenter, UiKit.Gold);
-            for (float t = 0f; t < 3f; t += Time.unscaledDeltaTime)
+            // El narrador: una frase de cuento debajo de la cabecera.
+            var story = UiKit.Text(canvas.transform, "Narrador", StoryPage.Opening(entry.chapter), new Vector2(0.5f, 1f), new Vector2(0f, -200f), new Vector2(1500f, 60f), 30, TextAnchor.MiddleCenter, new Color(1f, 0.95f, 0.85f));
+            story.fontStyle = FontStyle.Italic;
+            for (float t = 0f; t < 5f; t += Time.unscaledDeltaTime)
             {
-                group.alpha = t < 0.4f ? t / 0.4f : t > 2.4f ? 1f - (t - 2.4f) / 0.6f : 1f;
+                group.alpha = t < 0.4f ? t / 0.4f : t > 4.4f ? 1f - (t - 4.4f) / 0.6f : 1f;
+
                 if (PauseMenu.Paused || PhotoMode.Active) group.alpha = 0f;
                 yield return null;
             }

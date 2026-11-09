@@ -7,23 +7,43 @@ namespace Fase
     /// Textos del juego en español e inglés. El idioma se elige en Opciones; la primera vez se
     /// toma el del sistema (español si el dispositivo está en español, inglés en otro caso).
     /// </summary>
-    public static class Loc
+    public static partial class Loc
     {
         const string Key = "fase_idioma";
 
+        /// <summary>0 español, 1 inglés, 2 portugués, 3 francés.</summary>
+        public static int Language
+        {
+            get
+            {
+                var system = Application.systemLanguage;
+                int guess = system == SystemLanguage.Spanish ? 0 : system == SystemLanguage.Portuguese ? 2 : system == SystemLanguage.French ? 3 : 1;
+                return Mathf.Clamp(PlayerPrefs.GetInt(Key, guess), 0, 3);
+            }
+            set { PlayerPrefs.SetInt(Key, (value % 4 + 4) % 4); PlayerPrefs.Save(); Changed?.Invoke(); }
+        }
+
+        /// <summary>Cualquier idioma que no sea el español (portugués y francés usan el inglés si falta algo).</summary>
         public static bool English
         {
-            get => PlayerPrefs.GetInt(Key, Application.systemLanguage == SystemLanguage.Spanish ? 0 : 1) == 1;
-            set { PlayerPrefs.SetInt(Key, value ? 1 : 0); PlayerPrefs.Save(); Changed?.Invoke(); }
+            get => Language != 0;
+            set => Language = value ? 1 : 0;
         }
 
         public static event System.Action Changed;
 
-        /// <summary>Elige entre el texto en español y en inglés.</summary>
-        public static string Pick(string es, string en) => English && !string.IsNullOrEmpty(en) ? en : es;
+        /// <summary>Elige el texto del idioma actual: español, inglés o (por el texto en español) portugués y francés.</summary>
+        public static string Pick(string es, string en)
+        {
+            int language = Language;
+            if (language == 0 || string.IsNullOrEmpty(en)) return es;
+            if (language >= 2 && es != null && Translations.TryGetValue(es, out var t)) return language == 2 ? t.pt : t.fr;
+            return en;
+        }
 
         public static string Get(string key) =>
-            Texts.TryGetValue(key, out var t) ? (English ? t.en : t.es) : key;
+            Texts.TryGetValue(key, out var t) ? Pick(t.es, t.en) : key;
+
 
         static readonly Dictionary<string, (string es, string en)> Texts = new Dictionary<string, (string, string)>
         {
@@ -87,6 +107,13 @@ namespace Fase
             ["reduceeffects"] = ("Menos destellos", "Fewer flashes"),
             ["textsize"] = ("Tamaño del texto", "Text size"),
             ["extras"] = ("Extras", "Extras"),
+            ["help"] = ("Ayudas", "Assists"),
+            ["tricks"] = ("Nivel de trucos", "Tricks level"),
+            ["linehint"] = ("Pista de la línea", "Line hint"),
+            ["relaxed"] = ("Modo relajado", "Relaxed mode"),
+            ["slowgame"] = ("Velocidad del juego", "Game speed"),
+            ["onetouch"] = ("Un toque", "One touch"),
+
             ["stats"] = ("Estadísticas", "Statistics"),
             ["soundtrack"] = ("Banda sonora", "Soundtrack"),
             ["gallery"] = ("Galería", "Gallery"),

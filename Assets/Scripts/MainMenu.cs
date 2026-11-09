@@ -126,17 +126,18 @@ namespace Fase
 
         public void OnMusicChanged(float value) => Progress.MusicVolume = value;
         public void OnSfxChanged(float value) => Progress.SfxVolume = value;
-        public void ToggleLanguage() => Loc.English = !Loc.English;
+        public void ToggleLanguage() => Loc.Language = Loc.Language + 1;
         public void WatchIntro() => SceneFader.Load(introScene);
 
         public void ResetProgress()
         {
             float m = Progress.MusicVolume, s = Progress.SfxVolume;
-            bool english = Loc.English;
+            int language = Loc.Language;
             Progress.ResetAll();
             Progress.MusicVolume = m;
             Progress.SfxVolume = s;
-            Loc.English = english;
+            Loc.Language = language;
+
             Refresh();
         }
 

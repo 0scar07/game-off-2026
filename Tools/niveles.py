@@ -378,6 +378,14 @@ save("92-secreto-aurora.txt", 3, "Aurora", "Aurora",
      "Nivel secreto. Dos líneas, viento y luciérnagas.", "Secret level. Two lines, wind and fireflies.", 3, L,
      "secreto: si\nlinea2: 20\n")
 
+# Nivel de práctica (Extras → Nivel de trucos): no cuenta como secreto del mapa.
+L = Level().start().flat(3).bridge(5).ice_bridge(5).flat(3).check().triple_bridge(5).flat(3)
+L.firefly_gap(8).flat(2).bridge(4).ice_bridge(4).flat(3).goal()
+save("95-trucos-de-la-linea.txt", 3, "Trucos de la línea", "Line tricks",
+     "Práctica: una cosa a cada lado de la línea, DOS líneas a la vez\ny la burbuja de noche del farol (L) donde bailan las luciérnagas.",
+     "Practice: one thing on each side of the line, TWO lines at once\nand the lantern's night bubble (L) where fireflies dance.", 3, L,
+     "secreto: si\npractica: si\nlinea2: 30\n")
+
 # ───────────────────────── Desafíos diarios ─────────────────────────
 # Cortos y distintos cada día: tramos al azar con una semilla fija por número.
 

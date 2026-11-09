@@ -11,7 +11,8 @@ namespace Fase
         static TimeControl instance;
         float slowLeft, slowScale = 1f;
 
-        public static float BaseSpeed => Settings.Assist ? 0.85f : 1f;
+        public static float BaseSpeed => (Settings.Assist ? 0.85f : 1f) * (Settings.SlowGame ? 0.8f : 1f);
+
 
         float stopLeft;
 

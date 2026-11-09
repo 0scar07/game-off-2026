@@ -32,8 +32,12 @@ namespace Fase
             UiKit.Text(clock, "Icono", "⏱", new Vector2(0.5f, 1f), new Vector2(0f, -30f), new Vector2(120f, 70f), 60, TextAnchor.MiddleCenter, UiKit.Gold);
             today = UiKit.Text(clock, "Hoy", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -22f), new Vector2(300f, 44f), 32);
             rest = UiKit.Text(clock, "Descanso", "", new Vector2(0.5f, 0f), new Vector2(0f, 6f), new Vector2(300f, 32f), 22, TextAnchor.MiddleCenter, UiKit.Soft);
+            // En el móvil: editar dónde están los botones táctiles y su tamaño.
+            if (FindObjectsByType<MobileButton>().Length > 0)
+                UiKit.Button(canvas, "EditarTactiles", Loc.Pick("Editar controles táctiles", "Edit touch controls"), new Vector2(0.5f, 0f), new Vector2(0f, 60f), new Vector2(560f, 90f), () => TouchEditor.Open(pause.panel), 32);
             // Los botones de la pausa también suenan y se inclinan.
             UiHover.AddTo(transform);
+
         }
 
         void Update()

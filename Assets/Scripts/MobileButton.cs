@@ -9,8 +9,60 @@ namespace Fase
     /// Botón táctil: ponlo en una Image de la interfaz. Funciona con varios dedos a la vez
     /// (moverse y saltar al mismo tiempo). Se ilumina mientras está pulsado.
     /// </summary>
-    public class MobileButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+    public class MobileButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler, IDragHandler
     {
+        // ───────── Colocación propia (se edita desde la pausa: TouchEditor) ─────────
+
+        /// <summary>Mientras se editan, los botones se arrastran en vez de pulsarse.</summary>
+        public static bool Editing;
+        public static MobileButton Selected;
+        Vector2 defaultPosition;
+        Vector3 defaultScale;
+        bool layoutKnown;
+        string LayoutKey => "fase_tactil_" + kind;
+
+        void LoadLayout()
+        {
+            var rect = (RectTransform)transform;
+            if (!layoutKnown) { defaultPosition = rect.anchoredPosition; defaultScale = rect.localScale; layoutKnown = true; }
+            var parts = PlayerPrefs.GetString(LayoutKey, "").Split(';');
+            if (parts.Length != 3) return;
+            var inv = System.Globalization.CultureInfo.InvariantCulture;
+            rect.anchoredPosition = new Vector2(float.Parse(parts[0], inv), float.Parse(parts[1], inv));
+            rect.localScale = defaultScale * float.Parse(parts[2], inv);
+        }
+
+        public void SaveLayout()
+        {
+            var rect = (RectTransform)transform;
+            var inv = System.Globalization.CultureInfo.InvariantCulture;
+            float scale = defaultScale.x != 0f ? rect.localScale.x / defaultScale.x : 1f;
+            PlayerPrefs.SetString(LayoutKey, string.Format(inv, "{0};{1};{2}", rect.anchoredPosition.x, rect.anchoredPosition.y, scale));
+        }
+
+        public void ResetLayout()
+        {
+            var rect = (RectTransform)transform;
+            rect.anchoredPosition = defaultPosition;
+            rect.localScale = defaultScale;
+            PlayerPrefs.DeleteKey(LayoutKey);
+        }
+
+        /// <summary>Más grande o más pequeño (entre la mitad y el doble).</summary>
+        public void Resize(float factor)
+        {
+            float current = defaultScale.x != 0f ? transform.localScale.x / defaultScale.x : 1f;
+            transform.localScale = defaultScale * Mathf.Clamp(current * factor, 0.5f, 2f);
+        }
+
+        public void OnDrag(PointerEventData pointer)
+        {
+            if (!Editing) return;
+            var canvas = GetComponentInParent<Canvas>();
+            ((RectTransform)transform).anchoredPosition += pointer.delta / (canvas != null ? canvas.scaleFactor : 1f);
+        }
+
+
         public enum Kind { Left, Right, Jump }
         public Kind kind;
 
@@ -35,7 +87,11 @@ namespace Fase
             if (image != null) idleColor = image.color;
         }
 
-        void OnEnable() => active.Add((RectTransform)transform);
+        void OnEnable()
+        {
+            active.Add((RectTransform)transform);
+            LoadLayout();
+        }
 
         void OnDisable()
         {
@@ -45,7 +101,9 @@ namespace Fase
 
         public void OnPointerDown(PointerEventData pointer)
         {
+            if (Editing) { Selected = this; return; }
             if (held || PauseMenu.Paused || PhotoMode.Active) return;
+
             pointerId = pointer.pointerId;
             Set(true);
         }

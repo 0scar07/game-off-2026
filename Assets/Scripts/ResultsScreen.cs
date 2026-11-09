@@ -28,7 +28,14 @@ namespace Fase
         {
             yield return new WaitForSecondsRealtime(delay);
             // Último nivel de un capítulo: primero el fragmento vuela a la luna.
-            if (Hud.Instance != null && !Hud.Instance.Daily) yield return ChapterCelebration.Run(Hud.Instance.levelNumber);
+            if (Hud.Instance != null && !Hud.Instance.Daily && ChapterCelebration.IsChapterEnd(Hud.Instance.levelNumber))
+            {
+                yield return ChapterCelebration.Run(Hud.Instance.levelNumber);
+                // Y una página de cuento antes del capítulo siguiente.
+                var finished = LevelCatalog.Get.At(Hud.Instance.levelNumber);
+                if (finished != null) yield return StoryPage.Run(finished.chapter);
+            }
+
             var hud = Hud.Instance;
 
             int level = hud != null ? hud.levelNumber : 1;

@@ -560,7 +560,8 @@ namespace Fase
             for (int i = 0; i < catalog.levels.Length; i++)
             {
                 var entry = catalog.levels[i];
-                if (!entry.secret) continue;
+                if (!entry.secret || entry.practice) continue;
+
                 int level = i + 1;
                 int chapter = entry.chapter;
                 // Estrella sobre el último nivel de su capítulo.

@@ -16,6 +16,8 @@ namespace Fase
             public string scene, name, nameEn;
             public int chapter, fragments;
             public bool secret;
+            public bool practice;   // nivel de práctica (Extras → Nivel de trucos): fuera del mapa y de los logros
+
             public float[] medals = new float[4]; // bronce, plata, oro, luna
         }
 

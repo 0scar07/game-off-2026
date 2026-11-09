@@ -234,7 +234,13 @@ namespace Fase
             body.linearVelocity = v;
 
             if (grounded) Stats.AddMeters(Mathf.Abs(v.x) * Time.fixedDeltaTime);
-            if (IsCrushed() || transform.position.y < killHeight) Die();
+            if (IsCrushed()) Die();
+            else if (transform.position.y < killHeight)
+            {
+                // Modo relajado: en vez de caer, vuelve flotando al último suelo firme.
+                if (Settings.Relaxed && hasSafe) FloatBack();
+                else Die();
+            }
         }
 
         /// <summary>Impulso hacia arriba (flor-muelle). Cuenta como salto para el coyote y el búfer.</summary>
@@ -245,7 +251,22 @@ namespace Fase
             bufferLeft = 0f;
         }
 
+        Vector3 safe;
+        bool hasSafe;
+
+        /// <summary>Modo relajado: de vuelta al último suelo firme, sin contar caída.</summary>
+        void FloatBack()
+        {
+            body.linearVelocity = Vector2.zero;
+            body.position = safe + Vector3.up * 0.3f;
+            transform.position = safe + Vector3.up * 0.3f;
+            coyoteLeft = bufferLeft = carried = lastFallSpeed = landLeft = 0f;
+            squash = new Vector2(0.85f, 1.15f);
+            LumiBubble.Say(transform, Loc.Pick("¡Uf! Por poco.", "Phew! Close one."), 1.4f);
+        }
+
         /// <summary>Estira o aplasta a Lumi un momento (vuelve sola a su forma): estornudos, sustos...</summary>
+
         public void Squash(Vector2 shape) => squash = shape;
 
         /// <summary>Vuelve al último punto de control sin contar como caída (mantener R).</summary>
@@ -314,6 +335,8 @@ namespace Fase
                 if (hit.isTrigger || hit.attachedRigidbody == body) continue;
                 // Tablas que se atraviesan desde abajo: solo son suelo si Lumi baja y tiene los pies encima.
                 if (hit.usedByEffector && (body.linearVelocity.y > 0.05f || b.min.y < hit.bounds.max.y - 0.15f)) continue;
+                // Suelo firme de verdad (no una pieza que pueda desaparecer): sitio seguro para el modo relajado.
+                if (hit.GetComponent<WorldPiece>() == null && hit.attachedRigidbody == null) { safe = transform.position; hasSafe = true; }
                 return true;
             }
             return false;

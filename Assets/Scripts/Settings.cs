@@ -79,7 +79,36 @@ namespace Fase
 
         public static float TextScale => new[] { 1f, 1.15f, 1.3f }[TextSize];
 
+        /// <summary>Ayuda: una línea discontinua enseña dónde conviene poner la línea.</summary>
+        public static bool LineHint
+        {
+            get => PlayerPrefs.GetInt("fase_pista_linea", 0) == 1;
+            set => SetBool("fase_pista_linea", value);
+        }
+
+        /// <summary>Modo relajado: al caer al vacío, Lumi flota de vuelta al último suelo firme (no cuenta caída).</summary>
+        public static bool Relaxed
+        {
+            get => PlayerPrefs.GetInt("fase_relajado", 0) == 1;
+            set => SetBool("fase_relajado", value);
+        }
+
+        /// <summary>Todo el juego al 80 % de velocidad.</summary>
+        public static bool SlowGame
+        {
+            get => PlayerPrefs.GetInt("fase_lento", 0) == 1;
+            set => SetBool("fase_lento", value);
+        }
+
+        /// <summary>Modo de un toque: Lumi avanza sola, la línea se coloca sola y tocar es saltar.</summary>
+        public static bool OneTouch
+        {
+            get => PlayerPrefs.GetInt("fase_un_toque", 0) == 1;
+            set => SetBool("fase_un_toque", value);
+        }
+
         /// <summary>Correr contra el fantasma de tu récord (se activa o quita desde El viaje).</summary>
+
         public static bool GhostRace
         {
             get => PlayerPrefs.GetInt("fase_fantasma", 1) == 1;

@@ -41,9 +41,25 @@ namespace Fase
         void OnLanded(float speed) { if (speed > 14f && Settings.Vibration) Pulse(0.08f, 0.4f, 0.2f); }
         void OnCollected() { if (Settings.Vibration) Pulse(0.1f, 0.1f, 0.5f); }
 
+        // Al cruzar la línea: un zumbido agudo y suave al entrar en el día, uno grave al entrar en la noche.
+        Transform player;
+        bool wasDay = true, known;
+        float searchIn;
+
+
         void Update()
         {
+            searchIn -= Time.unscaledDeltaTime;
+            if (player == null && searchIn <= 0f) { searchIn = 1f; var hero = FindAnyObjectByType<PlayerController>(); if (hero != null) { player = hero.transform; known = false; } }
+            if (player != null)
+            {
+                bool day = ShiftLine.IsDay(player.position);
+                if (known && day != wasDay && Settings.Vibration) { if (day) Pulse(0.07f, 0.05f, 0.35f); else Pulse(0.12f, 0.45f, 0.05f); }
+                wasDay = day;
+                known = true;
+            }
             if (left <= 0f) return;
+
             left -= Time.unscaledDeltaTime;
             if (left <= 0f) Gamepad.current?.SetMotorSpeeds(0f, 0f);
         }

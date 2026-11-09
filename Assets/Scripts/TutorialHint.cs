@@ -42,7 +42,9 @@ namespace Fase
             // En el ordenador, además, las teclas.
             if (Gamepad.current != null)
             {
-                UiKit.Text(root, "Mando", Loc.Pick("Línea · stick derecho / LB + RB", "Line · right stick / LB + RB"), new Vector2(0.5f, 0.5f), new Vector2(140f, -165f), new Vector2(640f, 90f), 30);
+                string buttons = InputGlyphs.LineButtons.Replace("/", " + ");
+                UiKit.Text(root, "Mando", Loc.Pick($"Línea · stick derecho / {buttons}", $"Line · right stick / {buttons}"), new Vector2(0.5f, 0.5f), new Vector2(140f, -165f), new Vector2(640f, 90f), 30);
+
             }
             else if (Touchscreen.current == null)
             {

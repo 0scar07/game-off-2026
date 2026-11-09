@@ -46,6 +46,7 @@ public static partial class LevelBuilder
         public float minLine = float.NaN, maxLine = float.NaN;
         public float[] medals;   // cabecera "medallas: bronce plata oro luna" (segundos)
         public bool secret;      // cabecera "secreto: si" — se abre con todos los fragmentos de su capítulo
+        public bool practice;    // cabecera "practica: si" — nivel de práctica de Extras (no sale en el mapa)
         public float line2 = float.NaN; // cabecera "linea2:" — segunda línea
         public float energy;     // cabecera "energia:" — la línea gasta energía al moverse
         public float angle;      // cabecera "angulo:" — 0 vertical, 90 tumbada (entonces "linea" es la altura)
@@ -198,6 +199,8 @@ public static partial class LevelBuilder
                 chapter = l.chapter,
                 fragments = l.Fragments,
                 secret = l.secret,
+                practice = l.practice,
+
                 medals = l.MedalTimes,
             }).ToArray(),
         };
@@ -234,6 +237,8 @@ public static partial class LevelBuilder
                 case "energia": level.energy = float.Parse(value, inv); break;
                 case "angulo": level.angle = float.Parse(value, inv); break;
                 case "secreto": level.secret = value.ToLowerInvariant().StartsWith("s") || value == "1"; break;
+                case "practica": level.practice = value.ToLowerInvariant().StartsWith("s") || value == "1"; break;
+
                 case "limites":
                     var parts = value.Split(new[] { ' ', '-', ',' }, System.StringSplitOptions.RemoveEmptyEntries);
                     level.minLine = float.Parse(parts[0], inv);

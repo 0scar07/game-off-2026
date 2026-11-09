@@ -62,7 +62,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 131 | Retos semanales con premio de ropa |
 | 133 | Mapa del capítulo que se va pintando |
 
-## Tanda D · Ayudas, accesibilidad y presentación · maquetas: tanda-d-*.png
+## Tanda D · Ayudas, accesibilidad y presentación · ✅ programada (falta probar en Unity)
 
 | # | Idea |
 |---|---|
@@ -76,7 +76,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 71 | Velocidad del juego al 80 % |
 | 75 | Nivel opcional de trucos avanzados |
 | 77 | Escenas tipo cuento entre capítulos |
-| 88 | Más idiomas (portugués y francés; el japonés necesita otra fuente) |
+| 88 | Más idiomas (portugués y francés; el japonés necesita otra fuente) · traducidos la interfaz fija, niveles, capítulos y pistas; el resto sale en inglés |
 | 137 | Modo de un solo toque para móvil |
 
 ## Tanda E · Mecánicas nuevas (con niveles para usarlas)

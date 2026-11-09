@@ -195,7 +195,8 @@ namespace Fase
             var entry = catalog.At(level);
             if (level == 1) Unlock("amanecer");
             if (!diedThisLevel) Unlock("sinmorir");
-            if (entry != null && entry.secret) Unlock("secreto");
+            if (entry != null && entry.secret && !entry.practice) Unlock("secreto");
+
             // Progress.Complete ya guardó el nivel cuando llega este aviso.
             if (catalog.ChapterDone(1)) Unlock("pradera");
             if (catalog.ChapterDone(2)) Unlock("bosque");

@@ -1,0 +1,24 @@
+nombre: Trucos de la línea
+name: Line tricks
+pista: Práctica: una cosa a cada lado de la línea, DOS líneas a la vez\ny la burbuja de noche del farol (L) donde bailan las luciérnagas.
+hint: Practice: one thing on each side of the line, TWO lines at once\nand the lantern's night bubble (L) where fireflies dance.
+capitulo: 3
+linea: 3
+secreto: si
+practica: si
+linea2: 30
+---
+
+
+
+
+
+
+
+
+
+
+  S                           C                                                        G
+#########ddddd###nnnnn##########dddddnnnnnddddd######YYYYYYYY#####dddd###nnnn#############
+#########     ###     ##########               ######        #####    ###    #############
+#########     ###     ##########               ######        #####    ###    #############

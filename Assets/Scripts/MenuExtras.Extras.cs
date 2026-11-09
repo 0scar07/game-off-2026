@@ -24,15 +24,21 @@ namespace Fase
             var weekly = BuildWeekly();
 
             extrasPanel = Panel("Extras", "extras", out var content);
+            var help = BuildHelp();
+            // El nivel de práctica (el que tiene "practica: si" en el catálogo).
+            string practice = null;
+            foreach (var e in LevelCatalog.Get.levels) if (e.practice) practice = e.scene;
             var entries = new (string key, string icon, GameObject panel)[]
             {
                 ("stats", "⏱", stats), ("soundtrack", "♪", music), ("gallery", "☺", gallery),
                 ("album", "▦", album), ("chaptermap", "☾", map), ("weekly", "★", weekly),
+                ("help", "✔", help), ("tricks", "|", null),
             };
             for (int i = 0; i < entries.Length; i++)
             {
                 var (key, icon, panel) = entries[i];
-                var button = UiKit.Button(content, key, "", new Vector2(0.5f, 0.5f), new Vector2((i % 2 - 0.5f) * 620f, 200f - (i / 2) * 170f), new Vector2(580f, 140f), () => menu.Show(panel), 40);
+                UnityEngine.Events.UnityAction open = panel != null ? () => menu.Show(panel) : () => { if (practice != null) SceneFader.Load(practice); };
+                var button = UiKit.Button(content, key, "", new Vector2(0.5f, 0.5f), new Vector2((i % 2 - 0.5f) * 620f, 240f - (i / 2) * 150f), new Vector2(580f, 126f), open, 40);
                 var label = button.GetComponentInChildren<Text>();
                 label.rectTransform.anchoredPosition = new Vector2(50f, 0f);
                 UiKit.Text(button.transform, "Icono", icon, new Vector2(0f, 0.5f), new Vector2(80f, 0f), new Vector2(100f, 100f), 56, TextAnchor.MiddleCenter, UiKit.Gold);
@@ -40,11 +46,29 @@ namespace Fase
                 refreshers.Add(() => label.text = Loc.Get(k));
             }
             extraPanels.Add(extrasPanel);
-            foreach (var p in new[] { stats, music, gallery, album, map, weekly }) extraPanels.Add(p);
+            foreach (var p in new[] { stats, music, gallery, album, map, weekly, help }) extraPanels.Add(p);
             BuildGhostToggle();
         }
 
         void BackToExtras() => menu.Show(extrasPanel);
+
+        // ───────── Ayudas ─────────
+
+        GameObject BuildHelp()
+        {
+            var panel = Panel("Ayudas", "help", out var content, BackToExtras);
+            Toggle(content, "linehint", new Vector2(0f, 230f), () => Settings.LineHint, v => Settings.LineHint = v);
+            Toggle(content, "relaxed", new Vector2(0f, 130f), () => Settings.Relaxed, v => Settings.Relaxed = v);
+            Toggle(content, "slowgame", new Vector2(0f, 30f), () => Settings.SlowGame, v => Settings.SlowGame = v, null, v => v ? "80 %" : "100 %");
+            Toggle(content, "onetouch", new Vector2(0f, -70f), () => Settings.OneTouch, v => Settings.OneTouch = v);
+            var note = UiKit.Text(content, "Nota", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -200f), new Vector2(1200f, 120f), 26, TextAnchor.MiddleCenter, UiKit.Soft);
+            note.horizontalOverflow = HorizontalWrapMode.Wrap;
+            refreshers.Add(() => note.text = Loc.Pick(
+                "Pista: una línea discontinua enseña dónde ponerla. Relajado: al caer al vacío, Lumi vuelve flotando.\nUn toque (móvil): Lumi avanza sola, la línea se coloca sola y tocar es saltar. Los botones táctiles se colocan desde la pausa.",
+                "Hint: a dashed line shows where to put it. Relaxed: falling into the void floats Lumi back.\nOne touch (phone): Lumi walks on her own, the line moves itself and tapping jumps. Touch buttons can be moved from the pause menu."));
+            return panel;
+        }
+
 
         // ───────── Estadísticas y medallas de estilo ─────────
 
