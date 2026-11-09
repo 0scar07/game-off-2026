@@ -260,8 +260,13 @@ namespace Fase
             stillTime = 0f;
         }
 
+        /// <summary>Dónde estaba Lumi justo antes de su última caída (FallFlower la usa).</summary>
+        public static Vector3 LastDeathPosition { get; private set; }
+
         public void Die()
         {
+            LastDeathPosition = transform.position;
+
 
             body.linearVelocity = Vector2.zero;
             body.position = checkpoint;

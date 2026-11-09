@@ -27,7 +27,7 @@ primero por maquetas y, cuando se aprueban, se programa; al final se prueba todo
 | 125 | Reloj de arena en la pausa con lo que llevas jugando hoy |
 | 126 | Nubes que tapan el sol y oscurecen un poco el día |
 
-## Tanda B · El mundo y Lumi · maquetas: tanda-b-*.png
+## Tanda B · El mundo y Lumi · ✅ programada (falta probar en Unity)
 
 | # | Idea |
 |---|---|

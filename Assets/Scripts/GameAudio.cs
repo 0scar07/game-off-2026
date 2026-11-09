@@ -157,6 +157,21 @@ namespace Fase
             next = (next + 1) % Voices;
             source.pitch = pitch * (1f + Random.Range(-pitchVariation, pitchVariation));
             source.PlayOneShot(clip, clipVolume * volume * Progress.SfxVolume);
+            // Bajo techo: eco (dos repeticiones más bajas).
+            if (Enclosure.Active) StartCoroutine(Echo(clip, clipVolume * volume * Progress.SfxVolume, source.pitch));
         }
+
+        System.Collections.IEnumerator Echo(AudioClip clip, float loudness, float pitch)
+        {
+            foreach (var (delay, k) in new[] { (0.12f, 0.32f), (0.24f, 0.14f) })
+            {
+                yield return new WaitForSecondsRealtime(delay - (k < 0.2f ? 0.12f : 0f));
+                var source = sources[next];
+                next = (next + 1) % Voices;
+                source.pitch = pitch * 0.98f;
+                source.PlayOneShot(clip, loudness * k);
+            }
+        }
+
     }
 }

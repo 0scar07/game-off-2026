@@ -47,7 +47,118 @@ namespace Fase
                 if (t.name.StartsWith("flower") && t.parent != null && t.parent.name == "Decoracion") found.Add(t);
             flowers = found.ToArray();
             flowerScale = new Vector3[flowers.Length];
-            for (int i = 0; i < flowers.Length; i++) flowerScale[i] = flowers[i].localScale;
+            flowerDay = new bool[flowers.Length];
+            for (int i = 0; i < flowers.Length; i++) { flowerScale[i] = flowers[i].localScale; flowerDay[i] = ShiftLine.IsDay(flowers[i].position); }
+            petals = Petals(shader);
+            BuildOwls(shader);
+        }
+
+        // ───────── Pétalos al florecer ─────────
+
+        bool[] flowerDay;
+        ParticleSystem petals;
+
+        /// <summary>Pétalos rosas y amarillos que saltan de una flor cuando le vuelve a dar el día.</summary>
+        ParticleSystem Petals(Shader shader)
+        {
+            var go = new GameObject("Petalos");
+            go.transform.SetParent(transform, false);
+            var ps = go.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var main = ps.main;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(1.2f, 2f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.8f, 2f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.1f, 0.18f);
+            main.startRotation = new ParticleSystem.MinMaxCurve(0f, 6.28f);
+            main.startColor = new ParticleSystem.MinMaxGradient(new Color(1f, 0.7f, 0.85f), new Color(1f, 0.95f, 0.6f));
+            main.gravityModifier = 0.15f;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.maxParticles = 200;
+            var emission = ps.emission;
+            emission.rateOverTime = 0f;
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Hemisphere;
+            shape.radius = 0.2f;
+            shape.rotation = new Vector3(-90f, 0f, 0f);
+            var fade = ps.colorOverLifetime;
+            fade.enabled = true;
+            var gradient = new Gradient();
+            gradient.SetKeys(new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+                new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(1f, 0.6f), new GradientAlphaKey(0f, 1f) });
+            fade.color = gradient;
+            var mat = new Material(shader);
+            mat.SetTexture("_MainTex", UiKit.Rounded.texture);
+            mat.SetFloat("_World", 0f);
+            mat.SetFloat("_Additive", 0f);
+            mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.renderQueue = 3000;
+            go.GetComponent<ParticleSystemRenderer>().sharedMaterial = mat;
+            ps.Play();
+            return ps;
+        }
+
+        // ───────── Búhos en los pinos de noche ─────────
+
+        readonly System.Collections.Generic.List<(MeshRenderer renderer, float next)> owls = new System.Collections.Generic.List<(MeshRenderer, float)>();
+        Material owlOpen, owlBlink;
+
+        /// <summary>Uno de cada cuatro pinos de noche tiene un búho en la copa (solo se ve de noche).</summary>
+        void BuildOwls(Shader shader)
+        {
+            owlOpen = OwlMaterial(shader, false);
+            owlBlink = OwlMaterial(shader, true);
+            int count = 0;
+            foreach (var t in FindObjectsByType<Transform>())
+            {
+                if (!t.name.StartsWith("tree_pine") || t.parent == null || t.parent.name != "Decoracion") continue;
+                if (count++ % 4 != 1) continue;
+                var renderers = t.GetComponentsInChildren<Renderer>();
+                if (renderers.Length == 0) continue;
+                var b = renderers[0].bounds;
+                foreach (var r in renderers) b.Encapsulate(r.bounds);
+                var owl = Shapes.Create(PrimitiveType.Quad, "Buho");
+                owl.transform.SetParent(transform, false);
+                owl.transform.position = new Vector3(b.center.x + Random.Range(-0.2f, 0.2f), b.min.y + b.size.y * 0.62f, b.min.z - 0.05f);
+                owl.transform.localScale = Vector3.one * 0.75f;
+                var mr = owl.GetComponent<MeshRenderer>();
+                mr.sharedMaterial = owlOpen;
+                mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                owls.Add((mr, Random.Range(1f, 5f)));
+            }
+        }
+
+        static Material OwlMaterial(Shader shader, bool blink)
+        {
+            const int size = 64;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+            for (int py = 0; py < size; py++)
+                for (int px = 0; px < size; px++)
+                {
+                    float x = (px + 0.5f) / size * 2f - 1f, y = (py + 0.5f) / size * 2f - 1f;
+                    var c = Color.clear;
+                    bool body = x * x / 0.42f + (y + 0.1f) * (y + 0.1f) / 0.72f < 1f;
+                    bool ear = (Mathf.Abs(x) > 0.25f && Mathf.Abs(x) < 0.55f && y > 0.45f && y < 0.8f - (0.55f - Mathf.Abs(x)) * 0.8f);
+                    if (body || ear) c = new Color(0.42f, 0.34f, 0.58f);
+                    if (body && y < -0.2f && x * x / 0.2f + (y + 0.45f) * (y + 0.45f) / 0.18f < 1f) c = new Color(0.62f, 0.55f, 0.76f);
+                    foreach (float ex in new[] { -0.26f, 0.26f })
+                    {
+                        float dx = x - ex, dy = y - 0.18f;
+                        if (blink) { if (Mathf.Abs(dy) < 0.04f && Mathf.Abs(dx) < 0.17f) c = new Color(0.15f, 0.1f, 0.25f); }
+                        else if (dx * dx + dy * dy < 0.035f) c = dx * dx + dy * dy < 0.008f ? new Color(0.1f, 0.06f, 0.2f) : new Color(1f, 0.85f, 0.35f);
+                    }
+                    if (Mathf.Abs(x) < 0.07f && y > -0.02f && y < 0.12f && y > 0.12f - (0.07f - Mathf.Abs(x)) * 2.4f - 0.1f) c = new Color(1f, 0.7f, 0.3f);
+                    tex.SetPixel(px, py, c);
+                }
+            tex.Apply();
+            var mat = new Material(shader);
+            mat.SetTexture("_MainTex", tex);
+            mat.SetFloat("_World", 1f);
+            mat.SetFloat("_Additive", 0f);
+            mat.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            mat.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            mat.renderQueue = 3001;
+            return mat;
         }
 
         static Material Wing(Shader shader, Color color, float world)
@@ -98,9 +209,29 @@ namespace Fase
                 float flap = 0.35f + 0.65f * Mathf.Abs(Mathf.Sin(Time.time * (night ? 14f : 8f) + phase[i]));
                 bird.localScale = new Vector3(Mathf.Sign(speed[i]), flap, 1f);
             }
+            // Los búhos parpadean de vez en cuando.
+            for (int i = 0; i < owls.Count; i++)
+            {
+                var (renderer, nextBlink) = owls[i];
+                if (renderer == null) continue;
+                if (Time.time > nextBlink)
+                {
+                    bool closing = renderer.sharedMaterial == owlOpen;
+                    renderer.sharedMaterial = closing ? owlBlink : owlOpen;
+                    owls[i] = (renderer, Time.time + (closing ? 0.15f : Random.Range(2f, 6f)));
+                }
+            }
             for (int i = 0; i < flowers.Length; i++)
             {
                 bool day = ShiftLine.IsDay(flowers[i].position);
+                // Al volver el día, la flor se abre soltando unos pétalos.
+                if (day && !flowerDay[i] && petals != null && !Settings.ReduceEffects)
+                {
+                    petals.transform.position = flowers[i].position + Vector3.up * 0.3f + Vector3.back * 0.3f;
+                    petals.Emit(8);
+                }
+                flowerDay[i] = day;
+
                 var target = day ? flowerScale[i] : new Vector3(flowerScale[i].x * 0.55f, flowerScale[i].y * 0.7f, flowerScale[i].z * 0.55f);
                 flowers[i].localScale = Vector3.Lerp(flowers[i].localScale, target, Time.deltaTime * 3f);
             }

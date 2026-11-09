@@ -22,6 +22,9 @@ namespace Fase
         ParticleSystem rain, snow;
         float weatherClock, sleep;
 
+        /// <summary>Cuánto llueve ahora en el lado de día (0-1). Lo mira LumiReactions para mojar a Lumi.</summary>
+        public static float RainLevel;
+
 
         IEnumerator Start()
         {
@@ -38,6 +41,11 @@ namespace Fase
             if (player.GetComponent<LumiGaze>() == null) player.gameObject.AddComponent<LumiGaze>();
             // Se duerme si no la mueves, ánimo tras muchas caídas, mantener R, estrellas fugaces e iconos de las piezas.
             if (player.GetComponent<LumiSleep>() == null) player.gameObject.AddComponent<LumiSleep>();
+            if (player.GetComponent<LumiReactions>() == null) player.gameObject.AddComponent<LumiReactions>();
+            gameObject.AddComponent<HiddenMessages>();
+            gameObject.AddComponent<FallFlower>();
+            gameObject.AddComponent<Enclosure>();
+
             gameObject.AddComponent<Encouragement>();
             gameObject.AddComponent<HoldToReturn>();
             gameObject.AddComponent<ShootingStars>();
@@ -177,6 +185,7 @@ namespace Fase
             weatherClock += Time.deltaTime;
             float intensity = Mathf.Clamp01(Mathf.Sin(weatherClock * 0.15f) * 1.4f - 0.2f);
             if (rain != null) { var e = rain.emission; e.rateOverTime = intensity * 220f; }
+            RainLevel = rain != null ? intensity : 0f;
             if (snow != null) { var e = snow.emission; e.rateOverTime = intensity * 90f; }
 
             // Farol: brilla y late más cerca de un fragmento sin coger.

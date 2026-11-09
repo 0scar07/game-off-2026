@@ -13,12 +13,18 @@ namespace Fase
         public enum When { Always, DayOnly, NightOnly }
         public When active = When.Always;
 
+        /// <summary>Momento de la última caída al agua del lago (de día).</summary>
+        public static float LastWaterDeath = -99f;
+
+
         void Reset() => GetComponent<Collider2D>().isTrigger = true;
 
         void OnTriggerStay2D(Collider2D other)
         {
             var player = other.GetComponent<PlayerController>();
             if (player == null || !IsActive(other.transform.position)) return;
+            // Lumi se ríe si cae al lago (LumiReactions mira cuándo fue).
+            if (active == When.DayOnly) LastWaterDeath = Time.time;
             player.Die();
         }
 
