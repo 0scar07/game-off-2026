@@ -45,6 +45,10 @@ public static class WebBuild
         PlayerSettings.runInBackground = false;
         // Plantilla propia (Assets/WebGLTemplates/Fase): pantalla completa, barra de carga y aviso de girar el móvil.
         PlayerSettings.WebGL.template = "PROJECT:Fase";
+        // Menos código C++ genérico: compila con mucha menos memoria (con 10 GB se quedaba sin ella)
+        // y el juego pesa menos; la diferencia de velocidad en este juego no se nota.
+        PlayerSettings.SetIl2CppCodeGeneration(UnityEditor.Build.NamedBuildTarget.WebGL, UnityEditor.Build.Il2CppCodeGeneration.OptimizeSize);
+
 
         var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
         var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
