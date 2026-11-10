@@ -122,6 +122,10 @@ namespace Fase
             ["album"] = ("Álbum", "Album"),
             ["chaptermap"] = ("Mapa de capítulos", "Chapter map"),
             ["weekly"] = ("Retos de la semana", "Weekly challenges"),
+            ["challenges"] = ("Retos", "Challenges"),
+            ["friends"] = ("Con amigos", "With friends"),
+            ["skills"] = ("Habilidades", "Skills"),
+
             ["pieceicons"] = 
 ("Formas en las piezas", "Shapes on pieces"),
             ["brightness"] = ("Brillo", "Brightness"),

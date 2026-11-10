@@ -65,7 +65,9 @@ namespace Fase
             ["flor"] = ((x, y) => Circle(x, y, 0f, 0.55f, 0.18f) || Circle(x, y, 0.25f, 0.3f, 0.18f) || Circle(x, y, -0.25f, 0.3f, 0.18f) || Circle(x, y, 0.15f, 0.05f, 0.16f) || Circle(x, y, -0.15f, 0.05f, 0.16f) || Box(x, y, -0.04f, -0.8f, 0.04f, 0.1f), new Color(1f, 0.55f, 0.8f)),
             ["plumas"] = ((x, y) => { float u = (x + y) * 0.7071f, v = (y - x) * 0.7071f; return u * u / 0.75f + v * v / 0.08f < 1f && !(Mathf.Abs(v) < 0.025f && u > -0.7f); }, new Color(1f, 0.97f, 0.9f)),
             ["estiloso"] = ((x, y) => Star(x, y, 0.6f) || Circle(x, y, 0.62f, 0.6f, 0.12f) || Circle(x, y, -0.6f, -0.55f, 0.1f), new Color(1f, 0.75f, 0.95f)),
+            ["finalsecreto"] = ((x, y) => Circle(x, y, 0f, 0f, 0.7f) || Rays(x, y, 0.78f, 0.95f, 16), new Color(1f, 0.95f, 0.75f)),
             ["fotografo"] = 
+
 ((x, y) => (Box(x, y, -0.8f, -0.5f, 0.8f, 0.4f) || Box(x, y, -0.3f, 0.4f, 0.3f, 0.6f)) && !(Circle(x, y, 0, -0.05f, 0.3f) && !Circle(x, y, 0, -0.05f, 0.16f)), new Color(0.8f, 0.85f, 0.95f)),
         };
 

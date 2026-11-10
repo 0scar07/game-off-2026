@@ -26,26 +26,32 @@ namespace Fase
             extrasPanel = Panel("Extras", "extras", out var content);
             var help = BuildHelp();
             var extraLevels = BuildExtraLevels();
+            var challenges = BuildChallenges();
+            var friends = BuildFriends();
+            var skills = BuildSkills();
             var entries = new (string key, string icon, GameObject panel)[]
             {
                 ("stats", "⏱", stats), ("soundtrack", "♪", music), ("gallery", "☺", gallery),
                 ("album", "▦", album), ("chaptermap", "☾", map), ("weekly", "★", weekly),
-                ("help", "✔", help), ("extralevels", "✦", extraLevels),
+                ("help", "✔", help), ("extralevels", "✦", extraLevels), ("challenges", "⚑", challenges),
+                ("friends", "☻", friends), ("skills", "✧", skills),
             };
             for (int i = 0; i < entries.Length; i++)
             {
                 var (key, icon, panel) = entries[i];
                 UnityEngine.Events.UnityAction open = () => menu.Show(panel);
 
-                var button = UiKit.Button(content, key, "", new Vector2(0.5f, 0.5f), new Vector2((i % 2 - 0.5f) * 620f, 240f - (i / 2) * 150f), new Vector2(580f, 126f), open, 40);
+                // Rejilla de 3 columnas.
+                var button = UiKit.Button(content, key, "", new Vector2(0.5f, 0.5f), new Vector2((i % 3 - 1) * 450f, 250f - (i / 3) * 140f), new Vector2(430f, 120f), open, 34);
                 var label = button.GetComponentInChildren<Text>();
-                label.rectTransform.anchoredPosition = new Vector2(50f, 0f);
-                UiKit.Text(button.transform, "Icono", icon, new Vector2(0f, 0.5f), new Vector2(80f, 0f), new Vector2(100f, 100f), 56, TextAnchor.MiddleCenter, UiKit.Gold);
+                label.rectTransform.anchoredPosition = new Vector2(40f, 0f);
+                UiKit.Text(button.transform, "Icono", icon, new Vector2(0f, 0.5f), new Vector2(60f, 0f), new Vector2(90f, 90f), 50, TextAnchor.MiddleCenter, UiKit.Gold);
                 string k = key;
                 refreshers.Add(() => label.text = Loc.Get(k));
             }
             extraPanels.Add(extrasPanel);
-            foreach (var p in new[] { stats, music, gallery, album, map, weekly, help, extraLevels }) extraPanels.Add(p);
+            foreach (var p in new[] { stats, music, gallery, album, map, weekly, help, extraLevels, challenges, friends, skills }) extraPanels.Add(p);
+
             BuildGhostToggle();
         }
 

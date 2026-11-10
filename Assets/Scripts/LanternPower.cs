@@ -64,7 +64,8 @@ namespace Fase
                 active -= Time.deltaTime;
                 // Se abre rápido, aguanta y se cierra en el último segundo.
                 float open = Mathf.Clamp01((duration - active) / 0.25f), close = Mathf.Clamp01(active / 0.8f);
-                Radius = maxRadius * Mathf.Min(open, close);
+                Radius = maxRadius * (Skills.BigBubble ? 1.4f : 1f) * Mathf.Min(open, close);
+
             }
             else
             {

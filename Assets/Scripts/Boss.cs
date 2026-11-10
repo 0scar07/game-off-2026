@@ -31,6 +31,7 @@ namespace Fase
         bool stone, busy, defeated;
         int hits;
         UnityEngine.UI.Image bar;
+        UnityEngine.UI.Text phaseLabel;
 
         public bool Defeated => defeated;
 
@@ -50,6 +51,14 @@ namespace Fase
             bar = UiKit.Box(back.transform, "Vida", new Vector2(0f, 0.5f), new Vector2(6f, 0f), new Vector2(808f, 28f), new Color(0.75f, 0.35f, 1f));
             bar.rectTransform.pivot = new Vector2(0f, 0.5f);
             UiKit.Text(back.transform, "Nombre", Loc.Pick(bossName, bossNameEn), new Vector2(0.5f, 0f), new Vector2(0f, -36f), new Vector2(820f, 44f), 34);
+            phaseLabel = UiKit.Text(back.transform, "Fase", "", new Vector2(1f, 0f), new Vector2(-60f, -36f), new Vector2(200f, 44f), 28, TextAnchor.MiddleRight, UiKit.Gold);
+            UpdatePhase();
+        }
+
+        /// <summary>Cada golpe abre una fase nueva: empuja más rápido y lanza ondas más seguidas.</summary>
+        void UpdatePhase()
+        {
+            if (phaseLabel != null) phaseLabel.text = Loc.Pick($"Fase {Mathf.Min(hits + 1, health)}/{health}", $"Phase {Mathf.Min(hits + 1, health)}/{health}");
         }
 
         void Update()
@@ -75,7 +84,7 @@ namespace Fase
             {
                 // Empuja la línea para que su mundo (noche o día) crezca hacia Lumi.
                 float toward = Toward(line);
-                line.x = Mathf.Clamp(line.x + toward * pushSpeed * Time.deltaTime, line.minX, line.maxX);
+                line.x = Mathf.Clamp(line.x + toward * pushSpeed * Mathf.Pow(1.3f, hits) * Time.deltaTime, line.minX, line.maxX);
             }
             waveLeft -= Time.deltaTime;
             if (waveLeft <= 0f && waveTemplate != null)
@@ -119,6 +128,9 @@ namespace Fase
                 TimeControl.SlowMotion(0.6f, 0.25f);
                 Share.Vibrate(80);
                 if (bar != null) bar.rectTransform.sizeDelta = new Vector2(808f * (health - hits) / health, 28f);
+                UpdatePhase();
+                if (hits < health && phaseLabel != null) LumiBubble.Say(player != null ? player.transform : transform, Loc.Pick("¡Se enfada más!", "It's getting angrier!"), 1.6f);
+
             }
             if (hits >= health)
             {

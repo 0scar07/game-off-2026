@@ -51,6 +51,15 @@ namespace Fase
             gameObject.AddComponent<LineHint>();
             gameObject.AddComponent<OneTouchMode>();
             gameObject.AddComponent<LevelTitle>();
+            // Retos: condición armada y mutadores.
+            gameObject.AddComponent<ConditionWatcher>();
+            gameObject.AddComponent<MutatorApplier>();
+            gameObject.AddComponent<RaceSetup>();
+            gameObject.AddComponent<Companion>();
+            gameObject.AddComponent<SunsetBand>();
+
+
+
 
             Feather.Place(transform);
 

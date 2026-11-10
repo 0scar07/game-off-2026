@@ -1,0 +1,24 @@
+nombre: Corrientes
+name: Currents
+pista: Las corrientes de día te suben. Cuidado con las abejas del arrecife.
+hint: Daytime currents lift you up. Watch out for the reef bees.
+capitulo: 3
+linea: 5
+secreto: si
+practica: si
+bioma: mar
+---
+
+
+
+                       B
+          W                          G
+          W ########nnnnnnn#############
+          W ########       #############
+          W ########       #############
+          W ########       #############
+          W ########       #############
+  S       W ########       #############
+####################       #############
+####################       #############
+####################       #############

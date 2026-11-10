@@ -109,7 +109,8 @@ namespace Fase
         {
             if (leaving) return;
             leaving = true;
-            SceneFader.Load(nextScene);
+            SceneFader.Load(string.IsNullOrEmpty(LinkOpener.PendingCode) ? nextScene : "Taller");
+
         }
     }
 }

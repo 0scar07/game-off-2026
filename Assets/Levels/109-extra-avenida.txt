@@ -1,0 +1,24 @@
+nombre: La avenida
+name: The avenue
+pista: Las puertas de la avenida se abren cuando la línea las cruza.
+hint: The avenue's doors open while the line crosses them.
+capitulo: 3
+linea: 6
+secreto: si
+practica: si
+bioma: ciudad
+---
+
+
+
+
+
+
+
+
+
+
+  S         5   5                      ^^          G
+######################    O   ########################
+######################        ########################
+######################        ########################

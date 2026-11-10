@@ -9,6 +9,9 @@ namespace Fase
     public class CameraFollow : MonoBehaviour
     {
         public Rigidbody2D target;
+        /// <summary>Segundo jugador de la carrera a dos (null si no hay).</summary>
+        [System.NonSerialized] public Rigidbody2D second;
+
         public Vector2 offset = new Vector2(0f, 1.5f);
         [Tooltip("Cuánto se adelanta la cámara en la dirección del movimiento.")]
         public float lookAhead = 2f;
@@ -47,7 +50,9 @@ namespace Fase
         {
             if (target == null) return;
             ahead = Mathf.Lerp(ahead, Mathf.Sign(target.linearVelocity.x) * Mathf.Min(Mathf.Abs(target.linearVelocity.x), 1f) * lookAhead, Time.deltaTime * 2f);
-            Vector3 goal = target.position + offset + Vector2.right * ahead;
+            // En la carrera a dos, la cámara mira entre los dos (y se aleja si se separan).
+            Vector2 focus = second != null ? (target.position + second.position) * 0.5f : target.position;
+            Vector3 goal = focus + offset + Vector2.right * ahead;
             // Mientras se mueve la línea, la cámara mira un poco hacia ella (donde está la acción).
             var line = ShiftLine.Instance;
             float toLine = 0f;

@@ -1,0 +1,25 @@
+nombre: Marea profunda
+name: Deep tide
+pista: En lo más hondo, la marea sube de noche. Sube por los pilares a tiempo.
+hint: In the deep, the tide rises at night. Climb the pillars in time.
+capitulo: 3
+linea: 50
+secreto: si
+practica: si
+bioma: mar
+marea: 3
+---
+
+
+
+
+
+
+
+
+
+         ##  ##  ##  ##  ##
+  S      ##  ##  ##  ##  ##         G
+#######################################
+#######################################
+#######################################

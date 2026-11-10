@@ -42,7 +42,9 @@ namespace Fase
         {
             runtime = GetComponent<RuntimeLevel>();
             player = FindAnyObjectByType<PlayerController>();
-            Load(PlayerPrefs.GetString(SaveKey, ""));
+            // Un nivel que llegó por enlace manda sobre el guardado.
+            if (!string.IsNullOrEmpty(LinkOpener.PendingCode)) { Load(LinkOpener.PendingCode); LinkOpener.PendingCode = null; }
+            else Load(PlayerPrefs.GetString(SaveKey, ""));
             BuildEditor();
             // Si se vuelve de probar el nivel (meta → "Siguiente"), se sigue editando.
             Edit();
@@ -189,14 +191,20 @@ namespace Fase
         {
             Save();
             string code = LevelCode.Encode(Rows());
-            message.text = Loc.Get(Share.Text(code));
+            message.text = Loc.Get(Share.Text(Loc.Pick($"Juega mi nivel de FASE: {LinkOpener.Link(code)}\n(o pega este código en el Taller: {code})", $"Play my FASE level: {LinkOpener.Link(code)}\n(or paste this code in the Workshop: {code})")));
+
         }
 
         void LoadCode()
         {
-            var rows = LevelCode.Decode(codeInput.text);
+            // Vale pegar el texto entero que se comparte (con el enlace): se busca el código dentro.
+            string text = codeInput.text;
+            int at = text.LastIndexOf("FASE-", System.StringComparison.Ordinal);
+            if (at >= 0) text = text.Substring(at).Split(' ', '\n', '\r', ')')[0];
+            var rows = LevelCode.Decode(text);
             if (rows == null) { message.text = Loc.Pick("Ese código no vale.", "That code doesn't work."); return; }
-            Load(codeInput.text);
+            Load(text);
+
             Refresh();
             Save();
             message.text = Loc.Pick("¡Nivel cargado!", "Level loaded!");

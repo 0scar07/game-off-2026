@@ -62,7 +62,8 @@ public static partial class LevelBuilder
         public string[] rows;
         public int Width => rows.Max(r => r.Length);
         public int Height => rows.Length;
-        public Biome Biome => Biomes[Mathf.Clamp(chapter, 1, Biomes.Length) - 1];
+        public string biome;     // cabecera "bioma:" (ciudad, mar) — si no, el del capítulo
+        public Biome Biome => ExtraBiomes.FirstOrDefault(b => b.id == biome) ?? Biomes[Mathf.Clamp(chapter, 1, Biomes.Length) - 1];
         public int Fragments => rows.Sum(r => r.Count(c => c == '*' || c == 'K'));
 
         /// <summary>
@@ -248,6 +249,8 @@ public static partial class LevelBuilder
                 case "marea": level.tide = float.Parse(value, inv); break;
                 case "viento": level.wind = float.Parse(value, inv); break;
                 case "oscuro": level.dark = value.ToLowerInvariant().StartsWith("s"); break;
+                case "bioma": level.biome = value.Trim().ToLowerInvariant(); break;
+
                 case "estaciones": level.seasons = value.ToLowerInvariant().StartsWith("s"); break;
                 case "angulo": level.angle = float.Parse(value, inv); break;
                 case "secreto": level.secret = value.ToLowerInvariant().StartsWith("s") || value == "1"; break;

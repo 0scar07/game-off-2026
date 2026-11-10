@@ -639,3 +639,37 @@ save_text("106-extra-escalada.txt", 3, "Escalada", "The climb back",
           "Otra subida con la línea tumbada, al revés que la primera.",
           "Another climb with the line lying down, mirrored from the first.",
           5, "\n".join(r[::-1].rstrip() if r.strip() else r for r in (row.ljust(24) for row in vertical_tower().split("\n"))), LAB + "angulo: 90\ndia: derecha\n")
+
+# Biomas nuevos: la ciudad de la aurora y el fondo del mar (cabecera "bioma:").
+CITY = LAB + "bioma: ciudad\n"
+SEA = LAB + "bioma: mar\n"
+
+L = Level().start().flat(3).bridge(5).flat(2).night_wall().flat(3).triple_bridge(5).flat(3).goal()
+save("107-extra-ciudad-aurora.txt", 3, "Ciudad de la aurora", "Aurora city",
+     "Las calles brillan con la aurora. Los puentes de luz solo existen de día.",
+     "The streets glow under the aurora. Light bridges only exist by day.", 4, L, CITY)
+
+L = Level().start().flat(3).spring_wall(5).flat(3).firefly_gap(7).flat(2).box_wall().flat(3).goal()
+save("108-extra-tejados.txt", 3, "Tejados", "Rooftops",
+     "Salta de tejado en tejado. De noche, las luciérnagas te hacen de suelo.",
+     "Jump from roof to roof. At night, fireflies become your floor.", 5, L, CITY)
+
+L = Level().start().flat(3).line_doors().flat(3).sun_gap(8).flat(3).spikes().flat(3).goal()
+save("109-extra-avenida.txt", 3, "La avenida", "The avenue",
+     "Las puertas de la avenida se abren cuando la línea las cruza.",
+     "The avenue's doors open while the line crosses them.", 6, L, CITY)
+
+L = Level().start().flat(3).lake(7).flat(3).ice_bridge(6).flat(3).goal()
+save("110-extra-arrecife.txt", 3, "El arrecife", "The reef",
+     "Bajo el mar la luz llega de lado. De noche, el agua se vuelve hielo.",
+     "Under the sea, light comes sideways. At night, the water turns to ice.", 4, L, SEA)
+
+L = Level().start().flat(3).updraft(6).flat(3).bee_over_ice(7).flat(3).goal()
+save("111-extra-corrientes.txt", 3, "Corrientes", "Currents",
+     "Las corrientes de día te suben. Cuidado con las abejas del arrecife.",
+     "Daytime currents lift you up. Watch out for the reef bees.", 5, L, SEA)
+
+L = Level().start().flat(3).pillars(5).flat(3).goal()
+save("112-extra-marea-profunda.txt", 3, "Marea profunda", "Deep tide",
+     "En lo más hondo, la marea sube de noche. Sube por los pilares a tiempo.",
+     "In the deep, the tide rises at night. Climb the pillars in time.", 50, L, SEA + "marea: 3\n")

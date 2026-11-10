@@ -196,7 +196,10 @@ namespace Fase
             if (kb == null) return false;
             var key = GetKey(action);
             if (key != Key.None && test(kb[key])) return true;
+            // En la carrera a dos, las flechas son del jugador 2: el 1 solo usa sus teclas.
+            if (RaceMode.Active) return false;
             foreach (var extra in Coop ? CoopKeys[(int)action] : Always[(int)action]) if (test(kb[extra])) return true;
+
             return false;
         }
 

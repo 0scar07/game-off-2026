@@ -14,7 +14,8 @@ namespace Fase
 
         readonly List<Vector2> recording = new List<Vector2>();
         Vector2[] best;
-        Transform ghost;
+        Transform ghost, friendGhost;
+        Vector2[] friend;
         float time, sample;
         bool finished;
         int level;
@@ -27,6 +28,9 @@ namespace Fase
             level = Hud.Instance.levelNumber;
             best = Load(level);
             if (best != null && best.Length > 1 && Settings.GhostRace) ghost = BuildGhost();
+            // Fantasma de un amigo (código pegado en Extras → Con amigos), en rosa.
+            friend = FriendGhost.Load(level);
+            if (friend != null) friendGhost = BuildCopy(GetComponent<PlayerController>(), new Color(1f, 0.45f, 0.75f, 0.35f));
 
         }
 
@@ -74,8 +78,20 @@ namespace Fase
                 sample -= Step;
                 recording.Add(transform.position);
             }
+            if (friendGhost != null)
+            {
+                float k = time / FriendGhost.Step;
+                int j = Mathf.Min((int)k, friend.Length - 2);
+                Vector3 q = Vector2.Lerp(friend[j], friend[j + 1], Mathf.Clamp01(k - j));
+                q.z = 0.7f;
+                friendGhost.position = q + GetComponent<PlayerController>().visual.localPosition;
+                float fdx = friend[j + 1].x - friend[j].x;
+                if (Mathf.Abs(fdx) > 0.01f) friendGhost.rotation = Quaternion.Euler(0f, -Mathf.Sign(fdx) * 90f, 0f);
+                friendGhost.gameObject.SetActive(k < friend.Length - 1);
+            }
             if (ghost == null) return;
             float f = time / Step;
+
             int i = Mathf.Min((int)f, best.Length - 2);
             Vector2 a = best[i], b = best[i + 1];
             Vector3 p = Vector2.Lerp(a, b, Mathf.Clamp01(f - i));

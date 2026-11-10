@@ -31,6 +31,7 @@ namespace Fase
             BuildExtras();
             BuildJourneyExtras();
             BuildJourneyPreview();
+            JourneyWalker.Create(menu);
             foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel, triviaPanel }) menu.AddPanel(panel);
             foreach (var panel in extraPanels) menu.AddPanel(panel);
 

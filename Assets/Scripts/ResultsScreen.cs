@@ -19,6 +19,8 @@ namespace Fase
 
         public static void Show(string nextScene, float delay)
         {
+            // En el contrarreloj de capítulo no hay resultados: se pasa directo al siguiente nivel.
+            if (ChapterRun.Active) { ChapterRun.LevelDone(); return; }
             var screen = new GameObject("Resultados").AddComponent<ResultsScreen>();
             screen.nextScene = nextScene;
             screen.StartCoroutine(screen.Run(delay));
@@ -34,6 +36,9 @@ namespace Fase
                 // Y una página de cuento antes del capítulo siguiente.
                 var finished = LevelCatalog.Get.At(Hud.Instance.levelNumber);
                 if (finished != null) yield return StoryPage.Run(finished.chapter);
+                // Tras el bosque, Lumi decide a quién ayudar (el final lo recuerda).
+                if (finished != null && finished.chapter == 2) yield return StoryChoice.Ask();
+
             }
 
             var hud = Hud.Instance;
@@ -42,7 +47,8 @@ namespace Fase
             float time = hud != null ? hud.Elapsed : 0f;
             float[] times = hud != null ? hud.medalTimes : null;
             bool assist = Settings.Assist;
-            int medal = assist || hud == null || hud.Daily ? Medals.None : Medals.For(time, times);
+            int medal = assist || hud == null || hud.Daily || (Mutators.Unlocked && Mutators.Any) ? Medals.None : Medals.For(time, times);
+
             bool better = medal > 0 && Medals.Save(level, medal);
             if (better) Achievements.CheckMedals();
 
@@ -120,7 +126,17 @@ namespace Fase
             UiKit.Button(root, "Repetir", Loc.Get("retry"), new Vector2(0.5f, 0.5f), new Vector2(-80f, -385f), new Vector2(360f, 110f), Retry, 46);
             var share = UiKit.Button(root, "Compartir", Loc.Get("share"), new Vector2(0.5f, 0.5f), new Vector2(-470f, -385f), new Vector2(360f, 110f), null, 46);
             shareLabel = share.GetComponentInChildren<Text>();
+            // Código del recorrido para que un amigo corra contra tu fantasma.
+            if (Ghost.LastRun != null && Ghost.LastRun.Length > 10 && hud != null && !hud.Daily)
+            {
+                var run = Ghost.LastRun;
+                var ghostButton = UiKit.Button(root, "CodigoFantasma", Loc.Pick("Código de fantasma", "Ghost code"), new Vector2(0f, 0f), new Vector2(40f, 30f), new Vector2(360f, 80f), null, 28);
+                ((RectTransform)ghostButton.transform).pivot = Vector2.zero;
+                var ghostLabel = ghostButton.GetComponentInChildren<Text>();
+                ghostButton.onClick.AddListener(() => ghostLabel.text = Loc.Get(Share.Text(FriendGhost.Encode(level, run))));
+            }
             if (Ghost.LastRun != null && Ghost.LastRun.Length > 10)
+
                 UiKit.Button(root, "Repeticion", "▶ " + Loc.Get("replay"), new Vector2(1f, 0f), new Vector2(-40f, 30f), new Vector2(300f, 80f), () => StartCoroutine(Replay(canvas)), 32)
                     .GetComponent<RectTransform>().pivot = new Vector2(1f, 0f);
             int shownMedal = medal;

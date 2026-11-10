@@ -1,0 +1,24 @@
+nombre: Ciudad de la aurora
+name: Aurora city
+pista: Las calles brillan con la aurora. Los puentes de luz solo existen de día.
+hint: The streets glow under the aurora. Light bridges only exist by day.
+capitulo: 3
+linea: 4
+secreto: si
+practica: si
+bioma: ciudad
+---
+
+
+
+
+
+
+
+                     N
+                     N
+                     N
+  S                  N                              G
+#########ddddd#############dddddnnnnnddddd#############
+#########     #############               #############
+#########     #############               #############

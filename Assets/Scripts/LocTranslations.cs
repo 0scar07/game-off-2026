@@ -24,6 +24,11 @@ namespace Fase
             ["Mueve la línea. Cambia el mundo."] = ("Mova a linha. Mude o mundo.", "Bouge la ligne. Change le monde."),
             ["GitHub Game Off 2026 · tema SHIFT · por 0scar07"] = ("GitHub Game Off 2026 · tema SHIFT · por 0scar07", "GitHub Game Off 2026 · thème SHIFT · par 0scar07"),
             ["Pausa"] = ("Pausa", "Pause"),
+            ["Retos"] = ("Desafios", "Défis"),
+            ["Con amigos"] = ("Com amigos", "Entre amis"),
+            ["Habilidades"] = ("Habilidades", "Compétences"),
+            ["Final secreto"] = ("Final secreto", "Fin secrète"),
+
             ["Reiniciar nivel"] = ("Reiniciar nível", "Recommencer le niveau"),
             ["Menú"] = ("Menu", "Menu"),
             ["¡Nivel completado!"] = ("Nível concluído!", "Niveau terminé !"),

@@ -56,8 +56,15 @@ namespace Fase
         /// <summary>Añade unos cuantos tramos más por la derecha.</summary>
         void Grow()
         {
-            float difficulty = Mathf.Clamp01(runtime.Width / 900f);
+            // Dificultad que se adapta: si vas rápido, sube antes; si vas con calma, tarda más
+            // y aparecen tramos de descanso.
+            float elapsed = Time.timeSinceLevelLoad;
+            float pace = elapsed > 8f && player != null ? (player.transform.position.x - startX) / elapsed : 4f;
+            float factor = Mathf.Clamp(pace / 4f, 0.6f, 1.5f);
+            float difficulty = Mathf.Clamp01(runtime.Width / 900f * factor);
             var s = new Segment();
+            if (factor < 0.8f) s.Flat(6);
+
             for (int i = 0; i < 4; i++)
             {
                 int pick = random.Next(0, 10 + (int)(difficulty * 4));

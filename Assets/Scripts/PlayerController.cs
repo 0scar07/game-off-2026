@@ -220,6 +220,7 @@ namespace Fase
             // Corrientes de aire de día: empujan hacia arriba.
             v.y += AirCurrent.Lift(body.position) * Time.fixedDeltaTime;
 
+            if (grounded) airJumpUsed = false;
             if (!celebrating && bufferLeft > 0f && coyoteLeft > 0f)
             {
                 v.y = jumpSpeed;
@@ -227,6 +228,17 @@ namespace Fase
                 coyoteLeft = 0f;
                 GameEvents.RaiseJumped();
             }
+            // Habilidad: doble salto (un salto más en el aire).
+            else if (!celebrating && bufferLeft > 0f && !grounded && !airJumpUsed && Skills.DoubleJump)
+            {
+                v.y = jumpSpeed * 0.9f;
+                bufferLeft = 0f;
+                airJumpUsed = true;
+                squash = new Vector2(0.8f, 1.25f);
+                GameEvents.RaiseJumped();
+            }
+            // Habilidad: planear con el farol (mantener saltar al caer).
+            if (!grounded && v.y < -2.5f && JumpHeld() && Skills.Glide) v.y = -2.5f;
 
             // Cae más rápido de lo que sube, y el salto se corta si se suelta el botón.
             if (v.y < 0f || !JumpHeld())
@@ -253,7 +265,8 @@ namespace Fase
         }
 
         Vector3 safe;
-        bool hasSafe;
+        bool hasSafe, airJumpUsed;
+
 
         /// <summary>Modo relajado: de vuelta al último suelo firme, sin contar caída.</summary>
         void FloatBack()
@@ -361,8 +374,22 @@ namespace Fase
             return false;
         }
 
-        static float MoveInput()
+        /// <summary>0 = jugador 1; 1 = jugador 2 en la carrera a dos (flechas, ↑ o Ctrl derecho para saltar, segundo mando).</summary>
+        [System.NonSerialized] public int playerIndex;
+
+        static Gamepad SecondPad => Gamepad.all.Count > 1 ? Gamepad.all[1] : null;
+
+        float MoveInput()
         {
+            if (playerIndex == 1)
+            {
+                var kb = Keyboard.current;
+                float m = 0f;
+                if (kb != null && kb.leftArrowKey.isPressed) m -= 1f;
+                if (kb != null && kb.rightArrowKey.isPressed) m += 1f;
+                if (SecondPad != null) m += SecondPad.leftStick.x.ReadValue();
+                return Mathf.Clamp(m, -1f, 1f) * MirrorMode.Sign;
+            }
             float x = MobileInput.Move;
             if (Settings.Held(Settings.Action.Left)) x -= 1f;
             if (Settings.Held(Settings.Action.Right)) x += 1f;
@@ -372,17 +399,28 @@ namespace Fase
             return Mathf.Clamp(x, -1f, 1f) * MirrorMode.Sign;
         }
 
-        static bool JumpPressed()
+        bool JumpPressed()
         {
+            if (playerIndex == 1)
+            {
+                var kb = Keyboard.current;
+                return (kb != null && (kb.upArrowKey.wasPressedThisFrame || kb.rightCtrlKey.wasPressedThisFrame)) || (SecondPad != null && SecondPad.buttonSouth.wasPressedThisFrame);
+            }
             var pad = Settings.PlayerGamepad;
             return MobileInput.ConsumeJump()
                 || Settings.Pressed(Settings.Action.Jump)
                 || (pad != null && pad.buttonSouth.wasPressedThisFrame);
         }
 
-        static bool JumpHeld()
+        bool JumpHeld()
         {
+            if (playerIndex == 1)
+            {
+                var kb = Keyboard.current;
+                return (kb != null && (kb.upArrowKey.isPressed || kb.rightCtrlKey.isPressed)) || (SecondPad != null && SecondPad.buttonSouth.isPressed);
+            }
             var pad = Settings.PlayerGamepad;
+
             return MobileInput.JumpHeld
                 || Settings.Held(Settings.Action.Jump)
                 || (pad != null && pad.buttonSouth.isPressed);

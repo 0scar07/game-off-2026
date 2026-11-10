@@ -72,8 +72,12 @@ namespace Fase
             }
             texts.alpha = 1f;
             texts.interactable = texts.blocksRaycasts = true;
+            if (StoryChoice.EndingLine.Length > 0) moonLabel.text += "\n" + StoryChoice.EndingLine;
+            // Con toda la luna y todo el diario: el final secreto.
+            yield return StoryChoice.SecretEnding();
             // Tarjeta para compartir: el resumen de todo el viaje.
             ShareCard.Show();
+
 
         }
 

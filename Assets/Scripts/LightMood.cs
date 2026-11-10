@@ -48,6 +48,25 @@ namespace Fase
             sun.intensity = Mathf.Lerp(sunIntensity * (1f - 0.35f * cloud), moonIntensity, k);
 
             transform.rotation = Quaternion.Slerp(dayRotation, nightRotation, k);
+            // Junto a la línea, de día, es la hora dorada: el sol baja, se calienta y alarga las sombras.
+            float dusk = (1f - k) * NearLine(player.position);
+            if (dusk > 0.01f)
+            {
+                sun.color = Color.Lerp(sun.color, new Color(1f, 0.62f, 0.32f), dusk * 0.6f);
+                var low = Quaternion.Euler(12f, dayRotation.eulerAngles.y, dayRotation.eulerAngles.z);
+                transform.rotation = Quaternion.Slerp(transform.rotation, low, dusk * 0.7f);
+            }
+        }
+
+        /// <summary>1 encima de la línea, 0 a 4 metros o más.</summary>
+        public static float NearLine(Vector2 point)
+        {
+            var line = ShiftLine.Instance;
+            if (line == null) return 0f;
+            float d = Vector2.Dot(point, line.Normal), best = float.MaxValue;
+            foreach (float l in ShiftLine.Lines) best = Mathf.Min(best, Mathf.Abs(d - l));
+            return 1f - Mathf.Clamp01(best / 4f);
+
         }
     }
 }

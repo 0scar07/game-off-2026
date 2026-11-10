@@ -46,7 +46,9 @@ namespace Fase
             new Item { id = "ambar", nameEs = "Ámbar", nameEn = "Amber", howEs = "El de siempre", howEn = "The usual one", color = new Color(1.2f, 0.8f, 0.35f) },
             new Item { id = "rosa", nameEs = "Rosa", nameEn = "Pink", howEs = "Termina un nivel sin perder", howEn = "Finish a level without falling", color = new Color(1.3f, 0.45f, 0.8f), unlocked = () => Achievements.Has("sinmorir") },
             new Item { id = "verde", nameEs = "Luciérnaga", nameEn = "Firefly", howEs = "Consigue 8 logros", howEn = "Earn 8 achievements", color = new Color(0.6f, 1.3f, 0.45f), unlocked = () => Achievements.Count >= 8 },
-            new Item { id = "eclipse", nameEs = "Eclipse", nameEn = "Eclipse", howEs = "Vence a la Gran Sombra", howEn = "Defeat the Great Shadow", color = new Color(0.45f, 0.65f, 1.5f), unlocked = () => Achievements.Has("eclipse") },
+            new Item { id = "chispa", nameEs = "Chispa", nameEn = "Spark", howEs = "Encuentra las 5 estrellas de Chispa", howEn = "Find Spark's 5 stars", color = new Color(1.3f, 1.2f, 0.9f), unlocked = () => Companion.AllFound },
+            new Item { id = "eclipse", nameEs = "Eclipse",
+ nameEn = "Eclipse", howEs = "Vence a la Gran Sombra", howEn = "Defeat the Great Shadow", color = new Color(0.45f, 0.65f, 1.5f), unlocked = () => Achievements.Has("eclipse") },
         };
 
         /// <summary>Nox: la Lumi de la noche (se abre al terminar el capítulo I).</summary>

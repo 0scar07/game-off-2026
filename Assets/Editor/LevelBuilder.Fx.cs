@@ -90,7 +90,43 @@ public static partial class LevelBuilder
         },
     };
 
+    /// <summary>Biomas de los niveles extra (cabecera "bioma: ciudad" o "bioma: mar").</summary>
+    static readonly Biome[] ExtraBiomes =
+    {
+        new Biome
+        {
+            id = "ciudad", name = "La Ciudad de la Aurora", nameEn = "The Aurora City",
+            skyTop = new Color(0.32f, 0.36f, 0.78f), skyHorizon = new Color(1f, 0.72f, 0.82f),
+            nightTop = new Color(0.0f, 0.02f, 0.05f), nightHorizon = new Color(0.05f, 0.3f, 0.28f),
+            sun = new Color(1f, 0.8f, 0.85f), haze = new Color(0.8f, 0.75f, 0.95f), hillsNight = new Color(0.06f, 0.08f, 0.2f),
+            grass = new Color(0.62f, 0.6f, 0.78f), dirtLight = new Color(0.55f, 0.52f, 0.66f), dirtMid = new Color(0.42f, 0.4f, 0.54f), dirtDark = new Color(0.3f, 0.29f, 0.42f),
+            foliage = new Color(0.7f, 0.5f, 0.85f),
+            dayTrees = new[] { Platformer + "tree-snow.fbx" },
+            dayPlants = new[] { Nature + "rock_smallA.fbx", Quat + "Rock_1.fbx" },
+            nightTint = new Color(0.7f, 1.2f, 1.1f), nightTreeGlow = new Color(0.02f, 0.14f, 0.12f), mushroomGlow = new Color(0.1f, 0.8f, 0.6f),
+            fireflies = new Color(0.4f, 1f, 0.75f), weather = 2,
+            musicDay = "nieve_dia", musicNight = "nieve_noche", ambienceDay = "amb_cumbre_dia", ambienceNight = "amb_cumbre_noche",
+            saturation = 14f, bloom = 1.2f,
+        },
+        new Biome
+        {
+            id = "mar", name = "El Fondo del Mar", nameEn = "The Sea Floor",
+            skyTop = new Color(0.05f, 0.35f, 0.55f), skyHorizon = new Color(0.45f, 0.85f, 0.85f),
+            nightTop = new Color(0.0f, 0.02f, 0.06f), nightHorizon = new Color(0.02f, 0.12f, 0.22f),
+            sun = new Color(0.7f, 0.95f, 1f), haze = new Color(0.45f, 0.8f, 0.85f), hillsNight = new Color(0.02f, 0.1f, 0.2f),
+            grass = new Color(0.95f, 0.85f, 0.6f), dirtLight = new Color(0.85f, 0.75f, 0.55f), dirtMid = new Color(0.7f, 0.6f, 0.45f), dirtDark = new Color(0.52f, 0.45f, 0.36f),
+            foliage = new Color(1f, 0.45f, 0.5f),
+            dayTrees = new[] { Quat + "Plant_Large.fbx" },
+            dayPlants = new[] { Nature + "rock_smallC.fbx", Quat + "Plant_Small.fbx", Nature + "mushroom_tanGroup.fbx" },
+            nightTint = new Color(0.5f, 0.9f, 1.4f), nightTreeGlow = new Color(0.02f, 0.08f, 0.16f), mushroomGlow = new Color(0.1f, 0.6f, 0.9f),
+            fireflies = new Color(0.5f, 0.9f, 1f), weather = 0,
+            musicDay = "dia", musicNight = "noche", ambienceDay = "amb_pradera_dia", ambienceNight = "amb_pradera_noche",
+            saturation = 10f, bloom = 1.0f,
+        },
+    };
+
     // ───────────────────────── Render ─────────────────────────
+
 
     /// <summary>HDR en URP (para que brille el bloom) y sin pantalla de Unity al empezar.</summary>
     static void PrepareRendering()

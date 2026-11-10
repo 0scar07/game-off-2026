@@ -1,0 +1,24 @@
+nombre: El arrecife
+name: The reef
+pista: Bajo el mar la luz llega de lado. De noche, el agua se vuelve hielo.
+hint: Under the sea, light comes sideways. At night, the water turns to ice.
+capitulo: 3
+linea: 4
+secreto: si
+practica: si
+bioma: mar
+---
+
+
+
+
+
+
+
+
+
+
+  S                                   G
+#########~~~~~~~######nnnnnn#############
+######################      #############
+######################      #############

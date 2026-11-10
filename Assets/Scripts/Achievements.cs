@@ -50,7 +50,9 @@ namespace Fase
             New("cueva", "Eco", "Echo", "Escucha el eco bajo techo", "Hear the echo under a roof"),
             New("flor", "Donde caíste", "Where you fell", "Encuentra la flor de tus caídas", "Find the flower of your falls"),
             New("plumas", "Coleccionista de plumas", "Feather collector", "Encuentra 10 plumas, hojas o copos", "Find 10 feathers, leaves or snowflakes"),
-            New("estiloso", "Con mucho estilo", "Stylish", "Consigue una medalla de estilo", "Earn a style medal"),
+            Secret("finalsecreto", "La luna entera", "The whole moon", "Consigue todas las lunas y páginas del diario y termina el juego", "Get every moon and diary page and finish the game"),
+            New("estiloso", 
+"Con mucho estilo", "Stylish", "Consigue una medalla de estilo", "Earn a style medal"),
 
         };
 
