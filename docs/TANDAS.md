@@ -107,7 +107,7 @@ Van en 11 niveles extra (Extras → Niveles extra), fuera de la historia de la j
 | 134 | Puertas que se abren con la línea en un ángulo |
 | 135 | Más niveles de escalada con la línea tumbada |
 
-## Tanda F · Modos y proyectos grandes
+## Tanda F · Modos y proyectos grandes · maquetas: tanda-f-*.png
 
 | # | Idea |
 |---|---|
