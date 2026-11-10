@@ -83,9 +83,12 @@ namespace Fase
             }
             if (hat != null) hat.SetActive(Shop.Worn("gorro"));
 
+            if (trail == null) trail = GetComponent<TrailRenderer>();
             if (trail == null)
             {
                 trail = gameObject.AddComponent<TrailRenderer>();
+                if (trail == null) return;
+
                 trail.time = 0.5f;
                 trail.widthCurve = new AnimationCurve(new Keyframe(0f, 0.35f), new Keyframe(1f, 0f));
                 trail.sharedMaterial = scarf != null ? scarf.sharedMaterial : null;

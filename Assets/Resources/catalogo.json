@@ -7,6 +7,7 @@
             "chapter": 1,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 64.0,
                 45.0,
@@ -21,10 +22,11 @@
             "chapter": 1,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
-                64.0,
-                45.0,
-                32.0,
+                66.0,
+                46.0,
+                33.0,
                 26.0
             ]
         },
@@ -35,6 +37,7 @@
             "chapter": 1,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 66.0,
                 46.0,
@@ -49,6 +52,7 @@
             "chapter": 1,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 62.0,
                 43.0,
@@ -63,6 +67,7 @@
             "chapter": 1,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 70.0,
                 49.0,
@@ -77,6 +82,7 @@
             "chapter": 1,
             "fragments": 0,
             "secret": false,
+            "practice": false,
             "medals": [
                 44.0,
                 31.0,
@@ -91,6 +97,7 @@
             "chapter": 2,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 70.0,
                 49.0,
@@ -105,6 +112,7 @@
             "chapter": 2,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 70.0,
                 49.0,
@@ -119,6 +127,7 @@
             "chapter": 2,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 66.0,
                 46.0,
@@ -133,6 +142,7 @@
             "chapter": 2,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 68.0,
                 48.0,
@@ -147,6 +157,7 @@
             "chapter": 2,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 72.0,
                 50.0,
@@ -161,6 +172,7 @@
             "chapter": 2,
             "fragments": 0,
             "secret": false,
+            "practice": false,
             "medals": [
                 36.0,
                 25.0,
@@ -175,6 +187,7 @@
             "chapter": 3,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 32.0,
                 22.0,
@@ -189,6 +202,7 @@
             "chapter": 3,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 62.0,
                 43.0,
@@ -203,6 +217,7 @@
             "chapter": 3,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 76.0,
                 53.0,
@@ -217,6 +232,7 @@
             "chapter": 3,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 24.0,
                 17.0,
@@ -231,6 +247,7 @@
             "chapter": 3,
             "fragments": 3,
             "secret": false,
+            "practice": false,
             "medals": [
                 90.0,
                 63.0,
@@ -245,6 +262,7 @@
             "chapter": 3,
             "fragments": 2,
             "secret": false,
+            "practice": false,
             "medals": [
                 72.0,
                 50.0,
@@ -259,6 +277,7 @@
             "chapter": 3,
             "fragments": 0,
             "secret": false,
+            "practice": false,
             "medals": [
                 36.0,
                 25.0,
@@ -267,12 +286,208 @@
             ]
         },
         {
+            "scene": "100-extra-marea",
+            "name": "Marea y viento",
+            "nameEn": "Tide and wind",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                32.0,
+                22.0,
+                16.0,
+                13.0
+            ]
+        },
+        {
+            "scene": "101-extra-llaves",
+            "name": "Llaves",
+            "nameEn": "Keys",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                40.0,
+                28.0,
+                20.0,
+                16.0
+            ]
+        },
+        {
+            "scene": "102-extra-oscuro",
+            "name": "A oscuras",
+            "nameEn": "In the dark",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                44.0,
+                31.0,
+                22.0,
+                18.0
+            ]
+        },
+        {
+            "scene": "103-extra-ritmo",
+            "name": "Ritmo",
+            "nameEn": "Rhythm",
+            "chapter": 3,
+            "fragments": 1,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                42.0,
+                29.0,
+                21.0,
+                17.0
+            ]
+        },
+        {
+            "scene": "104-extra-curva",
+            "name": "Línea curva",
+            "nameEn": "Curved line",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                34.0,
+                24.0,
+                17.0,
+                14.0
+            ]
+        },
+        {
+            "scene": "105-extra-sombras",
+            "name": "Sombras y estaciones",
+            "nameEn": "Shadows and seasons",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                36.0,
+                25.0,
+                18.0,
+                14.0
+            ]
+        },
+        {
+            "scene": "106-extra-escalada",
+            "name": "Escalada",
+            "nameEn": "The climb back",
+            "chapter": 3,
+            "fragments": 2,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                24.0,
+                17.0,
+                12.0,
+                10.0
+            ]
+        },
+        {
+            "scene": "107-extra-ciudad-aurora",
+            "name": "Ciudad de la aurora",
+            "nameEn": "Aurora city",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                38.0,
+                27.0,
+                19.0,
+                15.0
+            ]
+        },
+        {
+            "scene": "108-extra-tejados",
+            "name": "Tejados",
+            "nameEn": "Rooftops",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                40.0,
+                28.0,
+                20.0,
+                16.0
+            ]
+        },
+        {
+            "scene": "109-extra-avenida",
+            "name": "La avenida",
+            "nameEn": "The avenue",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                38.0,
+                27.0,
+                19.0,
+                15.0
+            ]
+        },
+        {
+            "scene": "110-extra-arrecife",
+            "name": "El arrecife",
+            "nameEn": "The reef",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                32.0,
+                22.0,
+                16.0,
+                13.0
+            ]
+        },
+        {
+            "scene": "111-extra-corrientes",
+            "name": "Corrientes",
+            "nameEn": "Currents",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                32.0,
+                22.0,
+                16.0,
+                13.0
+            ]
+        },
+        {
+            "scene": "112-extra-marea-profunda",
+            "name": "Marea profunda",
+            "nameEn": "Deep tide",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                30.0,
+                21.0,
+                15.0,
+                12.0
+            ]
+        },
+        {
             "scene": "90-secreto-jardin-del-viento",
             "name": "Jardín del viento",
             "nameEn": "Wind Garden",
             "chapter": 1,
-            "fragments": 0,
+            "fragments": 1,
             "secret": true,
+            "practice": false,
             "medals": [
                 50.0,
                 35.0,
@@ -287,6 +502,7 @@
             "chapter": 2,
             "fragments": 1,
             "secret": true,
+            "practice": false,
             "medals": [
                 50.0,
                 35.0,
@@ -301,11 +517,87 @@
             "chapter": 3,
             "fragments": 1,
             "secret": true,
+            "practice": false,
             "medals": [
                 66.0,
                 46.0,
                 33.0,
                 26.0
+            ]
+        },
+        {
+            "scene": "95-trucos-de-la-linea",
+            "name": "Trucos de la línea",
+            "nameEn": "Line tricks",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                54.0,
+                38.0,
+                27.0,
+                22.0
+            ]
+        },
+        {
+            "scene": "96-extra-atardecer",
+            "name": "Atardecer",
+            "nameEn": "Sunset",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                38.0,
+                27.0,
+                19.0,
+                15.0
+            ]
+        },
+        {
+            "scene": "97-extra-espejos",
+            "name": "Espejos",
+            "nameEn": "Mirrors",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                36.0,
+                25.0,
+                18.0,
+                14.0
+            ]
+        },
+        {
+            "scene": "98-extra-peso",
+            "name": "La línea pesa",
+            "nameEn": "Heavy line",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                36.0,
+                25.0,
+                18.0,
+                14.0
+            ]
+        },
+        {
+            "scene": "99-extra-persecucion",
+            "name": "La noche te sigue",
+            "nameEn": "Night chase",
+            "chapter": 3,
+            "fragments": 0,
+            "secret": true,
+            "practice": true,
+            "medals": [
+                42.0,
+                29.0,
+                21.0,
+                17.0
             ]
         }
     ]

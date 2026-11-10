@@ -37,6 +37,8 @@ namespace Fase
                 eye.raycastTarget = false;
             }
             menu.Selected += walker.OnSelected;
+            // Lumi hace de marcador: el triángulo que botaba encima ya no hace falta.
+            if (menu.marker != null) { menu.marker.gameObject.SetActive(false); menu.marker = null; }
             return walker;
         }
 
@@ -45,7 +47,8 @@ namespace Fase
         void OnSelected(int value, bool isOpen) { level = value; open = isOpen; }
 
         Vector2 Target => menu.nodes.Length == 0 ? Vector2.zero
-            : ((RectTransform)menu.nodes[Mathf.Clamp(level, 1, menu.nodes.Length) - 1].transform).anchoredPosition + new Vector2(0f, 58f);
+            : ((RectTransform)menu.nodes[Mathf.Clamp(level, 1, menu.nodes.Length) - 1].transform).anchoredPosition + new Vector2(0f, 82f);
+
 
         void OnEnable() { if (menu != null && figure != null) figure.anchoredPosition = Target; }
 

@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 7713034207547930671}
   - component: {fileID: 4906626494978906658}
   - component: {fileID: 4940899049570092284}
+  - component: {fileID: 2246411494976759198}
   m_Layer: 0
   m_Name: TablaNoche
   m_TagString: Untagged
@@ -205,7 +206,7 @@ BoxCollider2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
@@ -233,6 +234,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Fase.WorldPiece
   world: 1
+--- !u!251 &2246411494976759198
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7964442440650116585}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 150
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1001 &9141056840068964127
 PrefabInstance:
   m_ObjectHideFlags: 0

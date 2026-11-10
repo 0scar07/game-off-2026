@@ -72,6 +72,45 @@ EditorBuildSettings:
     path: Assets/Scenes/Niveles/12-la-gran-sombra.unity
     guid: c884b5e76941d1c4695e7890bce03f71
   - enabled: 1
+    path: Assets/Scenes/Niveles/100-extra-marea.unity
+    guid: 6f0253c04b2e56f4b8098e9765f013e6
+  - enabled: 1
+    path: Assets/Scenes/Niveles/101-extra-llaves.unity
+    guid: 3ad9642c4e0448b49bcb36ae366a2af3
+  - enabled: 1
+    path: Assets/Scenes/Niveles/102-extra-oscuro.unity
+    guid: 9162e88e91f802840b52b565cf8b04a4
+  - enabled: 1
+    path: Assets/Scenes/Niveles/103-extra-ritmo.unity
+    guid: 6b3a6eab4f449224a8b65b8b29c7e0ba
+  - enabled: 1
+    path: Assets/Scenes/Niveles/104-extra-curva.unity
+    guid: 93d29b6e216afd3429dae0d638ee9a9a
+  - enabled: 1
+    path: Assets/Scenes/Niveles/105-extra-sombras.unity
+    guid: 14d7373f7864585438fd27298e2edc0b
+  - enabled: 1
+    path: Assets/Scenes/Niveles/106-extra-escalada.unity
+    guid: 9e63718072dfc4941a12c52018a96fb8
+  - enabled: 1
+    path: Assets/Scenes/Niveles/107-extra-ciudad-aurora.unity
+    guid: 1ff3a5a296fd42a43a5604faa9a2af98
+  - enabled: 1
+    path: Assets/Scenes/Niveles/108-extra-tejados.unity
+    guid: 0e05948639e61af47b1f7f41404e99f8
+  - enabled: 1
+    path: Assets/Scenes/Niveles/109-extra-avenida.unity
+    guid: ec52759c9b8917c49bf7f4a73a5eaa35
+  - enabled: 1
+    path: Assets/Scenes/Niveles/110-extra-arrecife.unity
+    guid: 38eefbb823f93bb4496d982d4009f85a
+  - enabled: 1
+    path: Assets/Scenes/Niveles/111-extra-corrientes.unity
+    guid: 2b707dfa375464e4bb1f01939777169d
+  - enabled: 1
+    path: Assets/Scenes/Niveles/112-extra-marea-profunda.unity
+    guid: e77fda84ed89cd040821d5e2b02ad75a
+  - enabled: 1
     path: Assets/Scenes/Niveles/90-secreto-jardin-del-viento.unity
     guid: ea7fd885787f87249b2ebecf5a6da17d
   - enabled: 1
@@ -80,6 +119,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Niveles/92-secreto-aurora.unity
     guid: aae85b0f345a3c24d8d2edce0fd3fc66
+  - enabled: 1
+    path: Assets/Scenes/Niveles/95-trucos-de-la-linea.unity
+    guid: fc34714dea53289459b6f827747bd652
+  - enabled: 1
+    path: Assets/Scenes/Niveles/96-extra-atardecer.unity
+    guid: 48f10fc5618729848b701f59148acdc2
+  - enabled: 1
+    path: Assets/Scenes/Niveles/97-extra-espejos.unity
+    guid: 8d18bfc665da79d4280c215dc0923b89
+  - enabled: 1
+    path: Assets/Scenes/Niveles/98-extra-peso.unity
+    guid: 87a4b106328dc3f459df0de46248eda2
+  - enabled: 1
+    path: Assets/Scenes/Niveles/99-extra-persecucion.unity
+    guid: e9371930a9fbd0547ae3d604abf615a8
   - enabled: 1
     path: Assets/Scenes/Final.unity
     guid: 5c9f012b74633e842b9ab0acd6cd6863

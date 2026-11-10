@@ -30,9 +30,11 @@ namespace Fase
             current.offset = Vector3.up * height;
             current.left = current.total = seconds;
             current.label.text = text;
-            float width = Mathf.Clamp(text.Length * 16f + 60f, 180f, 560f);
-            current.bubble.sizeDelta = new Vector2(width, 86f);
-            current.label.rectTransform.sizeDelta = new Vector2(width - 30f, 80f);
+            // Ancho a la medida del texto; si no cabe en una línea, pasa a dos.
+            float width = Mathf.Clamp(text.Length * 18f + 70f, 200f, 640f);
+            float boxHeight = text.Length * 18f + 70f > 640f ? 130f : 86f;
+            current.bubble.sizeDelta = new Vector2(width, boxHeight);
+            current.label.rectTransform.sizeDelta = new Vector2(width - 34f, boxHeight - 8f);
             current.bubble.gameObject.SetActive(true);
         }
 
@@ -47,6 +49,11 @@ namespace Fase
             tail.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
             label = UiKit.Text(bubble, "Texto", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(280f, 80f), 30, TextAnchor.MiddleCenter, new Color(0.23f, 0.16f, 0.38f));
             Destroy(label.GetComponent<Shadow>());
+            label.fontStyle = FontStyle.Bold;
+            label.horizontalOverflow = HorizontalWrapMode.Wrap;
+            UiKit.SetSize(label, 32);
+
+
             bubble.gameObject.SetActive(false);
         }
 

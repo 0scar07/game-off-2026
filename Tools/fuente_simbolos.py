@@ -141,7 +141,66 @@ def face():
 
 
 SHAPES.update({0x2600: sun, 0x2699: gear, 0x25A6: grid, 0x263A: face})   # ☀ ⚙ ▦ ☺
-HOLES = {infinity: (1, 3), gear: (1,), face: (1,)}
+
+
+def arrow_up():
+    return [thick((W / 2, CY - 370), (W / 2, CY + 120), 120), [(W / 2 - 270, CY + 80), (W / 2 + 270, CY + 80), (W / 2, CY + 390)]]
+
+
+def arrow_down():
+    return [[(x, 2 * CY - y) for x, y in c] for c in arrow_up()]
+
+
+def cross_thin():
+    return [thick((240, CY - 280), (760, CY + 280), 100), thick((240, CY + 280), (760, CY - 280), 100)]
+
+
+def triangle_outline():
+    outer = [(W / 2 - 380, CY - 300), (W / 2 + 380, CY - 300), (W / 2, CY + 380)]
+    inner = [(W / 2 - 220, CY - 210), (W / 2 + 220, CY - 210), (W / 2, CY + 200)]
+    return [outer, inner]
+
+
+def dot():
+    return [circle(W / 2, CY, 300)]
+
+
+def hollow_dot():
+    return ring(W / 2, CY, 300, 90)
+
+
+def note():
+    """Corchea: cabeza, plica y banderín."""
+    return [circle(400, CY - 250, 150), thick((510, CY - 260), (510, CY + 390), 90), thick((490, CY + 370), (780, CY + 150), 90)]
+
+
+def flag():
+    return [thick((250, CY - 400), (250, CY + 400), 90), [(250, CY + 400), (830, CY + 240), (250, CY + 70)]]
+
+
+def star_outline():
+    return star(4, 410, 115) + [p[::-1] for p in star(4, 270, 55)]
+
+
+def refresh():
+    """Flecha en círculo (↻)."""
+    cx, cy, r = W / 2, CY, 290
+    start, end = math.radians(110), math.radians(110 - 290)
+    # Banda de arco: el borde de fuera de ida y el de dentro de vuelta.
+    outer = circle(cx, cy, r + 48, 40, start, end) + [(cx + (r + 48) * math.cos(end), cy + (r + 48) * math.sin(end))]
+    inner = circle(cx, cy, r - 48, 40, start, end) + [(cx + (r - 48) * math.cos(end), cy + (r - 48) * math.sin(end))]
+    parts = [outer + inner[::-1]]
+    a = start
+
+    tip = (cx + r * math.cos(a), cy + r * math.sin(a))
+    parts.append([(tip[0] - 170, tip[1] + 60), (tip[0] + 90, tip[1] + 210), (tip[0] + 40, tip[1] - 190)])
+    return parts
+
+
+SHAPES.update({0x2191: arrow_up, 0x2193: arrow_down, 0x2715: cross_thin, 0x25B3: triangle_outline, 0x25CF: dot,
+               0x25CB: hollow_dot, 0x266A: note, 0x2691: flag, 0x2727: star_outline, 0x21BB: refresh})  # ↑ ↓ ✕ △ ● ○ ♪ ⚑ ✧ ↻
+HOLES = {infinity: (1, 3), gear: (1,), face: (1,), triangle_outline: (1,), hollow_dot: (1,), star_outline: (1,)}
+
 
 
 def main():

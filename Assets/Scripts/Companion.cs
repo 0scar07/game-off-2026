@@ -3,13 +3,13 @@ using UnityEngine;
 namespace Fase
 {
     /// <summary>
-    /// Chispa, el compañero: en cinco niveles de la historia (2, 6, 10, 14 y 18) una lucecita
+    /// Chispa, el compañero: en cinco niveles de la historia (2, 7, 10, 14 y 17) una lucecita
     /// acompaña a Lumi y le pide que encuentre su estrella perdida, escondida en el nivel. Con las
     /// cinco se gana el farol "Chispa".
     /// </summary>
     public class Companion : MonoBehaviour
     {
-        public static readonly int[] Levels = { 2, 6, 10, 14, 18 };
+        public static readonly int[] Levels = { 2, 7, 10, 14, 17 };
 
         public static bool Found(int level) => PlayerPrefs.GetInt("fase_chispa_" + level, 0) == 1;
         public static int Count { get { int n = 0; foreach (int l in Levels) if (Found(l)) n++; return n; } }

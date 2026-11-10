@@ -114,7 +114,7 @@ Cómo quedó cada una:
 - 33/79 contrarreloj con tramos, 34 condiciones y 36 mutadores: Extras → Retos.
 - 116 carrera a dos y 136 fantasma de un amigo: Extras → Con amigos.
 - 117 habilidades (doble salto, planear, burbuja grande): Extras → Habilidades.
-- 32 Chispa, el compañero: niveles 2, 6, 10, 14 y 18; con sus 5 estrellas se gana el farol Chispa.
+- 32 Chispa, el compañero: niveles 2, 7, 10, 14 y 17; con sus 5 estrellas se gana el farol Chispa.
 - 61 final secreto y 118 decisión al terminar el capítulo II: `StoryChoice.cs`.
 - 81 enlace `?nivel=FASE-...` que abre el Taller.
 - 82/139 biomas ciudad de la aurora y fondo del mar (cabecera `bioma:`); 89 seis niveles extra nuevos (107-112), 40 en total.

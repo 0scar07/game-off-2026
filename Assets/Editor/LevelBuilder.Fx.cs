@@ -239,9 +239,12 @@ public static partial class LevelBuilder
             MeshObject("ColinaDia", dayMesh, new Vector3(0f, 0f, z), ParticleMaterial("ColinaDia", null, Color.white, Day, false), hills);
             MeshObject("ColinaNoche", nightMesh, new Vector3(0f, 0f, z), ParticleMaterial("ColinaNoche", null, Color.white, Night, false), hills);
         }
+        // Bajo el mar no hay nubes.
+        if (biome.id == "mar") return;
         for (float x = -30f; x < width + 30f; x += R(10f, 18f))
             Fit(Quat + $"Cloud_{1 + (int)R(0f, 2.99f)}.fbx", new Vector3(x, R(10f, 16f), R(28f, 31f)), new Vector3(R(4f, 7f), R(2f, 3f), 2f), Day, sky,
                 new Color(1f, 1f, 1f), new Color(0.35f, 0.35f, 0.35f));
+
     }
 
     /// <summary>Silueta de colinas (suma de ondas) con degradado de color de la cima a la base.</summary>

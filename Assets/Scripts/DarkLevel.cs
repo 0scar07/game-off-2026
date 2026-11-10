@@ -26,17 +26,20 @@ namespace Fase
                 for (int x = 0; x < size; x++)
                 {
                     float d = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), new Vector2(size * 0.5f, size * 0.5f)) / (size * 0.5f);
-                    tex.SetPixel(x, y, new Color(0.01f, 0.01f, 0.03f, Mathf.SmoothStep(0f, 1f, (d - 0.55f) / 0.45f)));
+                    tex.SetPixel(x, y, new Color(0f, 0f, 0f, Mathf.SmoothStep(0f, 1f, (d - 0.55f) / 0.45f)));
                 }
             tex.Apply();
             hole = UiKit.Rect(canvas, "Luz", new Vector2(0f, 0f), Vector2.zero, new Vector2(760f, 760f));
+            // Centrado en Lumi (con el pivote en la esquina, el círculo quedaba arriba a la derecha).
+            hole.pivot = new Vector2(0.5f, 0.5f);
+
             var image = hole.gameObject.AddComponent<RawImage>();
             image.texture = tex;
             image.raycastTarget = false;
             // Bordes negros alrededor del círculo, hasta fuera de la pantalla.
             foreach (var (anchor, pivot) in new[] { (new Vector2(0.5f, 1f), new Vector2(0.5f, 0f)), (new Vector2(0.5f, 0f), new Vector2(0.5f, 1f)), (new Vector2(0f, 0.5f), new Vector2(1f, 0.5f)), (new Vector2(1f, 0.5f), new Vector2(0f, 0.5f)) })
             {
-                var edge = UiKit.Box(hole, "Borde", anchor, Vector2.zero, new Vector2(6000f, 6000f), new Color(0.01f, 0.01f, 0.03f, 1f), false);
+                var edge = UiKit.Box(hole, "Borde", anchor, Vector2.zero, new Vector2(6000f, 6000f), Color.black, false);
                 edge.rectTransform.pivot = pivot;
             }
         }
