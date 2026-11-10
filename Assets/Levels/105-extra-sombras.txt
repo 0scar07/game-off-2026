@@ -1,0 +1,24 @@
+nombre: Sombras y estaciones
+name: Shadows and seasons
+pista: De noche, las sombras se pisan.\nAquí la línea separa el otoño del invierno.
+hint: At night, shadows become solid.\nHere the line divides autumn from winter.
+capitulo: 3
+linea: 3
+secreto: si
+practica: si
+estaciones: si
+---
+
+
+
+
+
+
+
+
+
+
+  S                                            G
+#########UUUUUU######~~~~~~#####UUUUUUUU##########
+#########      #################        ##########
+#########      #################        ##########

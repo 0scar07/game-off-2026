@@ -1,0 +1,23 @@
+nombre: Espejos
+name: Mirrors
+pista: Un espejo al sol refleja el día lejos de la línea.\nDe noche, acércale tu farol.
+hint: A mirror in the sun reflects daylight far from the line.\nAt night, bring it your lantern.
+capitulo: 3
+linea: 7
+secreto: si
+practica: si
+---
+
+
+
+
+
+
+
+
+
+               T                    T
+  S       E                    E              G
+############dddddd#####nnnn######dddddd##########
+############      #####    ######      ##########
+############      #####    ######      ##########

@@ -1,0 +1,24 @@
+nombre: Línea curva
+name: Curved line
+pista: La línea se ha curvado: dentro del arco es de noche.\nLas puertas moradas se abren cuando la línea pasa por ellas.
+hint: The line has curved: inside the arc it's night.\nPurple doors open while the line passes through them.
+capitulo: 3
+linea: 10
+secreto: si
+practica: si
+curva: 9
+---
+
+
+
+
+
+
+
+
+
+
+  S                    5   5               G
+#########ddddd################nnnnnn##########
+#########     ################      ##########
+#########     ################      ##########

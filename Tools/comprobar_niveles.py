@@ -11,7 +11,7 @@ import sys
 from collections import deque
 
 # Casillas donde se puede estar de pie (en algún mundo) y que no tapan el paso al saltar.
-STAND = set("#DdNn~FOYZ")
+STAND = set("#DdNn~FOYZAUbm")
 WALL = set("#~F")
 JUMP_UP, JUMP_SIDE, SPRING_UP = 2, 4, 7
 
@@ -59,6 +59,10 @@ def check(path):
                 top -= 1
             lifts[x] = (top, y)
 
+    # Brotes (V): crecen 3 casillas de día y llevan arriba, como una corriente de aire.
+    for x, y in find("V"):
+        lifts[x] = (y - 3, y)
+
     horizontal = header.get("angulo", "0").strip() == "90"
     stand = {(x, y) for x in range(W) for y in range(H) if not stand_on(x, y) and free(x, y) and stand_on(x, y + 1)}
     if horizontal:
@@ -86,7 +90,8 @@ def check(path):
     queue = deque([(sx, sy)])
     while queue:
         x, y = queue.popleft()
-        up = SPRING_UP if at(x, y + 1) == "F" else JUMP_UP
+        # Una caja que se lleva (m) sirve de escalón donde haga falta: una casilla más de salto.
+        up = SPRING_UP if at(x, y + 1) == "F" else JUMP_UP + (1 if find("m") else 0)
         for lx, (top, base) in lifts.items():
             if abs(lx - x) <= 2 and base >= y - 1:
                 up = max(up, y - top + 2)
@@ -110,7 +115,7 @@ def check(path):
             if not near(cx, cy, reach):
                 problems.append(f"{name} inalcanzable (columna {cx}, fila {cy})")
     # Ritmo: más de 18 columnas seguidas sin nada que hacer (unos 2,5 s corriendo) se hace largo.
-    interesting = set("DdNn~^FMBXK*OYZWGCHJPR")
+    interesting = set("DdNn~^FMBXK*OYZWGCHJPRAIV5ET1234mLbU")
     run = 0
     for x in range(W):
         if any(g[y][x] in interesting for y in range(H)):

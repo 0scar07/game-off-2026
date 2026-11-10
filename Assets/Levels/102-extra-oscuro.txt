@@ -1,0 +1,24 @@
+nombre: A oscuras
+name: In the dark
+pista: Solo ves lo que ilumina tu farol.\nY algo corre hacia la línea...
+hint: You only see what your lantern lights.\nAnd something runs towards the line...
+capitulo: 3
+linea: 3
+secreto: si
+practica: si
+oscuro: si
+---
+
+
+
+
+
+
+
+
+
+                                                 nn
+  S                                 L        nn      nn           G
+#########ddddd###nnnnn######################            #############
+#########     ###     ######################            #############
+#########     ###     ######################            #############

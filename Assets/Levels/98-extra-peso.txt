@@ -1,0 +1,24 @@
+nombre: La línea pesa
+name: Heavy line
+pista: La línea pesa: si la sueltas, cae.\nLas palancas cambian el día y la noche de lado un momento.
+hint: The line is heavy: let go and it falls.\nLevers swap day and night for a moment.
+capitulo: 3
+linea: 4
+secreto: si
+practica: si
+peso: 4
+---
+
+
+
+
+
+
+
+
+
+
+  S                  I                          G
+#########ddddd##########nnnnnn#####dddddd##########
+#########     ##########      #####      ##########
+#########     ##########      #####      ##########

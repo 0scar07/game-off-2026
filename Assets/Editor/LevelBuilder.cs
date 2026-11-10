@@ -49,6 +49,13 @@ public static partial class LevelBuilder
         public bool practice;    // cabecera "practica: si" — nivel de práctica de Extras (no sale en el mapa)
         public float line2 = float.NaN; // cabecera "linea2:" — segunda línea
         public float energy;     // cabecera "energia:" — la línea gasta energía al moverse
+        // Mecánicas de la tanda E (cabeceras opcionales).
+        public float weight = float.NaN;    // "peso: x" — la línea cae hacia x si no se sujeta
+        public float chase;                 // "persecucion: velocidad" — la noche avanza sola
+        public float curve;                 // "curva: radio" — línea en arco
+        public float tide;                  // "marea: casillas" — el agua sube de noche
+        public float wind;                  // "viento: velocidad" — empuja de día
+        public bool dark, seasons;          // "oscuro: si", "estaciones: si"
         public float angle;      // cabecera "angulo:" — 0 vertical, 90 tumbada (entonces "linea" es la altura)
         public bool daily;       // desafío diario (Assets/Levels/Diarios)
         public bool sandbox;     // Taller o Sin fin (se montan mientras se juega)
@@ -235,6 +242,13 @@ public static partial class LevelBuilder
                     break;
                 case "linea2": level.line2 = float.Parse(value, inv); break;
                 case "energia": level.energy = float.Parse(value, inv); break;
+                case "peso": level.weight = float.Parse(value, inv); break;
+                case "persecucion": level.chase = float.Parse(value, inv); break;
+                case "curva": level.curve = float.Parse(value, inv); break;
+                case "marea": level.tide = float.Parse(value, inv); break;
+                case "viento": level.wind = float.Parse(value, inv); break;
+                case "oscuro": level.dark = value.ToLowerInvariant().StartsWith("s"); break;
+                case "estaciones": level.seasons = value.ToLowerInvariant().StartsWith("s"); break;
                 case "angulo": level.angle = float.Parse(value, inv); break;
                 case "secreto": level.secret = value.ToLowerInvariant().StartsWith("s") || value == "1"; break;
                 case "practica": level.practice = value.ToLowerInvariant().StartsWith("s") || value == "1"; break;
@@ -358,12 +372,27 @@ public static partial class LevelBuilder
                     case 'Y': BuildGlowTile(cell, moving); break;
                     case 'J': case 'P': case 'R': BuildBoss(level, cell, moving, c); break;
                     case 'Z': BuildChangingBox(cell, moving); break;
+                    // Mecánicas nuevas: cada pieza se dibuja sola al empezar el nivel.
+                    case 'A': Place<SunsetPiece>("Atardecer", cell + Vector3.up * 0.5f, moving); break;
+                    case 'I': Place<WorldSwitch>("Palanca", cell, moving); break;
+                    case '5': Place<LineDoor>("PuertaLinea", cell + Vector3.up, moving).GetComponent<BoxCollider2D>().size = new Vector2(0.95f, 2f); break;
+                    case 'V': Place<Sprout>("Brote", cell, moving); break;
+                    case 'E': Place<Mirror>("Espejo", cell, moving); break;
+                    case 'T': Place<MirrorTarget>("Diana", cell + Vector3.up * 0.5f, moving); break;
+                    case '1': Place<KeyPickup>("LlaveDia", cell + Vector3.up * 0.5f, moving).world = World.Day; break;
+                    case '2': Place<KeyPickup>("LlaveNoche", cell + Vector3.up * 0.5f, moving).world = World.Night; break;
+                    case '3': { var d = Place<KeyDoor>("PuertaDia", cell + Vector3.up, moving); d.world = World.Day; d.GetComponent<BoxCollider2D>().size = new Vector2(0.95f, 2f); break; }
+                    case '4': { var d = Place<KeyDoor>("PuertaNoche", cell + Vector3.up, moving); d.world = World.Night; d.GetComponent<BoxCollider2D>().size = new Vector2(0.95f, 2f); break; }
+                    case 'm': Place<Carryable>("CajaLlevar", cell, moving); break;
+                    case 'L': Place<LineChaser>("SombraLinea", cell, moving); break;
+                    case 'b': { var p = Place<BeatPlatform>("Ritmo", cell, moving).GetComponent<BoxCollider2D>(); p.size = new Vector2(1f, 0.3f); p.offset = new Vector2(0f, 0.85f); break; }
                 }
                 if (c == '#' && level.At(col, row - 1) == ' ' && level.At(col, row - 2) == ' ')
                     Decorate(cell + Vector3.up, random, decor, biome);
             }
         }
         LinkBossGoal(root, moving);
+        BuildMechanics(level, start, moving);
         var wildlife = new GameObject("Fauna").AddComponent<Wildlife>();
         wildlife.maxX = width;
         wildlife.maxY = level.Height + 4f;
@@ -373,7 +402,36 @@ public static partial class LevelBuilder
         return (start, fragments, line);
     }
 
-    static bool IsRunChar(char c) => c == '#' || c == 'D' || c == 'N' || c == 'd' || c == 'n' || c == '~';
+    static bool IsRunChar(char c) => c == '#' || c == 'D' || c == 'N' || c == 'd' || c == 'n' || c == '~' || c == 'U';
+
+    static T Place<T>(string name, Vector3 at, Transform parent) where T : Component
+    {
+        var go = new GameObject(name);
+        go.transform.SetParent(parent);
+        go.transform.position = at;
+        return go.AddComponent<T>();
+    }
+
+    /// <summary>Mecánicas de nivel que van por cabecera (peso, persecución, curva, marea...).</summary>
+    static void BuildMechanics(Level level, Vector3 start, Transform parent)
+    {
+        var mechanics = new GameObject("Mecanicas").transform;
+        mechanics.SetParent(parent);
+        if (!float.IsNaN(level.weight)) mechanics.gameObject.AddComponent<LineWeight>().rest = level.weight;
+        if (level.chase > 0f) mechanics.gameObject.AddComponent<LineChase>().speed = level.chase;
+        if (level.curve > 0f) mechanics.gameObject.AddComponent<CurveLine>().radius = level.curve;
+        if (level.tide > 0f)
+        {
+            var tide = mechanics.gameObject.AddComponent<Tide>();
+            tide.rise = level.tide;
+            tide.baseY = start.y - 0.95f - 0.6f;   // un poco por debajo del suelo de la salida
+            tide.minX = 0f;
+            tide.maxX = level.Width;
+        }
+        if (level.wind != 0f) mechanics.gameObject.AddComponent<Wind>().strength = level.wind;
+        if (level.dark) mechanics.gameObject.AddComponent<DarkLevel>();
+        if (level.seasons) mechanics.gameObject.AddComponent<Seasons>();
+    }
 
     static void BuildRun(Level level, char c, int from, int to, int row, Transform parent)
     {
@@ -433,7 +491,17 @@ public static partial class LevelBuilder
                 glow.transform.localScale = new Vector3(width + 1.2f, 1.2f, 1f);
                 break;
             }
+            case 'U':
+            {
+                // Sombra que se pisa: de noche, la sombra de algo se vuelve una tabla oscura.
+                var solid = Solid("SombraSolida", new Vector2(center, bottom + 0.85f), new Vector2(width, 0.3f), World.Night, parent);
+                OneWay(solid);
+                for (int col = from; col <= to; col++)
+                    Fit(Platformer + "block-snow-low.fbx", new Vector3(col + 0.5f, bottom + 0.7f, 0f), new Vector3(1f, 0.3f, 1.3f), Night, solid.transform, new Color(0.18f, 0.12f, 0.32f), new Color(0.15f, 0.05f, 0.3f));
+                break;
+            }
             case '~':
+
             {
                 // De noche, hielo que se puede pisar; de día, agua que hace perder.
                 var ice = Solid("HieloLago", new Vector2(center, bottom + 0.5f), new Vector2(width, 1f), World.Night, parent);
@@ -884,7 +952,8 @@ public static partial class LevelBuilder
             // Lo que se mueve o se anima no puede ser estático.
             if (t.GetComponentInParent<Monster>() || t.GetComponentInParent<Spinner>() || t.GetComponentInParent<Collectible>()
                 || t.GetComponentInParent<ChestPickup>() || t.GetComponentInParent<Spring>() || t.GetComponentInParent<Checkpoint>()
-                || t.GetComponentInParent<GlowSprite>() || t.GetComponentInParent<Sway>() || t.GetComponent<SkinnedMeshRenderer>()) continue;
+                || t.GetComponentInParent<GlowSprite>() || t.GetComponentInParent<Sway>() || t.GetComponentInParent<Mechanic>() || t.GetComponent<SkinnedMeshRenderer>()) continue;
+
 
             GameObjectUtility.SetStaticEditorFlags(t.gameObject, StaticEditorFlags.BatchingStatic);
         }

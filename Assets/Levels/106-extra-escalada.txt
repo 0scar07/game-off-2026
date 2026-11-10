@@ -1,0 +1,47 @@
+nombre: Escalada
+name: The climb back
+pista: Otra subida con la línea tumbada, al revés que la primera.
+hint: Another climb with the line lying down, mirrored from the first.
+capitulo: 3
+linea: 5
+secreto: si
+practica: si
+angulo: 90
+dia: derecha
+---
+                        
+                        
+      K
+    nnnn
+           G
+        dddddd
+                        
+               nnnnnn
+            C
+        ######
+                        
+               dddddd
+                        
+        nnnnnn
+                   C
+               ######
+                        
+        dddddd
+                 *
+               nnnnnn
+            C
+        ######
+                        
+               dddddd
+                        
+        nnnnnn
+                   C
+               ######
+                        
+        dddddd
+                        
+               nnnnnn
+                    S
+########################
+########################
+########################

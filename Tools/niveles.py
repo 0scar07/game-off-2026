@@ -223,6 +223,110 @@ class Level:
         self.top = t - 3
         return self.flat(4)
 
+    # ───────────── Mecánicas nuevas (niveles extra, tanda E) ─────────────
+
+    def sunset_climb(self):
+        """Piezas de atardecer (A) en zigzag hasta lo alto de un muro de 6: solo existen junto a la línea."""
+        t, x = self.top, self.x
+        self.ground(x, x + 12, t)
+        self.put("A", x + 3, t - 2)
+        self.put("A", x + 5, t - 4)
+        self.put("A", x + 3, t - 6)
+        self.fill("#", range(x + 7, x + 12), range(t - 6, t))
+        self.top = t - 6
+        self.x += 12
+        return self.flat(3)
+
+    def sprout_wall(self):
+        """Brote (V) delante de un muro de 4: déjalo al sol para que crezca y te suba."""
+        t, x = self.top, self.x
+        self.ground(x, x + 9, t)
+        self.put("V", x + 2, t - 1)
+        self.fill("#", range(x + 5, x + 9), range(t - 4, t))
+        self.top = t - 4
+        self.x += 9
+        return self.flat(3)
+
+    def mirror_section(self):
+        """Espejo (E) que, con sol o con el farol, crea día sobre un puente de madera lejano (T)."""
+        t, x = self.top, self.x
+        self.flat(3)
+        self.put("E", x + 1, t - 1)
+        self.fill("d", range(self.x, self.x + 6), [t])
+        self.put("T", self.x + 3, t - 2)
+        self.x += 6
+        return self.flat(3)
+
+    def lever_section(self):
+        """Palanca (I): cambia los mundos de lado unos segundos."""
+        self.flat(4)
+        self.put("I", self.x - 3, self.top - 1)
+        return self
+
+    def key_door(self, kind="d"):
+        """Llave en lo alto de unas tablas de su mundo y, más adelante, su puerta."""
+        t, x = self.top, self.x
+        key, door = ("1", "3") if kind == "d" else ("2", "4")
+        self.flat(10)
+        self.fill(kind, range(x + 2, x + 5), [t - 2])
+        self.put(key, x + 3, t - 3)
+        self.put(door, x + 8, t - 1)
+        return self
+
+    def carry_step(self):
+        """Caja que se lleva (m) y un muro de 3: llévala hasta el muro, suéltala (↓) y súbete."""
+        t, x = self.top, self.x
+        self.ground(x, x + 12, t)
+        self.put("m", x + 2, t - 1)
+        self.fill("#", range(x + 9, x + 12), range(t - 3, t))
+        self.top = t - 3
+        self.x += 12
+        return self.flat(3)
+
+    def chaser(self, n=16):
+        """Sombra de la línea (L): corre hacia la línea. Llévala lejos y pasa."""
+        self.flat(n)
+        self.put("L", self.x - n // 2, self.top - 1)
+        return self
+
+    def beat_gap(self, w=8):
+        """Hueco con tablas que aparecen y desaparecen al ritmo (b)."""
+        self.fill("b", range(self.x, self.x + w), [self.top - 1])
+        self.x += w
+        return self.flat(3)
+
+    def shadow_bridge(self, w=6):
+        """Sombra que se pisa (U): de noche es una tabla oscura."""
+        self.fill("U", range(self.x, self.x + w), [self.top])
+        self.x += w
+        return self.flat(3)
+
+    def line_doors(self):
+        """Dos puertas de la línea (5): solo se abren mientras la línea pasa por ellas."""
+        self.flat(10)
+        self.put("5", self.x - 7, self.top - 1)
+        self.put("5", self.x - 3, self.top - 1)
+        return self
+
+    def two_paths(self):
+        """Dos caminos: abajo, fácil; arriba, tablas de día con un fragmento."""
+        t, x = self.top, self.x
+        self.flat(16)
+        for i, c in enumerate(range(x + 2, x + 14, 4)):
+            self.fill("d", [c, c + 1], [t - 2 - (i % 2)])
+        self.put("*", x + 8, t - 5)
+        self.fill("^", [x + 7, x + 8], [t - 1])
+        return self
+
+    def pillars(self, n=6):
+        """Pilares de 2 de alto con huecos: arriba se está a salvo de la marea."""
+        t = self.top
+        for i in range(n):
+            self.flat(2)
+            self.fill("#", range(self.x - 2, self.x), range(t - 2, t))
+            self.flat(2)
+        return self
+
     def boss_arena(self, kind="J", stairs="D"):
         """Arena de un jefe: escalera (de cajas de día o de hielo de noche) para subir a su cabeza."""
         t, x = self.top, self.x
@@ -475,3 +579,63 @@ L = Level().start().flat(4).check().flat(6).boss_arena("R", "D")
 save("08c-reina-de-escarcha.txt", 2, "Reina de Escarcha", "Frost Queen",
      "La reina del hielo despierta de noche. Dale el día y sube por las cajas.",
      "The ice queen wakes at night. Give it daylight and climb the crates.", 8, L)
+
+
+# ───────────────────────── Niveles extra (mecánicas nuevas) ─────────────────────────
+# Se abren desde Extras → Niveles extra; no cuentan en el mapa ni en los logros de secretos.
+LAB = "secreto: si\npractica: si\n"
+
+L = Level().start().flat(3).sunset_climb().flat(2).drop(6).flat(3).sprout_wall().flat(2).drop(4).flat(3).goal()
+save("96-extra-atardecer.txt", 3, "Atardecer", "Sunset",
+     "Lo naranja solo existe pegado a la línea: llévala contigo al subir.\nLos brotes crecen al sol.",
+     "Orange things only exist right by the line: carry it with you as you climb.\nSprouts grow in the sun.", 3, L, LAB)
+
+L = Level().start().flat(3).mirror_section().flat(2).ice_bridge(4).mirror_section().goal()
+save("97-extra-espejos.txt", 3, "Espejos", "Mirrors",
+     "Un espejo al sol refleja el día lejos de la línea.\nDe noche, acércale tu farol.",
+     "A mirror in the sun reflects daylight far from the line.\nAt night, bring it your lantern.", 7, L, LAB)
+
+L = Level().start().flat(3).bridge(5).flat(3).lever_section().ice_bridge(6).flat(2).bridge(6).goal()
+save("98-extra-peso.txt", 3, "La línea pesa", "Heavy line",
+     "La línea pesa: si la sueltas, cae.\nLas palancas cambian el día y la noche de lado un momento.",
+     "The line is heavy: let go and it falls.\nLevers swap day and night for a moment.", 4, L, LAB + "peso: 4\n")
+
+L = Level().start().flat(4).bridge(5).flat(4).spikes().bridge(6).flat(5).bridge(4).flat(6).goal()
+save("99-extra-persecucion.txt", 3, "La noche te sigue", "Night chase",
+     "La noche avanza sola por detrás. ¡No te pares!",
+     "Night is coming from behind. Don't stop!", -6, L, LAB + "persecucion: 2.2\n")
+
+L = Level().start().flat(3).pillars(6).flat(4).goal()
+save("100-extra-marea.txt", 3, "Marea y viento", "Tide and wind",
+     "De noche sube la marea; de día sopla el viento.\nBusca el equilibrio.",
+     "At night the tide rises; by day the wind blows.\nFind the balance.", 60, L, LAB + "marea: 3\nviento: -3\n")
+
+L = Level().start().flat(3).key_door("d").flat(2).key_door("n").flat(2).carry_step().flat(2).drop(3).flat(3).goal()
+save("101-extra-llaves.txt", 3, "Llaves", "Keys",
+     "Cada llave solo se coge en su mundo y abre su puerta.\nLa caja se lleva: suéltala con ↓.",
+     "Each key can only be picked up in its world and opens its door.\nYou can carry the box: drop it with ↓.", 5, L, LAB)
+
+L = Level().start().flat(3).bridge(5).ice_bridge(5).flat(3).chaser().ice_steps().flat(3).goal()
+save("102-extra-oscuro.txt", 3, "A oscuras", "In the dark",
+     "Solo ves lo que ilumina tu farol.\nY algo corre hacia la línea...",
+     "You only see what your lantern lights.\nAnd something runs towards the line...", 3, L, LAB + "oscuro: si\n")
+
+L = Level().start().flat(3).beat_gap(8).flat(3).two_paths().beat_gap(10).flat(3).goal()
+save("103-extra-ritmo.txt", 3, "Ritmo", "Rhythm",
+     "Las tablas doradas van al ritmo de la música. Salta a tiempo.\nArriba, el camino difícil.",
+     "The golden planks follow the beat. Jump on time.\nUp high, the hard path.", 3, L, LAB)
+
+L = Level().start().flat(3).bridge(5).flat(3).line_doors().ice_bridge(6).goal()
+save("104-extra-curva.txt", 3, "Línea curva", "Curved line",
+     "La línea se ha curvado: dentro del arco es de noche.\nLas puertas moradas se abren cuando la línea pasa por ellas.",
+     "The line has curved: inside the arc it's night.\nPurple doors open while the line passes through them.", 10, L, LAB + "curva: 9\n")
+
+L = Level().start().flat(3).shadow_bridge(6).flat(3).lake(6).flat(2).shadow_bridge(8).goal()
+save("105-extra-sombras.txt", 3, "Sombras y estaciones", "Shadows and seasons",
+     "De noche, las sombras se pisan.\nAquí la línea separa el otoño del invierno.",
+     "At night, shadows become solid.\nHere the line divides autumn from winter.", 3, L, LAB + "estaciones: si\n")
+
+save_text("106-extra-escalada.txt", 3, "Escalada", "The climb back",
+          "Otra subida con la línea tumbada, al revés que la primera.",
+          "Another climb with the line lying down, mirrored from the first.",
+          5, "\n".join(r[::-1].rstrip() if r.strip() else r for r in (row.ljust(24) for row in vertical_tower().split("\n"))), LAB + "angulo: 90\ndia: derecha\n")

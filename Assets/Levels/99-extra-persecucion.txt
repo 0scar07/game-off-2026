@@ -1,0 +1,24 @@
+nombre: La noche te sigue
+name: Night chase
+pista: La noche avanza sola por detrás. ¡No te pares!
+hint: Night is coming from behind. Don't stop!
+capitulo: 3
+linea: -6
+secreto: si
+practica: si
+persecucion: 2.2
+---
+
+
+
+
+
+
+
+
+
+
+  S                      ^^                                  G
+##########ddddd###############dddddd########dddd################
+##########     ###############      ########    ################
+##########     ###############      ########    ################

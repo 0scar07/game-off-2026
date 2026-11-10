@@ -1,0 +1,23 @@
+nombre: Llaves
+name: Keys
+pista: Cada llave solo se coge en su mundo y abre su puerta.\nLa caja se lleva: suéltala con ↓.
+hint: Each key can only be picked up in its world and opens its door.\nYou can carry the box: drop it with ↓.
+capitulo: 3
+linea: 5
+secreto: si
+practica: si
+---
+
+
+
+
+
+
+
+
+            1           2                 ########
+           ddd         nnn                ########
+  S              3           4     m      ########       G
+############################################################
+############################################################
+############################################################

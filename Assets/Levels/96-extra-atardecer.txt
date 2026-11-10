@@ -1,0 +1,23 @@
+nombre: Atardecer
+name: Sunset
+pista: Lo naranja solo existe pegado a la línea: llévala contigo al subir.\nLos brotes crecen al sol.
+hint: Orange things only exist right by the line: carry it with you as you climb.\nSprouts grow in the sun.
+capitulo: 3
+linea: 3
+secreto: si
+practica: si
+---
+
+
+
+
+
+            A   ##########
+                ##########
+              A ##########        #########
+                ##########        #########
+            A   ##########        #########
+  S             ##########     V  #########       G
+#####################################################
+#####################################################
+#####################################################

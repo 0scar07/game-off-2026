@@ -25,19 +25,18 @@ namespace Fase
 
             extrasPanel = Panel("Extras", "extras", out var content);
             var help = BuildHelp();
-            // El nivel de práctica (el que tiene "practica: si" en el catálogo).
-            string practice = null;
-            foreach (var e in LevelCatalog.Get.levels) if (e.practice) practice = e.scene;
+            var extraLevels = BuildExtraLevels();
             var entries = new (string key, string icon, GameObject panel)[]
             {
                 ("stats", "⏱", stats), ("soundtrack", "♪", music), ("gallery", "☺", gallery),
                 ("album", "▦", album), ("chaptermap", "☾", map), ("weekly", "★", weekly),
-                ("help", "✔", help), ("tricks", "|", null),
+                ("help", "✔", help), ("extralevels", "✦", extraLevels),
             };
             for (int i = 0; i < entries.Length; i++)
             {
                 var (key, icon, panel) = entries[i];
-                UnityEngine.Events.UnityAction open = panel != null ? () => menu.Show(panel) : () => { if (practice != null) SceneFader.Load(practice); };
+                UnityEngine.Events.UnityAction open = () => menu.Show(panel);
+
                 var button = UiKit.Button(content, key, "", new Vector2(0.5f, 0.5f), new Vector2((i % 2 - 0.5f) * 620f, 240f - (i / 2) * 150f), new Vector2(580f, 126f), open, 40);
                 var label = button.GetComponentInChildren<Text>();
                 label.rectTransform.anchoredPosition = new Vector2(50f, 0f);
@@ -46,13 +45,37 @@ namespace Fase
                 refreshers.Add(() => label.text = Loc.Get(k));
             }
             extraPanels.Add(extrasPanel);
-            foreach (var p in new[] { stats, music, gallery, album, map, weekly, help }) extraPanels.Add(p);
+            foreach (var p in new[] { stats, music, gallery, album, map, weekly, help, extraLevels }) extraPanels.Add(p);
             BuildGhostToggle();
         }
 
         void BackToExtras() => menu.Show(extrasPanel);
 
+        // ───────── Niveles extra (práctica y mecánicas nuevas) ─────────
+
+        GameObject BuildExtraLevels()
+        {
+            var panel = Panel("NivelesExtra", "extralevels", out var content, BackToExtras);
+            var catalog = LevelCatalog.Get;
+            int n = 0;
+            for (int i = 0; i < catalog.levels.Length; i++)
+            {
+                var entry = catalog.levels[i];
+                if (!entry.practice) continue;
+                string scene = entry.scene;
+                float x = (n % 3 - 1) * 450f, y = 270f - (n / 3) * 115f;
+                var button = UiKit.Button(content, scene, "", new Vector2(0.5f, 0.5f), new Vector2(x, y), new Vector2(430f, 100f), () => SceneFader.Load(scene), 30);
+                var label = button.GetComponentInChildren<Text>();
+                var done = UiKit.Text(button.transform, "Hecho", "✔", new Vector2(1f, 0.5f), new Vector2(-30f, 0f), new Vector2(50f, 50f), 30, TextAnchor.MiddleCenter, UiKit.Gold);
+                int level = i + 1;
+                refreshers.Add(() => { label.text = Loc.Pick(entry.name, entry.nameEn); done.enabled = Progress.BestTime(level) > 0f; });
+                n++;
+            }
+            return panel;
+        }
+
         // ───────── Ayudas ─────────
+
 
         GameObject BuildHelp()
         {

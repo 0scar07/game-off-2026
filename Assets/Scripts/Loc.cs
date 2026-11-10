@@ -109,6 +109,8 @@ namespace Fase
             ["extras"] = ("Extras", "Extras"),
             ["help"] = ("Ayudas", "Assists"),
             ["tricks"] = ("Nivel de trucos", "Tricks level"),
+            ["extralevels"] = ("Niveles extra", "Extra levels"),
+
             ["linehint"] = ("Pista de la línea", "Line hint"),
             ["relaxed"] = ("Modo relajado", "Relaxed mode"),
             ["slowgame"] = ("Velocidad del juego", "Game speed"),
