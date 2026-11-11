@@ -217,7 +217,8 @@ namespace Fase
         void Update()
         {
             if (player == null || ShiftLine.Instance == null || PauseMenu.Paused) return;
-            onLine = Mathf.Abs(player.transform.position.x - ShiftLine.X) < 0.35f ? onLine + Time.deltaTime : 0f;
+            onLine = ShiftLine.Distance(player.transform.position) < 0.35f ? onLine + Time.deltaTime : 0f;
+
             if (onLine >= 3f) Unlock("medioymedio");
             nightTime = ShiftLine.IsDay(player.transform.position) ? 0f : nightTime + Time.deltaTime;
             if (nightTime >= 60f) Unlock("noctambulo");

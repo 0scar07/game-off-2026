@@ -11,7 +11,7 @@ para después de la jam (sigue en [`PENDIENTES.md`](PENDIENTES.md)).
 | Qué | Por qué |
 |---|---|
 | Lo que cuente tu amigo en la [prueba de juego](../.github/ISSUE_TEMPLATE/prueba.yml) | Es la primera opinión de alguien que no conoce el juego |
-| Fallos conocidos: mezcla con la línea tumbada, logro "medio y medio" solo con línea vertical, pistas de luciérnaga que suponen el día a la izquierda, mapa de pausa en el modo sin fin, textos del cooperativo encima de la barra de energía | Están localizados y son cortos |
+| ✅ Fallos conocidos (arreglados el 10 de noviembre): mezcla con la línea tumbada, logro "medio y medio" solo con línea vertical, pistas de luciérnaga que suponen el día a la izquierda, mapa de pausa en el modo sin fin, textos del cooperativo encima de la barra de energía | Están localizados y son cortos |
 | 6 · Curva de dificultad y tiempos de medalla | Con tus partidas y las de tu amigo |
 | 8 · Rendimiento en móvil | Probar en un móvil real la versión de itch |
 

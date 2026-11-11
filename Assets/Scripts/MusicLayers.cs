@@ -120,7 +120,8 @@ namespace Fase
             float k = 1f - Mathf.Exp(-smoothing * Time.unscaledDeltaTime);
             nightAmount = Mathf.Lerp(nightAmount, NightOnScreen(), k);
             // Cuanto más cerca de la línea está Lumi, más suena la capa de la línea.
-            float near = player != null && ShiftLine.Instance != null ? 1f - Mathf.Clamp01((Mathf.Abs(player.position.x - ShiftLine.X) - 0.5f) / 2.5f) : 0f;
+            float near = player != null && ShiftLine.Instance != null ? 1f - Mathf.Clamp01((ShiftLine.Distance(player.position) - 0.5f) / 2.5f) : 0f;
+
             onLine = Mathf.Lerp(onLine, near, k * 0.5f);
             bossAmount = Mathf.Lerp(bossAmount, boss != null && boss.isActiveAndEnabled && !boss.Defeated ? 1f : 0f, k * 0.3f);
             Apply();

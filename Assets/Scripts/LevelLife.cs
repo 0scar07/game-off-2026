@@ -282,9 +282,20 @@ namespace Fase
                 if (m.transform.position.x - at.x > -1f && m.transform.position.x - at.x < 8f)
                     return Loc.Pick("Las Sombras duermen de día: lleva la línea hasta ellas.", "Shadows sleep by day: bring the line over them.");
             if (nearest == null) return Loc.Pick("Prueba a mover la línea a la otra punta.", "Try moving the line all the way across.");
-            return nearest.world == World.Night
-                ? Loc.Pick("Lo azul solo existe de noche: arrastra la línea detrás de ti.", "Blue things only exist at night: drag the line behind you.")
-                : Loc.Pick("La madera solo existe de día: lleva la línea por delante.", "Wood only exists by day: move the line ahead of you.");
+            // "Detrás" o "por delante" depende de a qué lado queda el día; con la línea tumbada o
+            // inclinada no tiene sentido y se da la pista sin dirección.
+            var line = ShiftLine.Instance;
+            bool night = nearest.world == World.Night;
+            string whatEs = night ? "Lo azul solo existe de noche" : "La madera solo existe de día";
+            string whatEn = night ? "Blue things only exist at night" : "Wood only exists by day";
+            if (line == null || Mathf.Abs(Mathf.DeltaAngle(0f, line.angle)) > 20f)
+                return Loc.Pick($"{whatEs}: mueve la línea hasta que {(night ? "la noche" : "el día")} lo cubra.", $"{whatEn}: move the line until {(night ? "night" : "day")} covers it.");
+            // Con el día a la izquierda, la noche queda por delante al dejar la línea atrás.
+            bool behind = night == line.dayOnLeft;
+            return behind
+                ? Loc.Pick($"{whatEs}: arrastra la línea detrás de ti.", $"{whatEn}: drag the line behind you.")
+                : Loc.Pick($"{whatEs}: lleva la línea por delante.", $"{whatEn}: move the line ahead of you.");
+
         }
     }
 }

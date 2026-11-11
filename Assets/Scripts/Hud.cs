@@ -40,7 +40,6 @@ namespace Fase
         /// <summary>Caídas y agarres de la línea en este intento (para los desafíos).</summary>
         public int Deaths { get; private set; }
         public int Grabs { get; private set; }
-        int deathStreak;
         public bool Daily => daily;
         /// <summary>El nivel se está jugando en modo espejo (el mundo dado la vuelta).</summary>
         public bool Mirror => MirrorMode.Active;
@@ -65,30 +64,19 @@ namespace Fase
             GameEvents.CheckpointReached -= OnCheckpoint;
         }
 
-        static readonly (string es, string en)[] Cheers =
-        {
-            ("¡Casi!", "So close!"), ("¡Tú puedes!", "You've got this!"), ("Prueba a mover la línea antes", "Try moving the line first"),
-            ("La próxima sale", "Next one's it"), ("Respira... y otra vez", "Breathe... and again"),
-        };
 
         void OnDied()
         {
             Deaths++;
-            deathStreak++;
             Stats.AddFall();
-            // Tras varias caídas seguidas, un ánimo pequeño en el centro.
-            if (deathStreak >= 3 && banner != null)
-            {
-                var cheer = Cheers[Random.Range(0, Cheers.Length)];
-                banner.text = Loc.Pick(cheer.es, cheer.en);
-                cheerLeft = 2f;
-                deathStreak = 0;
-            }
+            // El ánimo tras varias caídas lo da Lumi en su bocadillo (Encouragement) y la pista de
+            // la línea (LineAdvisor): un cartel grande aquí se pisaba con los dos y con la pista.
+            // Al caer, la pista del principio ya no hace falta.
+            age = Mathf.Max(age, 7f);
         }
 
         void OnCheckpoint()
         {
-            deathStreak = 0;
             // Si se cierra a mitad del nivel, se sigue desde aquí (y con el tiempo que llevaba).
             var player = FindAnyObjectByType<PlayerController>();
             if (!sandbox && !daily && player != null) SaveGuard.SaveCheckpoint(levelNumber, player.transform.position, elapsed);
@@ -126,20 +114,45 @@ namespace Fase
 
             corner.text = name;
             banner.text = "";
+            // El cartel grande nunca se sale de la pantalla.
+            banner.horizontalOverflow = HorizontalWrapMode.Wrap;
+            banner.resizeTextForBestFit = true;
+            banner.resizeTextMinSize = 40;
+            banner.resizeTextMaxSize = banner.fontSize;
+            BuildHintBack();
+            // El fondo del nombre, a la medida del texto (antes medía siempre lo mismo).
+            if (transform.Find("FondoEsquina") is RectTransform pill)
+                pill.sizeDelta = new Vector2(Mathf.Clamp(corner.preferredWidth + 70f, 200f, 900f), pill.sizeDelta.y);
+
             UpdateCounter();
             if (Settings.Coop)
             {
-                // Quién controla qué, arriba en el centro.
-                var p1 = UiKit.Box(transform, "J1", new Vector2(0.5f, 1f), new Vector2(-260f, -40f), new Vector2(480f, 60f), new Color(1f, 0.6f, 0.35f, 0.85f));
+                // Quién controla qué, abajo en el centro (arriba van la energía de la línea y la vida del jefe).
+                var p1 = UiKit.Box(transform, "J1", new Vector2(0.5f, 0f), new Vector2(-260f, 50f), new Vector2(480f, 60f), new Color(1f, 0.6f, 0.35f, 0.85f));
                 UiKit.Text(p1.transform, "Texto", Loc.Pick("J1 · Lumi (A/D + Espacio)", "P1 · Lumi (A/D + Space)"), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(480f, 60f), 28);
-                var p2 = UiKit.Box(transform, "J2", new Vector2(0.5f, 1f), new Vector2(260f, -40f), new Vector2(480f, 60f), new Color(0.47f, 0.43f, 1f, 0.85f));
+                var p2 = UiKit.Box(transform, "J2", new Vector2(0.5f, 0f), new Vector2(260f, 50f), new Vector2(480f, 60f), new Color(0.47f, 0.43f, 1f, 0.85f));
                 UiKit.Text(p2.transform, "Texto", Loc.Pick("J2 · La línea (← → o ratón)", "P2 · The line (← → or mouse)"), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(480f, 60f), 28);
             }
+        }
+
+        Image hintBack;
+
+        /// <summary>Fondo oscuro detrás de la pista: se lee igual sobre la nieve, el sol o la línea.</summary>
+        void BuildHintBack()
+        {
+            if (hintText == null || string.IsNullOrEmpty(hintText.text)) return;
+            var rect = hintText.rectTransform;
+            hintBack = UiKit.Box(rect.parent, "FondoPista", rect.anchorMin, rect.anchoredPosition,
+                new Vector2(Mathf.Min(hintText.preferredWidth, rect.sizeDelta.x) + 70f, hintText.preferredHeight + 34f), new Color(0.04f, 0.03f, 0.14f, 0.5f));
+            hintBack.rectTransform.pivot = rect.pivot;
+            hintBack.transform.SetSiblingIndex(rect.GetSiblingIndex());
         }
 
         void Update()
         {
             age += Time.deltaTime;
+            if (hintBack != null) hintBack.color = new Color(0.04f, 0.03f, 0.14f, 0.5f * Fade(age, 6f, 1f));
+
             if (!finished) elapsed += Time.deltaTime;
             // El título se ve 2,5 s y se desvanece; la pista se queda un poco más.
             SetAlpha(title, Fade(age, 2.5f, 0.8f));

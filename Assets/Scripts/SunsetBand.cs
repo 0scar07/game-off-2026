@@ -15,8 +15,10 @@ namespace Fase
         {
             line = ShiftLine.Instance;
             if (line == null) { enabled = false; return; }
-            band = Shapes.Glow(transform, "Ocaso", Vector3.zero, new Vector2(3.2f, 80f), new Color(1f, 0.55f, 0.25f, 0.16f)).transform;
-            core = Shapes.Glow(transform, "OcasoNucleo", Vector3.zero, new Vector2(1.1f, 80f), new Color(1f, 0.75f, 0.45f, 0.14f)).transform;
+            // Suave: la línea ya brilla por sí misma y un halo fuerte tapaba a Lumi al cruzarla.
+            band = Shapes.Glow(transform, "Ocaso", Vector3.zero, new Vector2(2.6f, 80f), new Color(1f, 0.5f, 0.2f, 0.09f)).transform;
+            core = Shapes.Glow(transform, "OcasoNucleo", Vector3.zero, new Vector2(0.9f, 80f), new Color(1f, 0.7f, 0.4f, 0.07f)).transform;
+
         }
 
         void LateUpdate()

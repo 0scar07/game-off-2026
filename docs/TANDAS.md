@@ -149,7 +149,25 @@ Cómo quedó cada una:
 | 138 | Sombras largas de atardecer |
 | 139 | Capítulo submarino |
 
+## Tanda G · Pulido "maravilla" (de la revisión del 10 de noviembre) · pendiente de maquetas
+
+Sale de mirar las capturas de las 60 escenas. Los fallos ya están arreglados; esto es lo que haría que se vea y se sienta mejor.
+
+| # | Qué | Por qué |
+|---|---|---|
+| G1 | Más contraste en la nieve de día: cielo y colinas más azules, sombra de contacto bajo Lumi | En la Cumbre, Lumi (blanca) casi no se ve sobre el fondo blanco |
+| G2 | Árboles y plantas de noche distintos en cada bioma | Ahora la noche es siempre el mismo pino azul |
+| G3 | Repartir los 18 niveles extra entre los biomas | Hoy 15 de 18 están en la Cumbre y parecen el mismo nivel |
+| G4 | Decoración propia en la Ciudad (edificios con ventanas encendidas) y en el Mar (corales, burbujas, peces) | Solo cambian los colores; no se reconoce el sitio |
+| G5 | HUD nuevo: iconos de luna en vez de "Luna 0/2", fondos iguales en todas partes, pista en tarjeta con icono | El HUD es texto suelto y cambia de un nivel a otro |
+| G6 | Taller de niveles: paleta con iconos grandes de cada pieza, botones ordenados | Las etiquetas de la paleta no se leen |
+| G7 | Menú principal: barra de abajo con iconos y textos más grandes | Los textos de la barra son diminutos |
+| G8 | Más "jugo" al mover la línea: partículas al cambiar de mundo una pieza, sonido que sigue la velocidad | Mover la línea es el corazón del juego y casi no reacciona |
+| G9 | Agua con olas y reflejo, hielo con brillo | El lago es un bloque azul plano |
+| G10 | Prueba automática que juega cada nivel de principio a fin | Hoy se comprueba que cargan y que se pueden terminar sobre el papel, no jugándolos |
+
 ## Ya hechas o en marcha
+
 
 - 30, 37, 41, 94, 97, 98, 104, 130: semana 2 (programadas, falta probarlas en Unity).
 - 31 · Huellas en la nieve: ya existían (`Footprints.cs`).

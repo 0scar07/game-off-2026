@@ -31,7 +31,7 @@ namespace Fase
             Shapes.Glow(orb, "Nucleo", orb.position + Vector3.back * 0.02f, new Vector2(0.3f, 0.3f), Color.white, 2f, false);
             if (Found(level)) { done = true; return; }
             PlaceStar();
-            Invoke(nameof(Ask), 3.5f);
+            Invoke(nameof(Ask), 8f);   // cuando ya se ha ido la pista del nivel
         }
 
         void Ask() => LumiBubble.Say(orb, Loc.Pick("¿Me ayudas a encontrar mi estrella?", "Will you help me find my star?"), 3f, 0.8f);

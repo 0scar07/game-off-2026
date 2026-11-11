@@ -61,11 +61,8 @@ namespace Fase
         /// <summary>1 encima de la línea, 0 a 4 metros o más.</summary>
         public static float NearLine(Vector2 point)
         {
-            var line = ShiftLine.Instance;
-            if (line == null) return 0f;
-            float d = Vector2.Dot(point, line.Normal), best = float.MaxValue;
-            foreach (float l in ShiftLine.Lines) best = Mathf.Min(best, Mathf.Abs(d - l));
-            return 1f - Mathf.Clamp01(best / 4f);
+            return ShiftLine.Instance == null ? 0f : 1f - Mathf.Clamp01(ShiftLine.Distance(point) / 4f);
+
 
         }
     }

@@ -46,6 +46,16 @@ namespace Fase
 
         public static bool IsDay(Vector3 point) => IsDay((Vector2)point);
 
+        /// <summary>Distancia del punto a la línea más cercana, con cualquier ángulo (vertical, tumbada o inclinada).</summary>
+        public static float Distance(Vector2 point)
+        {
+            if (Instance == null) return float.MaxValue;
+            float d = Vector2.Dot(point, Instance.Normal), best = float.MaxValue;
+            foreach (float l in Lines) best = Mathf.Min(best, Mathf.Abs(d - l));
+            return best;
+        }
+
+
         /// <summary>Solo con la x (a la altura media del nivel).</summary>
         public static bool IsDay(float worldX) => IsDay(new Vector2(worldX, Instance != null ? Instance.referenceY : 0f));
 

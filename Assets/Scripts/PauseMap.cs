@@ -36,7 +36,10 @@ namespace Fase
             if (column != null) column.anchoredPosition = new Vector2(-430f, 0f);
             UiKit.Button(panel, "Foto", Loc.Pick("Modo foto (F)", "Photo mode (F)"), new Vector2(0.5f, 0.5f), new Vector2(330f, -190f), new Vector2(420f, 90f), PhotoMode.Open, 36);
 
+            // En el Taller y en Sin fin el nivel cambia mientras se juega: el mapa se quedaría viejo.
+            if (Hud.Instance != null && Hud.Instance.sandbox) return;
             var colliders = new List<BoxCollider2D>();
+
             foreach (var box in FindObjectsByType<BoxCollider2D>())
                 if (!box.isTrigger && box.attachedRigidbody == null) colliders.Add(box);
             if (colliders.Count == 0) return;
