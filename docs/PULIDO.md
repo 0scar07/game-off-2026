@@ -36,6 +36,9 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
   inglés por falta de traducción: tras la gira de paneles y de las 60 escenas en portugués, vacío.
 - Arreglado: al coger un copo salía "¡Una copo!"; la tienda no cambiaba de idioma hasta reiniciar;
   en Curiosidades el texto largo se salía de la tarjeta.
+- Resoluciones: a 21:9 todo bien. A 4:3 se cortaban los lados (barra del menú, niveles 1 y 19 del
+  mapa): ahora en pantallas más estrechas que 16:9 la interfaz escala por la anchura (AspectFit).
+  Con el móvil en vertical, en los niveles sale un aviso para girarlo (se ve muy poco camino).
 
 ---
 
@@ -126,7 +129,7 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 | Controles táctiles y glifos de mando | ⬜ |
 | Cuatro idiomas sin textos que se salgan | 🔧 menús y niveles sin textos cortados ni sin traducir |
 | Texto grande de accesibilidad | ⬜ |
-| Resoluciones 16:9, 21:9, 4:3 y móvil | ⬜ |
+| Resoluciones 16:9, 21:9, 4:3 y móvil | 🔧 4:3 y vertical arreglados · ⬜ probar en un móvil real |
 
 ## 7 · Sonido
 
@@ -170,6 +173,7 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 | 6 | Portugués y francés | ~400 textos salían en inglés | Molesta | 🔧 |
 | 7 | Plumas del capítulo III | "¡Una copo!" | Molesta | 🔧 |
 | 8 | Tienda | Los nombres no cambiaban de idioma | Molesta | 🔧 |
+| 9 | Pantallas 4:3 y móvil | Se cortaban los lados de la interfaz | Molesta | 🔧 |
 
 ---
 
