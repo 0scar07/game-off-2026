@@ -108,7 +108,9 @@ namespace Fase
         void Start()
         {
             Resume();
-            string name = sandbox ? Loc.Pick(levelName, levelNameEn) : daily ? $"{Loc.Get("daily")} · {Loc.Pick(levelName, levelNameEn)}" : $"{levelNumber}. {Loc.Pick(levelName, levelNameEn)}";
+            // Los niveles secretos y extra no son de la historia: llevan ★ en vez de número.
+            string number = Secret ? "★" : levelNumber.ToString();
+            string name = sandbox ? Loc.Pick(levelName, levelNameEn) : daily ? $"{Loc.Get("daily")} · {Loc.Pick(levelName, levelNameEn)}" : $"{number}. {Loc.Pick(levelName, levelNameEn)}";
             title.text = name;
             hintText.text = resumed ? Loc.Pick("Sigues desde el último punto de control.", "Picking up from your last checkpoint.") : InputGlyphs.Adapt(Loc.Pick(hint, hintEn));
 
@@ -131,6 +133,16 @@ namespace Fase
                 UiKit.Text(p1.transform, "Texto", Loc.Pick("J1 · Lumi (A/D + Espacio)", "P1 · Lumi (A/D + Space)"), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(480f, 60f), 28);
                 var p2 = UiKit.Box(transform, "J2", new Vector2(0.5f, 0f), new Vector2(260f, 50f), new Vector2(480f, 60f), new Color(0.47f, 0.43f, 1f, 0.85f));
                 UiKit.Text(p2.transform, "Texto", Loc.Pick("J2 · La línea (← → o ratón)", "P2 · The line (← → or mouse)"), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(480f, 60f), 28);
+            }
+        }
+
+        /// <summary>¿Es un nivel secreto o extra (fuera de la historia)?</summary>
+        bool Secret
+        {
+            get
+            {
+                var levels = LevelCatalog.Get.levels;
+                return levelNumber >= 1 && levelNumber <= levels.Length && levels[levelNumber - 1].secret;
             }
         }
 
@@ -172,7 +184,7 @@ namespace Fase
             {
                 var badge = UiKit.Box(pill, "Numero", new Vector2(0f, 0.5f), new Vector2(40f, 0f), new Vector2(50f, 50f), UiKit.Gold);
                 badge.rectTransform.pivot = new Vector2(0.5f, 0.5f);
-                var number = UiKit.Text(badge.transform, "Texto", levelNumber.ToString(), new Vector2(0.5f, 0.5f), new Vector2(0f, -1f), new Vector2(50f, 50f), 28, TextAnchor.MiddleCenter, new Color(0.1f, 0.06f, 0.19f));
+                var number = UiKit.Text(badge.transform, "Texto", Secret ? "★" : levelNumber.ToString(), new Vector2(0.5f, 0.5f), new Vector2(0f, -1f), new Vector2(50f, 50f), 28, TextAnchor.MiddleCenter, new Color(0.1f, 0.06f, 0.19f));
                 number.fontStyle = FontStyle.Bold;
                 Destroy(number.GetComponent<Shadow>());
                 textX = 104f;
