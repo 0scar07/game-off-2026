@@ -149,7 +149,7 @@ Cómo quedó cada una:
 | 138 | Sombras largas de atardecer |
 | 139 | Capítulo submarino |
 
-## Tanda G · Pulido "maravilla" (de la revisión del 10 de noviembre) · pendiente de maquetas
+## Tanda G · Pulido "maravilla" (de la revisión del 10 de noviembre) · maquetas: tanda-g-*.png
 
 Sale de mirar las capturas de las 60 escenas. Los fallos ya están arreglados; esto es lo que haría que se vea y se sienta mejor.
 
