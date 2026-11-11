@@ -42,6 +42,8 @@ namespace Fase
             }
 
             var hud = Hud.Instance;
+            // El mensaje de la meta del HUD se quedaba debajo, grande y borroso, detrás de las medallas.
+            if (hud != null) hud.ClearBanner();
 
             int level = hud != null ? hud.levelNumber : 1;
             float time = hud != null ? hud.Elapsed : 0f;
@@ -61,8 +63,8 @@ namespace Fase
             shade.color = new Color(0.02f, 0.02f, 0.08f, 0.62f);
 
             string name = hud != null ? Loc.Pick(hud.levelName, hud.levelNameEn) : "";
-            UiKit.Text(root, "Titulo", Loc.Get("complete"), new Vector2(0.5f, 0.5f), new Vector2(0f, 400f), new Vector2(1600f, 130f), 104);
-            UiKit.Text(root, "Nivel", hud != null && hud.Daily ? Loc.Get("daily") : $"{level} · {name}", new Vector2(0.5f, 0.5f), new Vector2(0f, 310f), new Vector2(1400f, 60f), 44, TextAnchor.MiddleCenter, UiKit.Soft);
+            UiKit.Text(root, "Titulo", Loc.Get("complete"), new Vector2(0.5f, 0.5f), new Vector2(0f, 412f), new Vector2(1600f, 130f), 104);
+            UiKit.Text(root, "Nivel", hud != null && hud.Daily ? Loc.Get("daily") : $"{level} · {name}", new Vector2(0.5f, 0.5f), new Vector2(0f, 328f), new Vector2(1400f, 60f), 44, TextAnchor.MiddleCenter, UiKit.Soft);
 
             // Medallas.
             var medals = new RectTransform[4];
@@ -95,7 +97,7 @@ namespace Fase
             UiKit.Text(root, "Tiempo", $"⏱ {Hud.FormatTime(time)}{moon}   ·   {falls}", new Vector2(0.5f, 0.5f), new Vector2(0f, -190f), new Vector2(900f, 80f), 40);
             string note = LevelGoal.LastWasNightRoute ? Loc.Pick("☾ ¡Ruta de la noche!", "☾ Night route!")
                 : assist ? Loc.Get("assistnomedal") : better ? Loc.Get("newmedal") + " " + Medals.Name(medal) : hud != null && hud.IsRecord ? Loc.Get("record") : "";
-            var noteText = UiKit.Text(root, "Nota", note, new Vector2(0.5f, 0.5f), new Vector2(0f, 245f), new Vector2(1200f, 50f), 36, TextAnchor.MiddleCenter, UiKit.Gold);
+            var noteText = UiKit.Text(root, "Nota", note, new Vector2(0.5f, 0.5f), new Vector2(0f, 268f), new Vector2(1200f, 50f), 34, TextAnchor.MiddleCenter, UiKit.Gold);
 
             // Desafíos del nivel.
             int done = 0;
@@ -119,7 +121,12 @@ namespace Fase
                 UiKit.Box(root, "Reto" + i, new Vector2(0.5f, 0.5f), new Vector2(cx, -262f), new Vector2(380f, 48f), ok ? new Color(0.45f, 0.85f, 0.55f, 0.25f) : new Color(1f, 1f, 1f, 0.06f));
                 UiKit.Text(root, "RetoTexto" + i, (ok ? "✔  " : "✖  ") + challenges[i].Item2, new Vector2(0.5f, 0.5f), new Vector2(cx, -262f), new Vector2(380f, 48f), 26, TextAnchor.MiddleCenter, ok ? new Color(0.8f, 1f, 0.85f) : new Color(0.6f, 0.6f, 0.75f));
             }
-            UiKit.Text(root, "Estadisticas", Stats.Summary(), new Vector2(0f, 0f), new Vector2(40f, 30f), new Vector2(1200f, 40f), 24, TextAnchor.LowerLeft, UiKit.Soft).rectTransform.pivot = new Vector2(0f, 0f);
+            var summary = UiKit.Text(root, "Estadisticas", Stats.Summary(), new Vector2(0.5f, 0f), new Vector2(0f, 24f), new Vector2(1000f, 40f), 24, TextAnchor.LowerCenter, UiKit.Soft);
+            summary.rectTransform.pivot = new Vector2(0.5f, 0f);
+            summary.horizontalOverflow = HorizontalWrapMode.Wrap;
+            summary.resizeTextForBestFit = true;
+            summary.resizeTextMinSize = 16;
+            summary.resizeTextMaxSize = 24;
 
             // Botones.
             var next = UiKit.Button(root, "Siguiente", Loc.Get("next"), new Vector2(0.5f, 0.5f), new Vector2(330f, -385f), new Vector2(380f, 110f), Next, 50);

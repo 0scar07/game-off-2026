@@ -39,6 +39,11 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
 - Resoluciones: a 21:9 todo bien. A 4:3 se cortaban los lados (barra del menú, niveles 1 y 19 del
   mapa): ahora en pantallas más estrechas que 16:9 la interfaz escala por la anchura (AspectFit).
   Con el móvil en vertical, en los niveles sale un aviso para girarlo (se ve muy poco camino).
+- Pausa y resultados vistos en español y francés. Resultados: el mensaje de la meta del HUD se
+  quedaba grande y borroso detrás de las medallas, "¡Nueva medalla!" pisaba el nombre del nivel y
+  "Código de fantasma" tapaba la línea de estadísticas. Arreglados.
+- Bot de pruebas: ya salta los pinchos del nivel 1 (usaba su propio cálculo de suelo, que fallaba).
+  Sigue sin resolver niveles enteros; las rutas las comprueba Tools/comprobar_niveles.py.
 
 ---
 
@@ -51,8 +56,8 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
 | Menú principal y su barra | ✅ | Barra con iconos grandes (tanda G) |
 | El viaje (mapa) | ✅ | Lumi camina de nivel en nivel |
 | Opciones | 🔧 | Fondo y botones ya no salen ovalados |
-| Pausa y mapa de pausa | ⬜ | Mapa oculto en Taller y Sin fin |
-| Resultados | ⬜ | |
+| Pausa y mapa de pausa | ✅ | Mapa oculto en Taller y Sin fin |
+| Resultados | 🔧 | Ver fallo 10 |
 | Final y final secreto | ⬜ | |
 | Páginas de historia y celebración de capítulo | ⬜ | |
 | Decisión del capítulo II | ✅ | Se ve y se elige |
@@ -167,13 +172,14 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 |---|---|---|---|---|
 | 1 | HUD de niveles secretos y extra | Salía un número de la historia ("27.") | Molesta | 🔧 |
 | 2 | Exportación web | Se queda sin memoria | Bloquea | 🔧 |
-| 3 | Bot de pruebas | No salta los pinchos del nivel 1 | Herramienta | ❌ |
+| 3 | Bot de pruebas | No salta los pinchos del nivel 1 | Herramienta | 🔧 |
 | 4 | Menús (11 paneles) | Textos pisándose, filas bajo "Volver", iconos sobre el texto | Molesta | 🔧 |
 | 5 | Opciones y botones del menú | Se veían ovalados (sprite sin borde de 9 cortes) | Molesta | 🔧 |
 | 6 | Portugués y francés | ~400 textos salían en inglés | Molesta | 🔧 |
 | 7 | Plumas del capítulo III | "¡Una copo!" | Molesta | 🔧 |
 | 8 | Tienda | Los nombres no cambiaban de idioma | Molesta | 🔧 |
 | 9 | Pantallas 4:3 y móvil | Se cortaban los lados de la interfaz | Molesta | 🔧 |
+| 10 | Resultados | Texto de la meta borroso detrás de las medallas; textos que se pisaban | Se nota | 🔧 |
 
 ---
 

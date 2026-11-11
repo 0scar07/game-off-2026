@@ -53,6 +53,7 @@ namespace Fase
 
         /// <summary>Lumi está dormida (lleva un rato sin moverse).</summary>
         public bool Sleeping => stillTime >= SleepAt;
+        public bool Grounded => grounded;
         string boredState = "Yes";
         const float stepInterval = 0.3f;
         string currentState = "";

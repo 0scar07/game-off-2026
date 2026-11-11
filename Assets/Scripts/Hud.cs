@@ -281,6 +281,12 @@ namespace Fase
             }
         }
 
+        /// <summary>Quita el mensaje de la meta (la pantalla de resultados lo repite mejor).</summary>
+        public void ClearBanner()
+        {
+            if (banner != null) banner.text = "";
+        }
+
         void OnGoal()
         {
             finished = true;

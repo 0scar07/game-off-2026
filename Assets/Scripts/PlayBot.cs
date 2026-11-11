@@ -67,7 +67,7 @@ namespace Fase
             Move = 1f;
 
             // Saltar: pared delante, hueco delante o atasco.
-            bool grounded = Ground(p, 0f);
+            bool grounded = player.Grounded;
             bool wall = Solid(Physics2D.Raycast(p + Vector2.down * 0.3f, Vector2.right, 0.9f));
             bool gap = grounded && !Ground(p, 1.3f);
             bool danger = false;
@@ -75,7 +75,8 @@ namespace Fase
             {
                 var hp = (Vector2)h.transform.position;
                 float dx = hp.x - p.x;
-                if (dx < 0.2f || dx > 2.4f || Mathf.Abs(hp.y - p.y) > 1.6f) continue;
+                // Se salta justo antes del primer peligro (saltar antes hace caer encima de los siguientes).
+                if (dx < 0.3f || dx > 1.25f + Mathf.Abs(lastVel.x) * Time.deltaTime * 2f || Mathf.Abs(hp.y - p.y) > 1.6f) continue;
                 bool day = ShiftLine.IsDay(hp);
                 if (h.active == Hazard.When.Always || (h.active == Hazard.When.DayOnly) == day) { danger = true; break; }
             }
@@ -85,6 +86,7 @@ namespace Fase
             // El salto se mantiene pulsado unos instantes: Lumi lo lee en el paso de física.
             jumpPulse -= Time.deltaTime;
             JumpPressed = jumpPulse > 0f;
+            if (Debug && danger) UnityEngine.Debug.LogWarning($"bot peligro en {p.x:0.00} suelo={grounded} enfriar={cooldown:0.00}");
             if (grounded && cooldown <= 0f && (wall || gap || danger || stuckTime > 0.8f))
             {
                 jumpPulse = 0.08f;
