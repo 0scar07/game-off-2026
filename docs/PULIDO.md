@@ -21,7 +21,9 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
   compás). La voz no tiene silencios raros al principio ni al final.
 - Arreglado: los niveles secretos y extra mostraban un número de la historia ("27. Ciudad de la
   aurora"); ahora llevan ★.
-- Pendiente para mañana: exportar la web (cerrar todo menos Unity) y seguir la Fase 2.
+- Web exportada con el PC libre (cerrando Unity y abriéndolo solo para exportar): 25,7 MB, 63 min.
+  La prueba automática la abre en 10,5 s, pasa el inicio, entra al nivel 1 y juega sin errores.
+- Pendiente: subirla a itch (release `web-…`) y seguir la Fase 2.
 
 ---
 
@@ -137,8 +139,8 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 
 | Qué | Estado |
 |---|---|
-| Exportar sin quedarse sin memoria | ❌ falla con el PC ocupado; probar con todo cerrado |
-| Prueba automática (Tools/prueba_web) | ⬜ |
+| Exportar sin quedarse sin memoria | 🔧 con el PC libre y código IL2CPP optimizado por tamaño |
+| Prueba automática (Tools/prueba_web) | ✅ carga en 10,5 s, sin errores |
 | Probar en navegador y en móvil | ⬜ |
 | Subir a itch | ⬜ |
 
@@ -149,7 +151,7 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 | # | Dónde | Qué pasa | Gravedad | Estado |
 |---|---|---|---|---|
 | 1 | HUD de niveles secretos y extra | Salía un número de la historia ("27.") | Molesta | 🔧 |
-| 2 | Exportación web | Se queda sin memoria | Bloquea | ❌ |
+| 2 | Exportación web | Se queda sin memoria | Bloquea | 🔧 |
 | 3 | Bot de pruebas | No salta los pinchos del nivel 1 | Herramienta | ❌ |
 
 ---

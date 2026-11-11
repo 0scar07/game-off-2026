@@ -138,7 +138,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 876166786876340024}
-  - {fileID: 3624767670161729755}
+  - {fileID: 7166561028435362125}
   m_Father: {fileID: 6283509116448195103}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2499239622326326661
@@ -163,7 +163,7 @@ MonoBehaviour:
   flyRange: 3
   visual: {fileID: 876166786876340024}
   animator: {fileID: 6757993187128452078}
-  statue: {fileID: 3624767670161729755}
+  statue: {fileID: 7166561028435362125}
 --- !u!1 &8841774831960689000
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,7 +331,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 32cb5d2e0ab9ca342911df553c27b82d, type: 3}
   m_PrefabInstance: {fileID: 838369307858505939}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &3875201797349052208
+--- !u!1001 &7277258671270209190
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -428,8 +428,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 32cb5d2e0ab9ca342911df553c27b82d, type: 3}
---- !u!4 &3624767670161729755 stripped
+--- !u!4 &7166561028435362125 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 32cb5d2e0ab9ca342911df553c27b82d, type: 3}
-  m_PrefabInstance: {fileID: 3875201797349052208}
+  m_PrefabInstance: {fileID: 7277258671270209190}
   m_PrefabAsset: {fileID: 0}
