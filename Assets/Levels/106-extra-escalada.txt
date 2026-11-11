@@ -8,6 +8,7 @@ secreto: si
 practica: si
 angulo: 90
 dia: derecha
+bioma: cumbre
 ---
                         
                         

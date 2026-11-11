@@ -63,7 +63,10 @@ namespace Fase
         /// <summary>Barra de abajo con iconos: todo lo que no es jugar o el viaje.</summary>
         void BuildMainRow()
         {
-            var dock = UiKit.Box(menu.mainPanel.transform.parent, "Barra", new Vector2(0.5f, 0f), new Vector2(0f, 26f), new Vector2(1680f, 128f), new Color(0.04f, 0.03f, 0.14f, 0.78f));
+            var dock = UiKit.Box(menu.mainPanel.transform.parent, "Barra", new Vector2(0.5f, 0f), new Vector2(0f, 22f), new Vector2(1760f, 150f), new Color(0.04f, 0.03f, 0.14f, 0.8f));
+            var dockEdge = dock.gameObject.AddComponent<Outline>();
+            dockEdge.effectColor = new Color(1f, 1f, 1f, 0.18f);
+            dockEdge.effectDistance = new Vector2(2f, -2f);
             dock.rectTransform.pivot = new Vector2(0.5f, 0f);
             // La barra va con el menú principal: se esconde cuando se abre otro panel.
             menu.Shown += panel => dock.gameObject.SetActive(panel == menu.mainPanel);
@@ -83,13 +86,19 @@ namespace Fase
             for (int i = 0; i < items.Length; i++)
             {
                 var (icon, key, action) = items[i];
-                float x = (i - (items.Length - 1) * 0.5f) * 164f;
-                var button = UiKit.Button(dock.transform, key, "", new Vector2(0.5f, 0.5f), new Vector2(x, 0f), new Vector2(156f, 112f), action, 22);
+                float x = (i - (items.Length - 1) * 0.5f) * 172f;
+                var button = UiKit.Button(dock.transform, key, "", new Vector2(0.5f, 0.5f), new Vector2(x, 0f), new Vector2(164f, 132f), action, 28);
                 var image = button.GetComponent<Image>();
                 image.color = new Color(1f, 1f, 1f, 0.02f);
                 var label = button.GetComponentInChildren<Text>();
-                label.rectTransform.anchoredPosition = new Vector2(0f, -26f);
-                var glyph = UiKit.Text(button.transform, "Icono", icon, new Vector2(0.5f, 0.5f), new Vector2(0f, 16f), new Vector2(156f, 60f), 46, TextAnchor.MiddleCenter, UiKit.Gold);
+                label.rectTransform.anchoredPosition = new Vector2(0f, -32f);
+                label.fontStyle = FontStyle.Bold;
+                // Textos largos ("Curiosidades") se encogen para caber.
+                label.rectTransform.sizeDelta = new Vector2(158f, 40f);
+                label.resizeTextForBestFit = true;
+                label.resizeTextMinSize = 18;
+                label.resizeTextMaxSize = 28;
+                var glyph = UiKit.Text(button.transform, "Icono", icon, new Vector2(0.5f, 0.5f), new Vector2(0f, 20f), new Vector2(164f, 70f), 58, TextAnchor.MiddleCenter, UiKit.Gold);
                 glyph.fontStyle = FontStyle.Normal;
                 string k = key;
                 refreshers.Add(() => label.text = k == "daily" ? Loc.Pick("Desafío", "Daily") : k == "trivia" ? Loc.Pick("Curiosidades", "Trivia") : Loc.Get(k));

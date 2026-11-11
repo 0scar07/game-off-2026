@@ -57,6 +57,8 @@ namespace Fase
             gameObject.AddComponent<RaceSetup>();
             gameObject.AddComponent<Companion>();
             gameObject.AddComponent<SunsetBand>();
+            gameObject.AddComponent<BlobShadow>();
+            gameObject.AddComponent<LineJuice>();
 
 
 

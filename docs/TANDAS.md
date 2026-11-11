@@ -149,7 +149,9 @@ Cómo quedó cada una:
 | 138 | Sombras largas de atardecer |
 | 139 | Capítulo submarino |
 
-## Tanda G · Pulido "maravilla" (de la revisión del 10 de noviembre) · maquetas: tanda-g-*.png
+## Tanda G · Pulido "maravilla" (de la revisión del 10 de noviembre) · ✅ G1-G9 programadas · G10 a medias · maquetas: tanda-g-*.png
+
+G10: el bot (Fase → Probar niveles jugando) ya mueve la línea, salta paredes, huecos y peligros, pero todavía no pasa los pinchos del nivel 1; falta afinarlo.
 
 Sale de mirar las capturas de las 60 escenas. Los fallos ya están arreglados; esto es lo que haría que se vea y se sienta mejor.
 

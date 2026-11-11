@@ -63,7 +63,7 @@ public static partial class LevelBuilder
         public int Width => rows.Max(r => r.Length);
         public int Height => rows.Length;
         public string biome;     // cabecera "bioma:" (ciudad, mar) — si no, el del capítulo
-        public Biome Biome => ExtraBiomes.FirstOrDefault(b => b.id == biome) ?? Biomes[Mathf.Clamp(chapter, 1, Biomes.Length) - 1];
+        public Biome Biome => Biomes.Concat(ExtraBiomes).FirstOrDefault(b => b.id == biome) ?? Biomes[Mathf.Clamp(chapter, 1, Biomes.Length) - 1];
         public int Fragments => rows.Sum(r => r.Count(c => c == '*' || c == 'K'));
 
         /// <summary>
@@ -514,6 +514,18 @@ public static partial class LevelBuilder
                 var water = Primitive(PrimitiveType.Cube, "AguaDia", new Vector3(center, bottom + 0.4f, 0f), new Vector3(width, 0.8f, Depth),
                     Lit("Agua", Day, new Color(0.2f, 0.55f, 0.95f), new Color(0.05f, 0.15f, 0.3f)));
                 water.transform.SetParent(parent, true);
+                // De día, olas que se mueven en la cara de delante y el reflejo del sol.
+                float front = -Depth * 0.5f - 0.02f;
+                var waves = Quad("Olas", new Vector3(center, bottom + 0.62f, front), new Vector2(width, 0.36f), ParticleMaterial("Olas", Waves(), new Color(0.85f, 0.95f, 1f, 0.85f), Day, false), parent);
+                waves.AddComponent<WaterWaves>().tiles = width / 1.6f;
+                Quad("ReflejoSol", new Vector3(center, bottom + 0.4f, front - 0.01f), new Vector2(Mathf.Min(width * 0.4f, 2.4f), 0.7f), ParticleMaterial("ReflejoSol", SoftDot(), new Color(1f, 0.95f, 0.75f, 0.35f), Day, true), parent);
+                // De noche, el hielo brilla: borde blanco arriba y destellos en diagonal.
+                Quad("BordeHielo", new Vector3(center, bottom + 0.97f, front), new Vector2(width, 0.07f), ParticleMaterial("BordeHielo", null, new Color(1.3f, 1.4f, 1.6f, 0.9f), Night, true), parent);
+                for (int col = from; col <= to; col += 2)
+                {
+                    var glint = Quad("DestelloHielo", new Vector3(col + 0.6f, bottom + 0.5f, front - 0.01f), new Vector2(0.14f, 0.8f), ParticleMaterial("DestelloHielo", SoftBand(), new Color(1f, 1f, 1f, 0.45f), Night, true), parent);
+                    glint.transform.rotation = Quaternion.Euler(0f, 0f, -28f);
+                }
                 var danger = Trigger("PeligroAgua", new Vector3(center, bottom + 0.35f, 0f), new Vector2(width - 0.1f, 0.6f), parent);
                 danger.AddComponent<Hazard>().active = Hazard.When.DayOnly;
                 break;
@@ -657,8 +669,13 @@ public static partial class LevelBuilder
         {
             var spot = top + new Vector3(0f, 0f, 0.8f + (float)random.NextDouble() * 0.4f);
             float s = 1.6f + (float)random.NextDouble() * 0.9f;
+            // Bajo el mar, corales en los dos mundos en vez de árboles.
+            if (biome.id == "mar") { Coral(spot, s, random, parent); return; }
             Fit(biome.dayTrees[random.Next(biome.dayTrees.Length)], spot, new Vector3(s * 0.85f, s * 1.3f, s * 0.85f), Day, parent, recolor: biome.TreeColors);
-            Fit(biome.nightTree, spot, new Vector3(s * 0.75f, s * 1.4f, s * 0.75f), Night, parent, biome.nightTint, biome.nightTreeGlow);
+            string night = biome.nightTrees != null ? biome.nightTrees[random.Next(biome.nightTrees.Length)] : biome.nightTree;
+            Fit(night, spot, new Vector3(s * 0.75f, s * 1.4f, s * 0.75f), Night, parent, biome.nightTint, biome.nightTreeGlow);
+            // Las setas gigantes de la pradera brillan bajo el sombrero.
+            if (night.Contains("mushroom")) Glow("BrilloSetaGrande", spot + new Vector3(0f, s * 1.1f, -0.6f), 3.2f, biome.mushroomGlow * 2.2f + new Color(0, 0, 0, 0.5f), Night, parent);
         }
         else if (roll < 0.48)
         {
@@ -675,6 +692,30 @@ public static partial class LevelBuilder
             var spot = top + new Vector3(0f, 0f, 0.9f);
             Fit(Quat + (random.NextDouble() < 0.5 ? "Rock_1.fbx" : "Bush.fbx"), spot, new Vector3(1.1f, 0.7f, 0.9f), Both, parent, recolor: biome.TreeColors);
         }
+    }
+
+    static readonly Color[] CoralColors = { new Color(1f, 0.48f, 0.56f), new Color(1f, 0.69f, 0.38f), new Color(0.78f, 0.56f, 1f), new Color(0.5f, 0.94f, 0.88f) };
+
+    /// <summary>Coral ramificado hecho con palitos (existe en los dos mundos; de noche brilla un poco).</summary>
+    static void Coral(Vector3 bottom, float size, System.Random random, Transform parent)
+    {
+        int pick = random.Next(CoralColors.Length);
+        var color = CoralColors[pick];
+        var mat = Lit("Coral" + pick, Both, color, color * 0.25f);
+        var root = new GameObject("Coral").transform;
+        root.SetParent(parent, true);
+        void Branch(Vector3 from, float angle, float length, float thick, int depth)
+        {
+            if (depth > 3 || length < 0.25f) return;
+            var dir = new Vector3(Mathf.Sin(angle * Mathf.Deg2Rad), Mathf.Cos(angle * Mathf.Deg2Rad), 0f);
+            var to = from + dir * length;
+            var stick = Primitive(PrimitiveType.Cube, "Rama", (from + to) * 0.5f, new Vector3(thick, length, thick), mat);
+            stick.transform.rotation = Quaternion.Euler(0f, 0f, -angle);
+            stick.transform.SetParent(root, true);
+            Branch(to, angle - 25f - (float)random.NextDouble() * 15f, length * 0.68f, thick * 0.75f, depth + 1);
+            Branch(to, angle + 20f + (float)random.NextDouble() * 15f, length * 0.68f, thick * 0.75f, depth + 1);
+        }
+        Branch(bottom, (float)random.NextDouble() * 16f - 8f, size * 0.55f, 0.22f, 0);
     }
 
     // ───────────────────────── Personaje ─────────────────────────

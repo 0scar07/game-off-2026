@@ -7,6 +7,7 @@ linea: 10
 secreto: si
 practica: si
 curva: 9
+bioma: cumbre
 ---
 
 

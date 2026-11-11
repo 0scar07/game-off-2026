@@ -381,6 +381,7 @@ namespace Fase
 
         float MoveInput()
         {
+            if (PlayBot.Active && playerIndex == 0) return PlayBot.Move;
             if (playerIndex == 1)
             {
                 var kb = Keyboard.current;
@@ -401,6 +402,7 @@ namespace Fase
 
         bool JumpPressed()
         {
+            if (PlayBot.Active && playerIndex == 0) return PlayBot.JumpPressed;
             if (playerIndex == 1)
             {
                 var kb = Keyboard.current;
@@ -414,6 +416,7 @@ namespace Fase
 
         bool JumpHeld()
         {
+            if (PlayBot.Active && playerIndex == 0) return PlayBot.JumpHeld;
             if (playerIndex == 1)
             {
                 var kb = Keyboard.current;

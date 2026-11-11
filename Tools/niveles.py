@@ -340,7 +340,22 @@ class Level:
         return self
 
 
+# Los niveles extra se reparten entre los cinco biomas (si no, casi todos serían de la Cumbre).
+BIOMAS_EXTRA = {
+    "95-trucos-de-la-linea.txt": "pradera", "96-extra-atardecer.txt": "pradera", "101-extra-llaves.txt": "pradera",
+    "97-extra-espejos.txt": "bosque", "98-extra-peso.txt": "bosque", "99-extra-persecucion.txt": "bosque", "103-extra-ritmo.txt": "bosque",
+    "102-extra-oscuro.txt": "cumbre", "104-extra-curva.txt": "cumbre", "105-extra-sombras.txt": "cumbre", "106-extra-escalada.txt": "cumbre",
+    "100-extra-marea.txt": "mar",
+}
+
+
+def with_biome(file, extra):
+    biome = BIOMAS_EXTRA.get(file)
+    return extra + f"bioma: {biome}\n" if biome and "bioma:" not in extra else extra
+
+
 def save(file, chapter, name, name_en, hint, hint_en, line, level, extra=""):
+    extra = with_biome(file, extra)
     os.makedirs(os.path.dirname(os.path.join(OUT, file)), exist_ok=True)
     # Una pista con saltos de línea iría en varias líneas y el juego solo leería la primera.
     hint, hint_en = hint.replace("\n", "\\n"), hint_en.replace("\n", "\\n")
@@ -548,6 +563,7 @@ def vertical_tower():
 
 
 def save_text(file, chapter, name, name_en, hint, hint_en, line, text, extra=""):
+    extra = with_biome(file, extra)
     # Una pista con saltos de línea iría en varias líneas y el juego solo leería la primera.
     hint, hint_en = hint.replace("\n", "\\n"), hint_en.replace("\n", "\\n")
     body = (f"nombre: {name}\nname: {name_en}\npista: {hint}\nhint: {hint_en}\n"

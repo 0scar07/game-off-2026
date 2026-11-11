@@ -7,6 +7,7 @@ linea: 3
 secreto: si
 practica: si
 linea2: 30
+bioma: pradera
 ---
 
 

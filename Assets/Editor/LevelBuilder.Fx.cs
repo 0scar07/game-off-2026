@@ -19,8 +19,10 @@ public static partial class LevelBuilder
         public Color grass, dirtLight, dirtMid, dirtDark, foliage;
         public string[] dayTrees, dayPlants;
         public string nightTree = Nature + "tree_pineRoundB.fbx";
+        /// <summary>Árboles de noche propios del bioma (si no, el pino de siempre).</summary>
+        public string[] nightTrees;
         public Color nightTint, nightTreeGlow, mushroomGlow, fireflies;
-        public int weather; // 0 polen y pétalos, 1 hojas, 2 nieve
+        public int weather; // 0 polen y pétalos, 1 hojas, 2 nieve, 3 burbujas
         public string musicDay, musicNight, ambienceDay, ambienceNight;
         public float saturation, bloom;
 
@@ -54,6 +56,7 @@ public static partial class LevelBuilder
             dayTrees = new[] { Quat + "Tree.fbx", Quat + "Tree_Fruit.fbx" },
             dayPlants = new[] { Nature + "flower_redA.fbx", Nature + "flower_yellowB.fbx", Nature + "flower_purpleA.fbx", Quat + "Plant_Large.fbx", Quat + "Bush_Fruit.fbx" },
             nightTint = new Color(0.75f, 0.8f, 1.25f), nightTreeGlow = new Color(0.02f, 0.06f, 0.14f), mushroomGlow = new Color(0.15f, 0.25f, 0.7f),
+            nightTrees = new[] { Nature + "mushroom_redTall.fbx", Nature + "mushroom_tanTall.fbx" },
             fireflies = new Color(1f, 0.9f, 0.45f), weather = 0,
             musicDay = "dia", musicNight = "noche", ambienceDay = "amb_pradera_dia", ambienceNight = "amb_pradera_noche",
             saturation = 12f, bloom = 0.9f,
@@ -69,6 +72,7 @@ public static partial class LevelBuilder
             dayTrees = new[] { Nature + "tree_oak_fall.fbx", Nature + "tree_default_fall.fbx", Nature + "tree_fat_fall.fbx" },
             dayPlants = new[] { Nature + "mushroom_tanGroup.fbx", Nature + "plant_bushDetailed.fbx", Quat + "Plant_Small.fbx", Nature + "stump_round.fbx" },
             nightTint = new Color(1.1f, 0.6f, 1.0f), nightTreeGlow = new Color(0.12f, 0.02f, 0.1f), mushroomGlow = new Color(0.6f, 0.1f, 0.4f),
+            nightTrees = new[] { Nature + "tree_default_dark.fbx", Nature + "tree_oak_dark.fbx", Nature + "tree_fat_darkh.fbx" },
             fireflies = new Color(1f, 0.45f, 0.75f), weather = 1,
             musicDay = "otono_dia", musicNight = "otono_noche", ambienceDay = "amb_bosque_dia", ambienceNight = "amb_bosque_noche",
             saturation = 18f, bloom = 1.0f,
@@ -76,17 +80,18 @@ public static partial class LevelBuilder
         new Biome
         {
             id = "cumbre", name = "La Cumbre Helada", nameEn = "The Frozen Peak",
-            skyTop = new Color(0.45f, 0.72f, 0.98f), skyHorizon = new Color(0.92f, 0.97f, 1f),
+            // Cielo y colinas más azules que la nieve: si no, Lumi (blanca) se pierde.
+            skyTop = new Color(0.22f, 0.52f, 0.92f), skyHorizon = new Color(0.62f, 0.8f, 0.98f),
             nightTop = new Color(0.0f, 0.01f, 0.05f), nightHorizon = new Color(0.03f, 0.14f, 0.3f),
-            sun = new Color(0.95f, 0.97f, 1f), haze = new Color(0.88f, 0.94f, 1f), hillsNight = new Color(0.05f, 0.16f, 0.32f),
+            sun = new Color(0.95f, 0.97f, 1f), haze = new Color(0.55f, 0.7f, 0.92f), hillsNight = new Color(0.05f, 0.16f, 0.32f),
             grass = new Color(0.96f, 0.98f, 1f), dirtLight = new Color(0.66f, 0.74f, 0.86f), dirtMid = new Color(0.52f, 0.6f, 0.74f), dirtDark = new Color(0.4f, 0.47f, 0.6f),
-            foliage = new Color(0.82f, 0.9f, 0.95f),
+            foliage = new Color(0.55f, 0.68f, 0.85f),
             dayTrees = new[] { Platformer + "tree-pine-snow.fbx", Platformer + "tree-snow.fbx" },
             dayPlants = new[] { Nature + "rock_smallA.fbx", Nature + "rock_smallC.fbx", Quat + "Rock_1.fbx" },
             nightTint = new Color(0.6f, 1.0f, 1.3f), nightTreeGlow = new Color(0.02f, 0.1f, 0.16f), mushroomGlow = new Color(0.1f, 0.5f, 0.7f),
             fireflies = new Color(0.45f, 0.95f, 1f), weather = 2,
             musicDay = "nieve_dia", musicNight = "nieve_noche", ambienceDay = "amb_cumbre_dia", ambienceNight = "amb_cumbre_noche",
-            saturation = 6f, bloom = 1.1f,
+            saturation = 10f, bloom = 0.95f,
         },
     };
 
@@ -104,6 +109,7 @@ public static partial class LevelBuilder
             dayTrees = new[] { Platformer + "tree-snow.fbx" },
             dayPlants = new[] { Nature + "rock_smallA.fbx", Quat + "Rock_1.fbx" },
             nightTint = new Color(0.7f, 1.2f, 1.1f), nightTreeGlow = new Color(0.02f, 0.14f, 0.12f), mushroomGlow = new Color(0.1f, 0.8f, 0.6f),
+            nightTrees = new[] { Nature + "tree_cone_dark.fbx", Nature + "tree_simple_dark.fbx" },
             fireflies = new Color(0.4f, 1f, 0.75f), weather = 2,
             musicDay = "nieve_dia", musicNight = "nieve_noche", ambienceDay = "amb_cumbre_dia", ambienceNight = "amb_cumbre_noche",
             saturation = 14f, bloom = 1.2f,
@@ -119,7 +125,7 @@ public static partial class LevelBuilder
             dayTrees = new[] { Quat + "Plant_Large.fbx" },
             dayPlants = new[] { Nature + "rock_smallC.fbx", Quat + "Plant_Small.fbx", Nature + "mushroom_tanGroup.fbx" },
             nightTint = new Color(0.5f, 0.9f, 1.4f), nightTreeGlow = new Color(0.02f, 0.08f, 0.16f), mushroomGlow = new Color(0.1f, 0.6f, 0.9f),
-            fireflies = new Color(0.5f, 0.9f, 1f), weather = 0,
+            fireflies = new Color(0.5f, 0.9f, 1f), weather = 3,
             musicDay = "dia", musicNight = "noche", ambienceDay = "amb_pradera_dia", ambienceNight = "amb_pradera_noche",
             saturation = 10f, bloom = 1.0f,
         },
@@ -239,12 +245,52 @@ public static partial class LevelBuilder
             MeshObject("ColinaDia", dayMesh, new Vector3(0f, 0f, z), ParticleMaterial("ColinaDia", null, Color.white, Day, false), hills);
             MeshObject("ColinaNoche", nightMesh, new Vector3(0f, 0f, z), ParticleMaterial("ColinaNoche", null, Color.white, Night, false), hills);
         }
+        if (biome.id == "ciudad") BuildSkyline(width, sky);
         // Bajo el mar no hay nubes.
         if (biome.id == "mar") return;
         for (float x = -30f; x < width + 30f; x += R(10f, 18f))
             Fit(Quat + $"Cloud_{1 + (int)R(0f, 2.99f)}.fbx", new Vector3(x, R(10f, 16f), R(28f, 31f)), new Vector3(R(4f, 7f), R(2f, 3f), 2f), Day, sky,
                 new Color(1f, 1f, 1f), new Color(0.35f, 0.35f, 0.35f));
 
+    }
+
+    /// <summary>
+    /// La Ciudad de la Aurora: edificios al fondo, delante de las colinas. De día, ventanas
+    /// azuladas; de noche, la mitad encendidas.
+    /// </summary>
+    static void BuildSkyline(int width, Transform parent)
+    {
+        var root = new GameObject("Ciudad").transform;
+        root.SetParent(parent, true);
+        var wall = Lit("EdificioCiudad", Both, new Color(0.16f, 0.16f, 0.3f), new Color(0.02f, 0.02f, 0.05f));
+        var roof = Lit("TejadoCiudad", Both, new Color(0.24f, 0.24f, 0.44f), Color.black);
+        var lit = ParticleMaterial("VentanaNoche", null, new Color(1.6f, 1.25f, 0.55f, 1f), Night, true);
+        var dark = ParticleMaterial("VentanaApagada", null, new Color(0.12f, 0.12f, 0.28f, 1f), Night, false);
+        var day = ParticleMaterial("VentanaDia", null, new Color(0.65f, 0.82f, 1f, 1f), Day, false);
+        var halo = ParticleMaterial("HaloVentana", SoftDot(), new Color(1f, 0.75f, 0.35f, 0.35f), Night, true);
+        var antenna = ParticleMaterial("LuzAntena", SoftDot(), new Color(1.8f, 0.3f, 0.3f, 1f), Both, true);
+        for (float x = -20f; x < width + 20f; x += R(2.6f, 4.2f))
+        {
+            float w = R(2f, 3.4f), h = R(5f, 14f), z = R(9f, 10.5f);
+            Primitive(PrimitiveType.Cube, "Edificio", new Vector3(x, -3f + h * 0.5f, z), new Vector3(w, h, 1.5f), wall).transform.SetParent(root, true);
+            Primitive(PrimitiveType.Cube, "Tejado", new Vector3(x, -3f + h + 0.12f, z), new Vector3(w + 0.2f, 0.25f, 1.6f), roof).transform.SetParent(root, true);
+            int cols = Mathf.Max(2, (int)(w / 0.9f));
+            for (float y = -1.5f; y < h - 4f; y += 1.3f)
+                for (int c = 0; c < cols; c++)
+                {
+                    var at = new Vector3(x - w * 0.5f + (c + 0.5f) * w / cols, y, z - 0.8f);
+                    bool on = rand.NextDouble() < 0.5;
+                    Quad("Ventana", at, new Vector2(0.38f, 0.55f), day, root);
+                    Quad("Ventana", at + Vector3.back * 0.01f, new Vector2(0.38f, 0.55f), on ? lit : dark, root);
+                    if (on && rand.NextDouble() < 0.18) Quad("Halo", at + Vector3.back * 0.02f, new Vector2(1.6f, 1.6f), halo, root);
+                }
+            // Alguna antena con luz roja.
+            if (rand.NextDouble() < 0.2)
+            {
+                Primitive(PrimitiveType.Cube, "Antena", new Vector3(x, -3f + h + 1f, z), new Vector3(0.08f, 2f, 0.08f), roof).transform.SetParent(root, true);
+                Quad("LuzAntena", new Vector3(x, -3f + h + 2f, z - 0.1f), new Vector2(0.8f, 0.8f), antenna, root);
+            }
+        }
     }
 
     /// <summary>Silueta de colinas (suma de ondas) con degradado de color de la cima a la base.</summary>
@@ -367,6 +413,12 @@ public static partial class LevelBuilder
         {
             var leaves = Particles("Hojas", root, center + Vector3.up * 4f, ParticleMaterial("Hoja", SoftDot(), new Color(1f, 0.55f, 0.2f, 0.95f), Both, false));
             Ambient(leaves, area, rate: width * 0.35f, life: 9f, size: (0.15f, 0.28f), noise: 0.9f, gravity: 0.06f, stretch: true);
+        }
+        else if (biome.weather == 3)
+        {
+            // Bajo el mar: burbujas que suben, de día y de noche.
+            var bubbles = Particles("Burbujas", root, center + Vector3.down * 4f, ParticleMaterial("Burbuja", Ring(), new Color(0.85f, 1f, 1.1f, 0.8f), Both, false));
+            Ambient(bubbles, area, rate: width * 0.5f, life: 9f, size: (0.08f, 0.3f), noise: 0.35f, gravity: -0.04f);
         }
         else
         {
@@ -520,6 +572,24 @@ public static partial class LevelBuilder
         return new Color(1f, 1f, 1f, Mathf.Clamp01((1f - d) * 18f));
     });
 
+    /// <summary>Crestas de ola: una franja clara ondulada arriba y espuma debajo (se repite en horizontal).</summary>
+    static Texture2D Waves() => GeneratedTexture("olas", 128, 32, (u, v) =>
+    {
+        float crest = 0.72f + 0.12f * Mathf.Sin(u * Mathf.PI * 2f);
+        float band = Mathf.Clamp01(1f - Mathf.Abs(v - crest) / 0.09f);
+        float foam = v < crest ? Mathf.Clamp01((v - crest + 0.45f) / 0.45f) * 0.25f * (0.5f + 0.5f * Mathf.Sin(u * Mathf.PI * 6f)) : 0f;
+        return new Color(1f, 1f, 1f, Mathf.Max(band, foam));
+    }, repeat: true);
+
+    /// <summary>Anillo fino con un brillo (burbujas).</summary>
+    static Texture2D Ring() => GeneratedTexture("anillo", 64, 64, (u, v) =>
+    {
+        float d = Vector2.Distance(new Vector2(u, v), new Vector2(0.5f, 0.5f)) * 2f;
+        float edge = Mathf.Clamp01(1f - Mathf.Abs(d - 0.82f) / 0.12f);
+        float shine = Mathf.Clamp01(1f - Vector2.Distance(new Vector2(u, v), new Vector2(0.36f, 0.66f)) / 0.12f);
+        return new Color(1f, 1f, 1f, Mathf.Max(edge, shine * 0.9f, d < 0.82f ? 0.08f : 0f));
+    });
+
     static Texture2D SoftBand() => GeneratedTexture("banda", 16, 64, (u, v) => new Color(1f, 1f, 1f, Mathf.Clamp01(Mathf.Sin(v * Mathf.PI) * 1.8f)));
 
     /// <summary>Rayo de luz: vertical, suave por los lados y desvanecido hacia un extremo.</summary>
@@ -541,7 +611,7 @@ public static partial class LevelBuilder
         Color.Lerp(horizon, top, Mathf.SmoothStep(0.25f, 1f, v)));
 
     /// <summary>Crea (si no existe) una textura PNG dibujada por una función y la importa sin compresión.</summary>
-    static Texture2D GeneratedTexture(string name, int width, int height, System.Func<float, float, Color> paint)
+    static Texture2D GeneratedTexture(string name, int width, int height, System.Func<float, float, Color> paint, bool repeat = false)
     {
         string path = Generated + name + ".png";
         var existing = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
@@ -554,7 +624,7 @@ public static partial class LevelBuilder
         Object.DestroyImmediate(texture);
         AssetDatabase.ImportAsset(path);
         var importer = (TextureImporter)AssetImporter.GetAtPath(path);
-        importer.wrapMode = TextureWrapMode.Clamp;
+        importer.wrapMode = repeat ? TextureWrapMode.Repeat : TextureWrapMode.Clamp;
         importer.mipmapEnabled = false;
         importer.alphaIsTransparency = true;
         importer.textureCompression = TextureImporterCompression.Uncompressed;

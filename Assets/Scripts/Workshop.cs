@@ -28,6 +28,58 @@ namespace Fase
             ('S', "Salida", "Start", Color.white), ('G', "Meta", "Goal", new Color(1f, 0.75f, 0.3f)), (' ', "Borrar", "Erase", new Color(0.2f, 0.2f, 0.3f)),
         };
 
+        readonly System.Collections.Generic.List<(char code, Image back, Outline edge)> brushTiles = new System.Collections.Generic.List<(char, Image, Outline)>();
+
+        void RefreshBrushes()
+        {
+            foreach (var (code, back, edge) in brushTiles)
+            {
+                bool on = code == brush;
+                edge.enabled = on;
+                back.color = on ? new Color(0.45f, 0.34f, 0.12f, 0.85f) : new Color(1f, 1f, 1f, 0.08f);
+            }
+        }
+
+        /// <summary>Dibujo pequeño de cada pieza con cajitas (para la paleta).</summary>
+        static void BrushIcon(Transform parent, char code, Color color)
+        {
+            var at = new Vector2(0f, 14f);
+            Image Box(Vector2 pos, Vector2 size, Color c, float rot = 0f, bool round = false)
+            {
+                var img = UiKit.Box(parent, "Dibujo", new Vector2(0.5f, 0.5f), at + pos, size, c, round);
+                img.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                if (rot != 0f) img.rectTransform.localRotation = Quaternion.Euler(0f, 0f, rot);
+                img.raycastTarget = false;
+                return img;
+            }
+            void Glyph(string g, int size, Color c)
+            {
+                var t = UiKit.Text(parent, "Signo", g, new Vector2(0.5f, 0.5f), at, new Vector2(80f, 60f), size, TextAnchor.MiddleCenter, c);
+                t.raycastTarget = false;
+            }
+            var dark = Color.Lerp(color, Color.black, 0.35f);
+            switch (code)
+            {
+                case '#': Box(new Vector2(0f, -6f), new Vector2(52f, 30f), new Color(0.75f, 0.5f, 0.32f)); Box(new Vector2(0f, 12f), new Vector2(52f, 10f), color); break;
+                case 'D': Box(Vector2.zero, new Vector2(40f, 40f), color); Box(Vector2.zero, new Vector2(52f, 5f), dark, 45f); Box(Vector2.zero, new Vector2(52f, 5f), dark, -45f); break;
+                case 'd': Box(Vector2.zero, new Vector2(56f, 12f), color); Box(new Vector2(-14f, 0f), new Vector2(3f, 12f), dark); Box(new Vector2(14f, 0f), new Vector2(3f, 12f), dark); break;
+                case 'N': Box(Vector2.zero, new Vector2(42f, 40f), color); Box(new Vector2(-8f, 10f), new Vector2(18f, 4f), Color.white); break;
+                case 'n': Box(Vector2.zero, new Vector2(56f, 14f), color); Box(new Vector2(-12f, 2f), new Vector2(20f, 3f), Color.white); break;
+                case '~': Box(new Vector2(0f, -4f), new Vector2(56f, 28f), color); Box(new Vector2(-10f, 4f), new Vector2(22f, 4f), new Color(0.8f, 0.92f, 1f)); break;
+                case '^': for (int k = -1; k <= 1; k++) Box(new Vector2(k * 17f, -8f), new Vector2(18f, 18f), color, 45f); Box(new Vector2(0f, -20f), new Vector2(60f, 14f), new Color(0.12f, 0.1f, 0.25f)); break;
+                case 'F': Box(new Vector2(0f, -14f), new Vector2(44f, 10f), dark); for (int k = 0; k < 3; k++) Box(new Vector2(0f, -4f + k * 9f), new Vector2(30f - k * 4f, 5f), color); Box(new Vector2(0f, 22f), new Vector2(44f, 8f), color); break;
+                case 'M': Box(Vector2.zero, new Vector2(44f, 40f), color, 0f, true); Box(new Vector2(-9f, 4f), new Vector2(9f, 9f), Color.white); Box(new Vector2(9f, 4f), new Vector2(9f, 9f), Color.white); break;
+                case 'X': Box(Vector2.zero, new Vector2(36f, 36f), color, 45f); Box(Vector2.zero, new Vector2(36f, 36f), color); Box(Vector2.zero, new Vector2(10f, 10f), dark); break;
+                case 'O': Box(Vector2.zero, new Vector2(44f, 44f), color, 0f, true); Box(new Vector2(4f, 6f), new Vector2(4f, 20f), dark, -35f); break;
+                case 'Z': Box(Vector2.zero, new Vector2(40f, 40f), color); Glyph("✦", 30, Color.white); break;
+                case '*': Box(Vector2.zero, new Vector2(24f, 24f), color, 45f); break;
+                case 'C': Box(new Vector2(-10f, 0f), new Vector2(4f, 46f), Color.white); Box(new Vector2(4f, 12f), new Vector2(26f, 16f), color); break;
+                case 'S': Box(Vector2.zero, new Vector2(34f, 38f), Color.white, 0f, true); Box(new Vector2(0f, 2f), new Vector2(22f, 14f), new Color(0.12f, 0.1f, 0.25f), 0f, true); break;
+                case 'G': Box(new Vector2(-10f, 0f), new Vector2(4f, 46f), Color.white); Box(new Vector2(4f, 12f), new Vector2(26f, 16f), color); Glyph("★", 18, new Color(0.3f, 0.2f, 0.05f)); break;
+                default: Glyph("✖", 34, new Color(1f, 0.55f, 0.55f)); break;
+            }
+        }
+
         char[,] map = new char[RowsCount, Cols];
         Image[,] cells;
         char brush = '#';
@@ -109,14 +161,29 @@ namespace Fase
                     cells[r, c] = img;
                 }
 
-            // Pinceles.
+            // Pinceles: una baldosa por pieza con su dibujo y su nombre; la elegida, con borde dorado.
+            brushTiles.Clear();
             for (int i = 0; i < Brushes.Length; i++)
             {
                 var b = Brushes[i];
-                float x = (i % 9 - 4f) * 190f, y = i < 9 ? -190f : -270f;
-                var button = UiKit.Button(root, "Pincel", Loc.Pick(b.es, b.en), new Vector2(0.5f, 0.5f), new Vector2(x, y), new Vector2(180f, 66f), () => brush = b.code, 24);
-                button.GetComponent<Image>().color = Color.Lerp(b.color, Color.black, 0.35f);
+                int perRow = 9, row = i / perRow, inRow = Mathf.Min(perRow, Brushes.Length - row * perRow);
+                float x = (i % perRow - (inRow - 1) * 0.5f) * 150f, y = -122f - row * 130f;
+                var button = UiKit.Button(root, "Pincel", "", new Vector2(0.5f, 0.5f), new Vector2(x, y), new Vector2(138f, 122f), () => { brush = b.code; RefreshBrushes(); }, 22);
+                button.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.08f);
+                var label = button.GetComponentInChildren<Text>();
+                label.text = Loc.Pick(b.es, b.en);
+                label.rectTransform.anchoredPosition = new Vector2(0f, -36f);
+                label.resizeTextForBestFit = true;
+                label.resizeTextMinSize = 16;
+                label.resizeTextMaxSize = 22;
+                label.rectTransform.sizeDelta = new Vector2(130f, 34f);
+                BrushIcon(button.transform, b.code, b.color);
+                var edge = button.gameObject.AddComponent<Outline>();
+                edge.effectColor = UiKit.Gold;
+                edge.effectDistance = new Vector2(3f, -3f);
+                brushTiles.Add((b.code, button.GetComponent<Image>(), edge));
             }
+            RefreshBrushes();
 
             UiKit.Button(root, "Probar", "▶ " + Loc.Pick("Probar", "Play"), new Vector2(0.5f, 0f), new Vector2(-560f, 60f), new Vector2(300f, 90f), Play, 38);
             UiKit.Button(root, "Compartir", Loc.Pick("Copiar código", "Copy code"), new Vector2(0.5f, 0f), new Vector2(-220f, 60f), new Vector2(330f, 90f), ShareCode, 32);

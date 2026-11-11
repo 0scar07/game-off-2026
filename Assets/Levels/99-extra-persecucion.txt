@@ -7,6 +7,7 @@ linea: -6
 secreto: si
 practica: si
 persecucion: 2.2
+bioma: bosque
 ---
 
 

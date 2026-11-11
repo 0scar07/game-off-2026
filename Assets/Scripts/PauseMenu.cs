@@ -46,7 +46,7 @@ namespace Fase
         /// <summary>Si la ventana pierde el foco (otra pestaña, otra app), pausar.</summary>
         void OnApplicationFocus(bool focus)
         {
-            if (!focus && !Paused) SetPaused(true);
+            if (!focus && !Paused && !PlayBot.Active) SetPaused(true);
         }
 
         public void Toggle() => SetPaused(!Paused);

@@ -112,7 +112,7 @@ namespace Fase
             title.text = name;
             hintText.text = resumed ? Loc.Pick("Sigues desde el último punto de control.", "Picking up from your last checkpoint.") : InputGlyphs.Adapt(Loc.Pick(hint, hintEn));
 
-            corner.text = name;
+            corner.text = sandbox || daily ? name : Loc.Pick(levelName, levelNameEn);
             banner.text = "";
             // El cartel grande nunca se sale de la pantalla.
             banner.horizontalOverflow = HorizontalWrapMode.Wrap;
@@ -120,9 +120,8 @@ namespace Fase
             banner.resizeTextMinSize = 40;
             banner.resizeTextMaxSize = banner.fontSize;
             BuildHintBack();
-            // El fondo del nombre, a la medida del texto (antes medía siempre lo mismo).
-            if (transform.Find("FondoEsquina") is RectTransform pill)
-                pill.sizeDelta = new Vector2(Mathf.Clamp(corner.preferredWidth + 70f, 200f, 900f), pill.sizeDelta.y);
+            BuildCornerBadge();
+            BuildMoonIcons();
 
             UpdateCounter();
             if (Settings.Coop)
@@ -136,29 +135,93 @@ namespace Fase
         }
 
         Image hintBack;
+        CanvasGroup hintGroup;
+        static readonly Color CardColor = new Color(0.07f, 0.05f, 0.2f, 0.82f);
 
-        /// <summary>Fondo oscuro detrás de la pista: se lee igual sobre la nieve, el sol o la línea.</summary>
+        /// <summary>
+        /// La pista va en una tarjeta oscura con borde dorado y un icono: se lee igual sobre la
+        /// nieve, el sol o la línea.
+        /// </summary>
         void BuildHintBack()
         {
             if (hintText == null || string.IsNullOrEmpty(hintText.text)) return;
             var rect = hintText.rectTransform;
+            float width = Mathf.Min(hintText.preferredWidth, rect.sizeDelta.x) + 150f;
             hintBack = UiKit.Box(rect.parent, "FondoPista", rect.anchorMin, rect.anchoredPosition,
-                new Vector2(Mathf.Min(hintText.preferredWidth, rect.sizeDelta.x) + 70f, hintText.preferredHeight + 34f), new Color(0.04f, 0.03f, 0.14f, 0.5f));
+                new Vector2(width, hintText.preferredHeight + 40f), CardColor);
             hintBack.rectTransform.pivot = rect.pivot;
             hintBack.transform.SetSiblingIndex(rect.GetSiblingIndex());
+            var outline = hintBack.gameObject.AddComponent<Outline>();
+            outline.effectColor = new Color(1f, 0.85f, 0.54f, 0.55f);
+            outline.effectDistance = new Vector2(2f, -2f);
+            var icon = UiKit.Box(hintBack.transform, "Icono", new Vector2(0f, 0.5f), new Vector2(24f, 0f), new Vector2(48f, 48f), UiKit.Gold);
+            UiKit.Text(icon.transform, "Signo", "✦", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(48f, 48f), 28, TextAnchor.MiddleCenter, new Color(0.1f, 0.06f, 0.19f));
+            Destroy(icon.GetComponentInChildren<Shadow>());
+            // El texto se corre a la derecha del icono.
+            rect.anchoredPosition += new Vector2(40f, 0f);
+            hintGroup = hintBack.gameObject.AddComponent<CanvasGroup>();
+        }
+
+        /// <summary>Número del nivel en un círculo dorado, a la izquierda del nombre.</summary>
+        void BuildCornerBadge()
+        {
+            var pill = transform.Find("FondoEsquina") as RectTransform;
+            if (pill == null) return;
+            float textX = 60f;
+            if (!sandbox && !daily && levelNumber > 0)
+            {
+                var badge = UiKit.Box(pill, "Numero", new Vector2(0f, 0.5f), new Vector2(40f, 0f), new Vector2(50f, 50f), UiKit.Gold);
+                badge.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                var number = UiKit.Text(badge.transform, "Texto", levelNumber.ToString(), new Vector2(0.5f, 0.5f), new Vector2(0f, -1f), new Vector2(50f, 50f), 28, TextAnchor.MiddleCenter, new Color(0.1f, 0.06f, 0.19f));
+                number.fontStyle = FontStyle.Bold;
+                Destroy(number.GetComponent<Shadow>());
+                textX = 104f;
+            }
+            corner.rectTransform.anchoredPosition = new Vector2(textX, corner.rectTransform.anchoredPosition.y);
+            // El fondo a la medida del texto (antes medía siempre lo mismo).
+            pill.sizeDelta = new Vector2(Mathf.Clamp(corner.preferredWidth + textX - 4f, 200f, 900f), pill.sizeDelta.y);
+        }
+
+        RectTransform moonRow;
+        Image[] moonIcons;
+        static readonly Color MoonOn = new Color(1f, 0.86f, 0.5f), MoonOff = new Color(1f, 1f, 1f, 0.1f);
+
+        /// <summary>Las lunas del nivel como iconos (llena si ya la tienes, vacía si no) en vez de "Luna 0/2".</summary>
+        void BuildMoonIcons()
+        {
+            if (counter == null || fragmentsTotal <= 0) return;
+            counter.enabled = false;
+            var pill = transform.Find("FondoLuna") as RectTransform;
+            const float step = 46f;
+            float width = fragmentsTotal * step + 40f;
+            if (pill != null) pill.sizeDelta = new Vector2(width, pill.sizeDelta.y);
+            moonRow = UiKit.Rect(pill != null ? pill : transform, "Lunas", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(width, 60f));
+            moonRow.pivot = new Vector2(0.5f, 0.5f);
+            moonIcons = new Image[fragmentsTotal];
+            for (int i = 0; i < fragmentsTotal; i++)
+            {
+                var icon = UiKit.Box(moonRow, "Luna", new Vector2(0.5f, 0.5f), new Vector2((i - (fragmentsTotal - 1) * 0.5f) * step, 0f), new Vector2(22f, 22f), MoonOff, false);
+                icon.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                icon.rectTransform.localRotation = Quaternion.Euler(0f, 0f, 45f);
+                var edge = icon.gameObject.AddComponent<Outline>();
+                edge.effectColor = new Color(1f, 0.86f, 0.5f, 0.7f);
+                edge.effectDistance = new Vector2(2f, -2f);
+                moonIcons[i] = icon;
+            }
+            UpdateCounter();
         }
 
         void Update()
         {
             age += Time.deltaTime;
-            if (hintBack != null) hintBack.color = new Color(0.04f, 0.03f, 0.14f, 0.5f * Fade(age, 6f, 1f));
 
             if (!finished) elapsed += Time.deltaTime;
             // El título se ve 2,5 s y se desvanece; la pista se queda un poco más.
             SetAlpha(title, Fade(age, 2.5f, 0.8f));
             SetAlpha(hintText, Fade(age, 6f, 1f));
             SetAlpha(corner, 1f - Fade(age, 2.5f, 0.8f));
-            if (timer != null) timer.text = FormatTime(elapsed);
+            if (timer != null) timer.text = "⏱ " + FormatTime(elapsed);
+            if (hintGroup != null) hintGroup.alpha = Fade(age, 6f, 1f);
             if (cheerLeft > 0f)
             {
                 cheerLeft -= Time.deltaTime;
@@ -184,17 +247,26 @@ namespace Fase
         {
             fragments++;
             UpdateCounter();
-            if (counter != null) counter.transform.localScale = Vector3.one * 1.35f;
+            if (moonRow != null) moonRow.localScale = Vector3.one * 1.35f;
+            else if (counter != null) counter.transform.localScale = Vector3.one * 1.35f;
         }
 
         void LateUpdate()
         {
             if (counter != null) counter.transform.localScale = Vector3.Lerp(counter.transform.localScale, Vector3.one, Time.deltaTime * 8f);
+            if (moonRow != null) moonRow.localScale = Vector3.Lerp(moonRow.localScale, Vector3.one, Time.deltaTime * 8f);
         }
 
         void UpdateCounter()
         {
             counter.text = fragmentsTotal > 0 ? $"{Loc.Get("moon")} {fragments}/{fragmentsTotal}" : "";
+            if (moonIcons == null) return;
+            for (int i = 0; i < moonIcons.Length; i++)
+            {
+                bool got = i < fragments;
+                moonIcons[i].color = got ? MoonOn : MoonOff;
+                moonIcons[i].GetComponent<Outline>().enabled = !got;
+            }
         }
 
         void OnGoal()

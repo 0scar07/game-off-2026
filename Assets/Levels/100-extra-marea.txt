@@ -8,6 +8,7 @@ secreto: si
 practica: si
 marea: 3
 viento: -3
+bioma: mar
 ---
 
 
