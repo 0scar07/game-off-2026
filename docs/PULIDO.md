@@ -24,7 +24,14 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
 - Web exportada con el PC libre (cerrando Unity y abriéndolo solo para exportar): 25,7 MB, 63 min.
   La prueba automática la abre en 10,5 s, pasa el inicio, entra al nivel 1 y juega sin errores.
 - Subida a itch con la release `web-20261110-1`: la prueba de GitHub pasó y la subida también.
-- Mañana: Fase 2 (probar menús, opciones, idiomas y jugar todos los niveles).
+- Fase 2, menús: gira automática por los 21 paneles en los 4 idiomas a 1920×1080, con foto de cada
+  uno y un detector de textos que no caben. Arreglados: contadores y subtítulos encima del título
+  (Logros, Tienda, Diario, Galería, Vestuario), filas que tapaban "Volver" (Logros, Niveles extra),
+  iconos que pisaban el texto (Logros, Tienda, Extras, Estadísticas), nombres encima de las muestras
+  del vestuario, textos que no se encogían (faltaba el ajuste de línea) y el fondo de Opciones y los
+  botones del menú, que salían ovalados (al sprite le faltaba el borde de 9 cortes).
+- Encontrado: unos 300 de los ~400 textos no tienen traducción al portugués y al francés (salen en
+  inglés, mezclados).
 
 ---
 
@@ -36,16 +43,16 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
 | Intro (historia con voz) | ✅ | Carga sin errores · ⬜ escuchar la voz entera |
 | Menú principal y su barra | ✅ | Barra con iconos grandes (tanda G) |
 | El viaje (mapa) | ✅ | Lumi camina de nivel en nivel |
-| Opciones | ⬜ | |
+| Opciones | 🔧 | Fondo y botones ya no salen ovalados |
 | Pausa y mapa de pausa | ⬜ | Mapa oculto en Taller y Sin fin |
 | Resultados | ⬜ | |
 | Final y final secreto | ⬜ | |
 | Páginas de historia y celebración de capítulo | ⬜ | |
 | Decisión del capítulo II | ✅ | Se ve y se elige |
-| Extras: estadísticas, banda sonora, galería, álbum, mapa de capítulos | ⬜ | |
-| Extras: retos de la semana, ayudas, niveles extra | ⬜ | |
+| Extras: estadísticas, banda sonora, galería, álbum, mapa de capítulos | 🔧 | Iconos y nombre de la galería recolocados |
+| Extras: retos de la semana, ayudas, niveles extra | 🔧 | Niveles extra ya no tapan Volver |
 | Extras: retos, con amigos, habilidades | ✅ | Abren y se leen |
-| Logros, diario, vestuario, tienda, curiosidades | ⬜ | |
+| Logros, diario, vestuario, tienda, curiosidades | 🔧 | Ver fallo 4 |
 
 ## 2 · Niveles
 
@@ -113,7 +120,7 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 | Bocadillos de Lumi y Chispa | ✅ |
 | Transiciones entre escenas | ⬜ |
 | Controles táctiles y glifos de mando | ⬜ |
-| Cuatro idiomas sin textos que se salgan | ⬜ |
+| Cuatro idiomas sin textos que se salgan | 🔧 menús sin textos cortados · ❌ portugués y francés incompletos |
 | Texto grande de accesibilidad | ⬜ |
 | Resoluciones 16:9, 21:9, 4:3 y móvil | ⬜ |
 
@@ -154,6 +161,9 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 | 1 | HUD de niveles secretos y extra | Salía un número de la historia ("27.") | Molesta | 🔧 |
 | 2 | Exportación web | Se queda sin memoria | Bloquea | 🔧 |
 | 3 | Bot de pruebas | No salta los pinchos del nivel 1 | Herramienta | ❌ |
+| 4 | Menús (11 paneles) | Textos pisándose, filas bajo "Volver", iconos sobre el texto | Molesta | 🔧 |
+| 5 | Opciones y botones del menú | Se veían ovalados (sprite sin borde de 9 cortes) | Molesta | 🔧 |
+| 6 | Portugués y francés | ~300 textos salen en inglés | Molesta | ❌ |
 
 ---
 

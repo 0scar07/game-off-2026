@@ -95,6 +95,7 @@ namespace Fase
                 label.fontStyle = FontStyle.Bold;
                 // Textos largos ("Curiosidades") se encogen para caber.
                 label.rectTransform.sizeDelta = new Vector2(158f, 40f);
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
                 label.resizeTextForBestFit = true;
                 label.resizeTextMinSize = 18;
                 label.resizeTextMaxSize = 28;
@@ -195,14 +196,14 @@ namespace Fase
         GameObject BuildShop()
         {
             var panel = Panel("Tienda", "shop", out var content);
-            var balance = UiKit.Text(content, "Saldo", "", new Vector2(0.5f, 1f), new Vector2(0f, 20f), new Vector2(800f, 50f), 34, TextAnchor.MiddleCenter, UiKit.Gold);
+            var balance = UiKit.Text(content, "Saldo", "", new Vector2(1f, 1f), new Vector2(-10f, 70f), new Vector2(560f, 50f), 34, TextAnchor.MiddleRight, UiKit.Gold);
             refreshers.Add(() => balance.text = Loc.Pick($"☾ {Shop.Balance} fragmentos para gastar", $"☾ {Shop.Balance} fragments to spend"));
             for (int i = 0; i < Shop.Items.Length; i++)
             {
                 var item = Shop.Items[i];
                 float y = 190f - i * 130f;
                 var card = UiKit.Box(content, item.id, new Vector2(0.5f, 0.5f), new Vector2(0f, y), new Vector2(1000f, 110f), new Color(1f, 1f, 1f, 0.07f));
-                UiKit.Box(card.transform, "Color", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(70f, 70f), item.color);
+                UiKit.Box(card.transform, "Color", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(70f, 70f), item.color).rectTransform.pivot = new Vector2(0.5f, 0.5f);
                 UiKit.Text(card.transform, "Nombre", item.Name, new Vector2(0f, 0.5f), new Vector2(130f, 14f), new Vector2(500f, 50f), 36, TextAnchor.MiddleLeft).rectTransform.pivot = new Vector2(0f, 0.5f);
                 UiKit.Text(card.transform, "Precio", $"☾ {item.price}", new Vector2(0f, 0.5f), new Vector2(130f, -26f), new Vector2(300f, 36f), 26, TextAnchor.MiddleLeft, UiKit.Gold).rectTransform.pivot = new Vector2(0f, 0.5f);
                 var button = UiKit.Button(card.transform, "Accion", "", new Vector2(1f, 0.5f), new Vector2(-30f, 0f), new Vector2(280f, 80f), null, 30);
@@ -244,24 +245,34 @@ namespace Fase
         GameObject BuildAchievements()
         {
             var panel = Panel("Logros", "achievements", out var content);
-            var count = UiKit.Text(content, "Cuenta", "", new Vector2(0.5f, 1f), new Vector2(0f, 20f), new Vector2(600f, 50f), 34, TextAnchor.MiddleCenter, UiKit.Gold);
+            var count = UiKit.Text(content, "Cuenta", "", new Vector2(1f, 1f), new Vector2(-10f, 70f), new Vector2(300f, 50f), 34, TextAnchor.MiddleRight, UiKit.Gold);
             var all = Achievements.All;
             for (int i = 0; i < all.Length; i++)
             {
                 var info = all[i];
-                float x = (i % 4 - 1.5f) * 350f, y = 250f - (i / 4) * 88f;
-                var card = UiKit.Box(content, info.id, new Vector2(0.5f, 0.5f), new Vector2(x, y - 30f), new Vector2(336f, 80f), Color.white);
-                var star = UiKit.Box(card.transform, "Estrella", new Vector2(0f, 0.5f), new Vector2(46f, 0f), new Vector2(60f, 60f), Color.white);
-                var icon = UiKit.Text(card.transform, "Icono", "", new Vector2(0f, 0.5f), new Vector2(46f, 2f), new Vector2(60f, 60f), 34);
+                float x = (i % 4 - 1.5f) * 350f, y = 280f - (i / 4) * 78f;
+                var card = UiKit.Box(content, info.id, new Vector2(0.5f, 0.5f), new Vector2(x, y - 30f), new Vector2(336f, 72f), Color.white);
+                var star = UiKit.Box(card.transform, "Estrella", new Vector2(0f, 0.5f), new Vector2(42f, 0f), new Vector2(56f, 56f), Color.white);
+                star.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                var icon = UiKit.Text(card.transform, "Icono", "", new Vector2(0f, 0.5f), new Vector2(42f, 2f), new Vector2(56f, 56f), 32);
+                icon.rectTransform.pivot = new Vector2(0.5f, 0.5f);
                 // Dibujo propio del logro; la estrella solo queda para los que aún no tienes.
-                var art = UiKit.Box(card.transform, "Dibujo", new Vector2(0f, 0.5f), new Vector2(46f, 0f), new Vector2(52f, 52f), Color.white, false);
+                var art = UiKit.Box(card.transform, "Dibujo", new Vector2(0f, 0.5f), new Vector2(42f, 0f), new Vector2(50f, 50f), Color.white, false);
+                art.rectTransform.pivot = new Vector2(0.5f, 0.5f);
                 art.sprite = AchievementIcons.Get(info.id);
                 art.preserveAspect = true;
 
-                var name = UiKit.Text(card.transform, "Nombre", "", new Vector2(0f, 0.5f), new Vector2(84f, 16f), new Vector2(240f, 40f), 24, TextAnchor.MiddleLeft);
+                var name = UiKit.Text(card.transform, "Nombre", "", new Vector2(0f, 0.5f), new Vector2(80f, 14f), new Vector2(246f, 34f), 24, TextAnchor.MiddleLeft);
                 name.rectTransform.pivot = new Vector2(0f, 0.5f);
-                var desc = UiKit.Text(card.transform, "Detalle", "", new Vector2(0f, 0.5f), new Vector2(84f, -18f), new Vector2(240f, 30f), 16, TextAnchor.MiddleLeft, UiKit.Soft);
+                var desc = UiKit.Text(card.transform, "Detalle", "", new Vector2(0f, 0.5f), new Vector2(80f, -17f), new Vector2(246f, 28f), 16, TextAnchor.MiddleLeft, UiKit.Soft);
                 desc.rectTransform.pivot = new Vector2(0f, 0.5f);
+                foreach (var (t, min) in new[] { (name, 17), (desc, 12) })
+                {
+                    t.horizontalOverflow = HorizontalWrapMode.Wrap;
+                    t.resizeTextForBestFit = true;
+                    t.resizeTextMinSize = min;
+                    t.resizeTextMaxSize = t.fontSize;
+                }
                 refreshers.Add(() =>
                 {
                     bool has = Achievements.Has(info.id);
@@ -288,31 +299,38 @@ namespace Fase
         GameObject BuildWardrobe()
         {
             var panel = Panel("Armario", "wardrobetitle", out var content);
-            Toggle(content, "character", new Vector2(0f, 300f), () => Wardrobe.IsNox, v => Wardrobe.IsNox = v, () => Wardrobe.NoxUnlocked,
+            Toggle(content, "character", new Vector2(0f, 262f), () => Wardrobe.IsNox, v => Wardrobe.IsNox = v, () => Wardrobe.NoxUnlocked,
                 v => v ? "Nox" : "Lumi");
-            BuildItems(content, Wardrobe.Scarves, "scarf", 110f, true);
-            BuildItems(content, Wardrobe.Lanterns, "lantern", -220f, false);
+            BuildItems(content, Wardrobe.Scarves, "scarf", 70f, true);
+            BuildItems(content, Wardrobe.Lanterns, "lantern", -235f, false);
             return panel;
         }
 
         void BuildItems(RectTransform content, Wardrobe.Item[] items, string titleKey, float y, bool scarf)
         {
-            var title = UiKit.Text(content, "Titulo" + titleKey, "", new Vector2(0.5f, 0.5f), new Vector2(0f, y + 110f), new Vector2(800f, 50f), 38, TextAnchor.MiddleCenter, UiKit.Gold);
+            var title = UiKit.Text(content, "Titulo" + titleKey, "", new Vector2(0.5f, 0.5f), new Vector2(0f, y + 100f), new Vector2(800f, 50f), 36, TextAnchor.MiddleCenter, UiKit.Gold);
             refreshers.Add(() => title.text = Loc.Get(titleKey));
-            float step = 1320f / items.Length;
+            float step = Mathf.Min(1380f / items.Length, 330f);
             for (int i = 0; i < items.Length; i++)
             {
                 var item = items[i];
-                float x = (i - (items.Length - 1) * 0.5f) * Mathf.Min(step, 330f);
-                var holder = UiKit.Rect(content, item.id, new Vector2(0.5f, 0.5f), new Vector2(x, y), new Vector2(150f, 220f));
-                var button = UiKit.Button(holder, "Muestra", "", new Vector2(0.5f, 1f), new Vector2(0f, -60f), new Vector2(120f, 120f), () => { Wardrobe.Wear(item); Refresh(); });
+                float x = (i - (items.Length - 1) * 0.5f) * step;
+                var holder = UiKit.Rect(content, item.id, new Vector2(0.5f, 0.5f), new Vector2(x, y), new Vector2(Mathf.Min(step - 6f, 200f), 200f));
+                var button = UiKit.Button(holder, "Muestra", "", new Vector2(0.5f, 1f), new Vector2(0f, -12f), new Vector2(104f, 104f), () => { Wardrobe.Wear(item); Refresh(); });
                 var swatch = UiKit.Box(button.transform, "Color", new Vector2(0.5f, 0.5f), Vector2.zero, scarf ? new Vector2(86f, 40f) : new Vector2(60f, 60f), item.color);
                 var swatch2 = scarf ? UiKit.Box(button.transform, "Color2", new Vector2(0.5f, 0.5f), new Vector2(0f, -18f), new Vector2(86f, 20f), item.color2) : null;
-                var ring = UiKit.Box(holder, "Marco", new Vector2(0.5f, 1f), new Vector2(0f, -60f), new Vector2(136f, 136f), new Color(1f, 0.85f, 0.5f, 0.9f));
+                var ring = UiKit.Box(holder, "Marco", new Vector2(0.5f, 1f), new Vector2(0f, -4f), new Vector2(120f, 120f), new Color(1f, 0.85f, 0.5f, 0.9f));
                 ring.transform.SetSiblingIndex(0);
-                var name = UiKit.Text(holder, "Nombre", "", new Vector2(0.5f, 0f), new Vector2(0f, 60f), new Vector2(150f, 36f), 21);
-                var how = UiKit.Text(holder, "Como", "", new Vector2(0.5f, 0f), new Vector2(0f, 22f), new Vector2(150f, 40f), 15, TextAnchor.UpperCenter, UiKit.Soft);
+                float width = holder.sizeDelta.x;
+                var name = UiKit.Text(holder, "Nombre", "", new Vector2(0.5f, 0f), new Vector2(0f, 50f), new Vector2(width, 30f), 21);
+                var how = UiKit.Text(holder, "Como", "", new Vector2(0.5f, 0f), new Vector2(0f, 0f), new Vector2(width, 48f), 16, TextAnchor.UpperCenter, UiKit.Soft);
                 name.horizontalOverflow = how.horizontalOverflow = HorizontalWrapMode.Wrap;
+                foreach (var (t, min) in new[] { (name, 14), (how, 11) })
+                {
+                    t.resizeTextForBestFit = true;
+                    t.resizeTextMinSize = min;
+                    t.resizeTextMaxSize = t.fontSize;
+                }
                 refreshers.Add(() =>
                 {
                     bool open = item.Unlocked;
@@ -332,7 +350,7 @@ namespace Fase
         GameObject BuildDiary()
         {
             var panel = Panel("Diario", "diarytitle", out var content);
-            var count = UiKit.Text(content, "Cuenta", "", new Vector2(0.5f, 1f), new Vector2(0f, 20f), new Vector2(600f, 50f), 30, TextAnchor.MiddleCenter, UiKit.Gold);
+            var count = UiKit.Text(content, "Cuenta", "", new Vector2(1f, 1f), new Vector2(-10f, 70f), new Vector2(300f, 50f), 30, TextAnchor.MiddleRight, UiKit.Gold);
             var paper = UiKit.Box(content, "Papel", new Vector2(0.5f, 0.5f), new Vector2(0f, -20f), new Vector2(1000f, 480f), new Color(0.95f, 0.9f, 0.78f));
             var title = UiKit.Text(paper.transform, "Pagina", "", new Vector2(0.5f, 1f), new Vector2(0f, -50f), new Vector2(900f, 50f), 34, TextAnchor.MiddleCenter, new Color(0.42f, 0.29f, 0.16f));
             var body = UiKit.Text(paper.transform, "Texto", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -20f), new Vector2(860f, 300f), 36, TextAnchor.MiddleCenter, new Color(0.35f, 0.23f, 0.12f));
@@ -519,10 +537,13 @@ namespace Fase
             {
                 var r = label.rectTransform;
                 r.anchoredPosition += new Vector2(400f, label == menu.infoTitle ? -6f : 6f);
-                r.sizeDelta = new Vector2(500f, r.sizeDelta.y);
+                r.sizeDelta = new Vector2(420f, r.sizeDelta.y);
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
+                label.resizeTextForBestFit = true;
+                label.resizeTextMinSize = 18;
             }
-            menu.infoTitle.fontSize = 44;
-            menu.infoDetail.fontSize = 28;
+            menu.infoTitle.fontSize = menu.infoTitle.resizeTextMaxSize = 44;
+            menu.infoDetail.fontSize = menu.infoDetail.resizeTextMaxSize = 28;
 
             var frame = UiKit.Box(info, "Marco", new Vector2(0f, 0.5f), new Vector2(22f, 0f), new Vector2(394f, 210f), new Color(1f, 1f, 1f, 0.25f));
             frame.rectTransform.pivot = new Vector2(0f, 0.5f);

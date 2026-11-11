@@ -89,7 +89,7 @@ namespace Fase
                 string moon = fragmentsTotal[level - 1] > 0 ? $"{Loc.Get("moon")} {Progress.Fragments(level)}/{fragmentsTotal[level - 1]}" : "";
                 int medal = Medals.Best(level);
                 string stars = $"<color=#ffd98a>{new string('★', Mathf.Min(medal, 3))}</color><color=#ffffff40>{new string('★', 3 - Mathf.Min(medal, 3))}</color>" + (medal >= Medals.Moon ? " ☾" : "");
-                infoDetail.text = $"{stars}    ·    {Loc.Get("best")} {Hud.FormatTime(Progress.BestTime(level))}    ·    {moon}";
+                infoDetail.text = $"{stars}   ·   {Loc.Get("best")} {Hud.FormatTime(Progress.BestTime(level))}   ·   {moon}";
             }
             Selected?.Invoke(level, open);
 

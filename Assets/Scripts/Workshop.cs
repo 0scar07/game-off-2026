@@ -173,6 +173,7 @@ namespace Fase
                 var label = button.GetComponentInChildren<Text>();
                 label.text = Loc.Pick(b.es, b.en);
                 label.rectTransform.anchoredPosition = new Vector2(0f, -36f);
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
                 label.resizeTextForBestFit = true;
                 label.resizeTextMinSize = 16;
                 label.resizeTextMaxSize = 22;

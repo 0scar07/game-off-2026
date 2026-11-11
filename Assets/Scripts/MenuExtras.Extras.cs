@@ -45,13 +45,14 @@ namespace Fase
                 var button = UiKit.Button(content, key, "", new Vector2(0.5f, 0.5f), new Vector2((i % 3 - 1) * 450f, 250f - (i / 3) * 140f), new Vector2(430f, 120f), open, 34);
                 var label = button.GetComponentInChildren<Text>();
                 // El texto empieza después del icono y se encoge si es largo ("Retos de la semana").
-                label.rectTransform.anchoredPosition = new Vector2(48f, 0f);
-                label.rectTransform.sizeDelta = new Vector2(310f, 100f);
+                label.rectTransform.anchoredPosition = new Vector2(50f, 0f);
+                label.rectTransform.sizeDelta = new Vector2(300f, 100f);
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
                 label.resizeTextForBestFit = true;
                 label.resizeTextMinSize = 20;
                 label.resizeTextMaxSize = 34;
 
-                UiKit.Text(button.transform, "Icono", icon, new Vector2(0f, 0.5f), new Vector2(60f, 0f), new Vector2(90f, 90f), 50, TextAnchor.MiddleCenter, UiKit.Gold);
+                UiKit.Text(button.transform, "Icono", icon, new Vector2(0f, 0.5f), new Vector2(55f, 0f), new Vector2(90f, 90f), 50, TextAnchor.MiddleCenter, UiKit.Gold).rectTransform.pivot = new Vector2(0.5f, 0.5f);
                 string k = key;
                 refreshers.Add(() => label.text = Loc.Get(k));
             }
@@ -75,8 +76,8 @@ namespace Fase
                 var entry = catalog.levels[i];
                 if (!entry.practice) continue;
                 string scene = entry.scene;
-                float x = (n % 3 - 1) * 450f, y = 270f - (n / 3) * 115f;
-                var button = UiKit.Button(content, scene, "", new Vector2(0.5f, 0.5f), new Vector2(x, y), new Vector2(430f, 100f), () => SceneFader.Load(scene), 30);
+                float x = (n % 3 - 1) * 450f, y = 262f - (n / 3) * 100f;
+                var button = UiKit.Button(content, scene, "", new Vector2(0.5f, 0.5f), new Vector2(x, y), new Vector2(430f, 86f), () => SceneFader.Load(scene), 30);
                 var label = button.GetComponentInChildren<Text>();
                 var done = UiKit.Text(button.transform, "Hecho", "✔", new Vector2(1f, 0.5f), new Vector2(-30f, 0f), new Vector2(50f, 50f), 30, TextAnchor.MiddleCenter, UiKit.Gold);
                 int level = i + 1;
@@ -137,6 +138,7 @@ namespace Fase
                 float y = 190f - i * 130f;
                 var card = UiKit.Box(content, medal.id, new Vector2(0.5f, 0.5f), new Vector2(350f, y), new Vector2(640f, 112f), Color.white);
                 var dot = UiKit.Box(card.transform, "Medalla", new Vector2(0f, 0.5f), new Vector2(60f, 0f), new Vector2(70f, 70f), Color.white);
+                dot.rectTransform.pivot = new Vector2(0.5f, 0.5f);
                 dot.type = Image.Type.Simple;
                 var mark = UiKit.Text(dot.transform, "Signo", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(70f, 70f), 38);
                 var name = UiKit.Text(card.transform, "Nombre", "", new Vector2(0f, 0.5f), new Vector2(120f, 20f), new Vector2(500f, 44f), 30, TextAnchor.MiddleLeft);
@@ -212,15 +214,15 @@ namespace Fase
         GameObject BuildGallery()
         {
             var panel = Panel("Galeria", "gallery", out var content, BackToExtras);
-            var view = UiKit.Rect(content, "Vista", new Vector2(0.5f, 0.5f), new Vector2(0f, 20f), new Vector2(560f, 560f)).gameObject.AddComponent<RawImage>();
-            var frame = UiKit.Box(content, "Marco", new Vector2(0.5f, 0.5f), new Vector2(0f, 20f), new Vector2(580f, 580f), new Color(1f, 1f, 1f, 0.08f));
+            var view = UiKit.Rect(content, "Vista", new Vector2(0.5f, 0.5f), new Vector2(0f, 40f), new Vector2(500f, 500f)).gameObject.AddComponent<RawImage>();
+            var frame = UiKit.Box(content, "Marco", new Vector2(0.5f, 0.5f), new Vector2(0f, 40f), new Vector2(520f, 520f), new Color(1f, 1f, 1f, 0.08f));
             frame.transform.SetSiblingIndex(view.transform.GetSiblingIndex());
-            var name = UiKit.Text(content, "Nombre", "", new Vector2(0.5f, 0.5f), new Vector2(0f, 320f), new Vector2(600f, 60f), 40, TextAnchor.MiddleCenter, UiKit.Gold);
-            var hint = UiKit.Text(content, "Ayuda", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -300f), new Vector2(600f, 40f), 24, TextAnchor.MiddleCenter, UiKit.Soft);
+            var name = UiKit.Text(content, "Nombre", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -250f), new Vector2(600f, 50f), 38, TextAnchor.MiddleCenter, UiKit.Gold);
+            var hint = UiKit.Text(content, "Ayuda", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -294f), new Vector2(600f, 36f), 24, TextAnchor.MiddleCenter, UiKit.Soft);
             var gallery = panel.AddComponent<Gallery>();
             gallery.Init(view, FindAnyObjectByType<MenuWalker>());
-            UiKit.Button(content, "Anterior", "◀", new Vector2(0.5f, 0.5f), new Vector2(-420f, 20f), new Vector2(100f, 100f), () => { gallery.Step(-1); Refresh(); }, 44);
-            UiKit.Button(content, "Siguiente", "▶", new Vector2(0.5f, 0.5f), new Vector2(420f, 20f), new Vector2(100f, 100f), () => { gallery.Step(1); Refresh(); }, 44);
+            UiKit.Button(content, "Anterior", "◀", new Vector2(0.5f, 0.5f), new Vector2(-420f, 40f), new Vector2(100f, 100f), () => { gallery.Step(-1); Refresh(); }, 44);
+            UiKit.Button(content, "Siguiente", "▶", new Vector2(0.5f, 0.5f), new Vector2(420f, 40f), new Vector2(100f, 100f), () => { gallery.Step(1); Refresh(); }, 44);
             refreshers.Add(() => { name.text = gallery.CurrentName; hint.text = Loc.Pick("↻ Arrastra para girarlo", "↻ Drag to turn it"); });
             menu.Shown += shown => gallery.SetVisible(shown == panel);
             return panel;
