@@ -44,6 +44,10 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
   "Código de fantasma" tapaba la línea de estadísticas. Arreglados.
 - Bot de pruebas: ya salta los pinchos del nivel 1 (usaba su propio cálculo de suelo, que fallaba).
   Sigue sin resolver niveles enteros; las rutas las comprueba Tools/comprobar_niveles.py.
+- Final: la pregunta "¿Qué harás con la luna?" no se leía sobre el sol (ahora va en una tarjeta) y
+  "Reconstruirla" era blanco sobre amarillo (ahora texto oscuro). La luna que se forma salía como dos
+  cuadrados crema encima del título "Amaneció": ahora es un círculo con halo, arriba en el cielo. La
+  tarjeta para compartir ya no pisa el panel.
 
 ---
 
@@ -58,7 +62,7 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
 | Opciones | 🔧 | Fondo y botones ya no salen ovalados |
 | Pausa y mapa de pausa | ✅ | Mapa oculto en Taller y Sin fin |
 | Resultados | 🔧 | Ver fallo 10 |
-| Final y final secreto | ⬜ | |
+| Final y final secreto | 🔧 | Final normal visto entero · ⬜ final secreto y "dejar el mundo partido" |
 | Páginas de historia y celebración de capítulo | ⬜ | |
 | Decisión del capítulo II | ✅ | Se ve y se elige |
 | Extras: estadísticas, banda sonora, galería, álbum, mapa de capítulos | 🔧 | Iconos y nombre de la galería recolocados |
@@ -180,6 +184,7 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 | 8 | Tienda | Los nombres no cambiaban de idioma | Molesta | 🔧 |
 | 9 | Pantallas 4:3 y móvil | Se cortaban los lados de la interfaz | Molesta | 🔧 |
 | 10 | Resultados | Texto de la meta borroso detrás de las medallas; textos que se pisaban | Se nota | 🔧 |
+| 11 | Final | Luna cuadrada tapando el título; pregunta y botón que no se leían | Se nota | 🔧 |
 
 ---
 

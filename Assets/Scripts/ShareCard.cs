@@ -13,7 +13,7 @@ namespace Fase
         {
             UiKit.EnsureEvents();
             var canvas = UiKit.Canvas("TarjetaFinal", 30);
-            var card = UiKit.Box(canvas.transform, "Tarjeta", new Vector2(1f, 0f), new Vector2(-40f, 40f), new Vector2(620f, 300f), new Color(1f, 1f, 1f, 0.95f));
+            var card = UiKit.Box(canvas.transform, "Tarjeta", new Vector2(1f, 0f), new Vector2(-30f, 14f), new Vector2(620f, 300f), new Color(1f, 1f, 1f, 0.95f));
             card.rectTransform.pivot = new Vector2(1f, 0f);
             var catalog = LevelCatalog.Get;
             int moon = 0, total = 0;

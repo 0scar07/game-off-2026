@@ -89,10 +89,15 @@ namespace Fase
             UiKit.EnsureEvents();
             var canvas = UiKit.Canvas("Eleccion", 30);
             var group = canvas.gameObject.AddComponent<CanvasGroup>();
-            UiKit.Text(canvas.transform, "Pregunta", Loc.Pick("¿Qué harás con la luna?", "What will you do with the moon?"), new Vector2(0.5f, 1f), new Vector2(0f, -120f), new Vector2(1400f, 90f), 64);
+            // La pregunta va en una tarjeta oscura: encima del sol y las nubes no se leía.
+            var card = UiKit.Box(canvas.transform, "Tarjeta", new Vector2(0.5f, 1f), new Vector2(0f, -120f), new Vector2(1180f, 130f), new Color(0.07f, 0.05f, 0.2f, 0.82f));
+            card.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            UiKit.Text(card.transform, "Pregunta", Loc.Pick("¿Qué harás con la luna?", "What will you do with the moon?", "O que você vai fazer com a lua?", "Que vas-tu faire de la lune ?"), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1140f, 110f), 64);
             int picked = -1;
             var a = UiKit.Button(canvas.transform, "Reconstruir", Loc.Pick("Reconstruirla", "Rebuild it"), new Vector2(0.5f, 0f), new Vector2(-330f, 140f), new Vector2(560f, 120f), () => picked = 0, 46);
             a.GetComponent<Image>().color = new Color(1f, 0.7f, 0.35f, 0.95f);
+            // Texto oscuro sobre el botón cálido (en blanco casi no se leía).
+            a.GetComponentInChildren<Text>().color = new Color(0.25f, 0.13f, 0.05f);
             var b = UiKit.Button(canvas.transform, "Partido", Loc.Pick("Dejar el mundo partido", "Leave the world split"), new Vector2(0.5f, 0f), new Vector2(330f, 140f), new Vector2(560f, 120f), () => picked = 1, 40);
             b.GetComponent<Image>().color = new Color(0.45f, 0.42f, 1f, 0.95f);
             a.Select();
@@ -107,15 +112,19 @@ namespace Fase
         IEnumerator MoonCinematic()
         {
             var canvas = UiKit.Canvas("Luna", 29);
-            var center = new Vector2(0f, 230f);
+            // Arriba, en el cielo: más abajo tapaba el título y el texto del final.
+            var center = new Vector2(0f, 420f);
             var shards = new RectTransform[12];
             for (int i = 0; i < shards.Length; i++)
             {
                 shards[i] = UiKit.Box(canvas.transform, "Fragmento", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(46f, 46f), new Color(1f, 0.92f, 0.6f)).rectTransform;
                 shards[i].localRotation = Quaternion.Euler(0, 0, 45f);
             }
-            var moon = UiKit.Box(canvas.transform, "Luna", new Vector2(0.5f, 0.5f), center, new Vector2(10f, 10f), new Color(1f, 0.98f, 0.9f, 0f));
-            var halo = UiKit.Box(canvas.transform, "Halo", new Vector2(0.5f, 0.5f), center, new Vector2(10f, 10f), new Color(1f, 0.9f, 0.6f, 0f));
+            var moon = UiKit.Box(canvas.transform, "Luna", new Vector2(0.5f, 0.5f), center, new Vector2(10f, 10f), new Color(1f, 0.98f, 0.9f, 0f), false);
+            moon.sprite = Circle(false);
+            var halo = UiKit.Box(canvas.transform, "Halo", new Vector2(0.5f, 0.5f), center, new Vector2(10f, 10f), new Color(1f, 0.9f, 0.6f, 0f), false);
+            halo.sprite = Circle(true);
+            moon.rectTransform.pivot = halo.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             halo.transform.SetSiblingIndex(0);
             for (float t = 0f; t < 3f; t += Time.deltaTime)
             {
@@ -128,14 +137,37 @@ namespace Fase
                     shards[i].localScale = Vector3.one * Mathf.Lerp(1f, 0.3f, k);
                 }
                 float m = Mathf.Clamp01((t - 2f) / 1f);
-                moon.rectTransform.sizeDelta = Vector2.one * Mathf.Lerp(10f, 220f, m);
+                moon.rectTransform.sizeDelta = Vector2.one * Mathf.Lerp(10f, 190f, m);
                 moon.color = new Color(1f, 0.98f, 0.9f, m);
-                halo.rectTransform.sizeDelta = Vector2.one * Mathf.Lerp(10f, 620f, m);
-                halo.color = new Color(1f, 0.9f, 0.6f, m * 0.25f);
+                halo.rectTransform.sizeDelta = Vector2.one * Mathf.Lerp(10f, 520f, m);
+                halo.color = new Color(1f, 0.9f, 0.6f, m * 0.45f);
                 yield return null;
             }
             foreach (var shard in shards) Destroy(shard.gameObject);
             if (Settings.Vibration) Share.Vibrate(120);
+        }
+
+        static Sprite solidCircle, softCircle;
+
+        /// <summary>Círculo liso (la luna) o difuminado (su halo), hecho una vez al vuelo.</summary>
+        static Sprite Circle(bool soft)
+        {
+            ref Sprite cached = ref soft ? ref softCircle : ref solidCircle;
+            if (cached != null) return cached;
+            const int size = 128;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+            var pixels = new Color32[size * size];
+            for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                {
+                    float d = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), new Vector2(size / 2f, size / 2f)) / (size / 2f);
+                    float a = soft ? Mathf.Pow(Mathf.Clamp01(1f - d), 2f) : Mathf.Clamp01((1f - d) * size / 2f);
+                    pixels[y * size + x] = new Color32(255, 255, 255, (byte)(a * 255));
+                }
+            texture.SetPixels32(pixels);
+            texture.Apply();
+            cached = Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
+            return cached;
         }
     }
 }
