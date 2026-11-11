@@ -23,7 +23,8 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
   aurora"); ahora llevan ★.
 - Web exportada con el PC libre (cerrando Unity y abriéndolo solo para exportar): 25,7 MB, 63 min.
   La prueba automática la abre en 10,5 s, pasa el inicio, entra al nivel 1 y juega sin errores.
-- Pendiente: subirla a itch (release `web-…`) y seguir la Fase 2.
+- Subida a itch con la release `web-20261110-1`: la prueba de GitHub pasó y la subida también.
+- Mañana: Fase 2 (probar menús, opciones, idiomas y jugar todos los niveles).
 
 ---
 
@@ -142,7 +143,7 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 | Exportar sin quedarse sin memoria | 🔧 con el PC libre y código IL2CPP optimizado por tamaño |
 | Prueba automática (Tools/prueba_web) | ✅ carga en 10,5 s, sin errores |
 | Probar en navegador y en móvil | ⬜ |
-| Subir a itch | ⬜ |
+| Subir a itch | ✅ release web-20261110-1 |
 
 ---
 
