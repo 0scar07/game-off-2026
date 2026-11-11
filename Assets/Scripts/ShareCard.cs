@@ -23,17 +23,19 @@ namespace Fase
             string time = minutes >= 60 ? $"{minutes / 60} h {minutes % 60} min" : $"{minutes} min";
             string who = PlayerName.Has ? PlayerName.Value : "Lumi";
             var dark = new Color(0.16f, 0.12f, 0.36f);
-            var title = UiKit.Text(card.transform, "Titulo", Loc.Pick($"FASE · ¡{who} lo ha terminado!", $"FASE · {who} finished it!"), new Vector2(0.5f, 1f), new Vector2(0f, -50f), new Vector2(580f, 60f), 36, TextAnchor.MiddleCenter, dark);
+            var title = UiKit.Text(card.transform, "Titulo", Loc.Pick($"FASE · ¡{who} lo ha terminado!", $"FASE · {who} finished it!", $"FASE · {who} terminou!", $"FASE · {who} l'a terminé !"), new Vector2(0.5f, 1f), new Vector2(0f, -50f), new Vector2(580f, 60f), 36, TextAnchor.MiddleCenter, dark);
             Object.Destroy(title.GetComponent<Shadow>());
             var line = UiKit.Text(card.transform, "Datos", $"⏱ {time}    ☾ {moon}/{total}    ★ {golds} {Loc.Pick("oros", "golds")}", new Vector2(0.5f, 0.5f), new Vector2(0f, 20f), new Vector2(580f, 50f), 30, TextAnchor.MiddleCenter, new Color(0.35f, 0.29f, 0.55f));
             Object.Destroy(line.GetComponent<Shadow>());
-            var extra = UiKit.Text(card.transform, "Logros", Loc.Pick($"Logros: {Achievements.Count}/{Achievements.All.Length}    Estilo: {StyleMedals.Count}/{StyleMedals.All.Length}", $"Achievements: {Achievements.Count}/{Achievements.All.Length}    Style: {StyleMedals.Count}/{StyleMedals.All.Length}"),
+            var extra = UiKit.Text(card.transform, "Logros", Loc.Pick($"Logros: {Achievements.Count}/{Achievements.All.Length}    Estilo: {StyleMedals.Count}/{StyleMedals.All.Length}", $"Achievements: {Achievements.Count}/{Achievements.All.Length}    Style: {StyleMedals.Count}/{StyleMedals.All.Length}",
+                $"Conquistas: {Achievements.Count}/{Achievements.All.Length}    Estilo: {StyleMedals.Count}/{StyleMedals.All.Length}", $"Succès : {Achievements.Count}/{Achievements.All.Length}    Style : {StyleMedals.Count}/{StyleMedals.All.Length}"),
                 new Vector2(0.5f, 0.5f), new Vector2(0f, -28f), new Vector2(580f, 40f), 24, TextAnchor.MiddleCenter, new Color(0.35f, 0.29f, 0.55f));
             Object.Destroy(extra.GetComponent<Shadow>());
             Text label = null;
             var button = UiKit.Button(card.transform, "Compartir", Loc.Pick("Compartir", "Share"), new Vector2(0.5f, 0f), new Vector2(0f, 30f), new Vector2(320f, 70f), () =>
             {
-                string text = Loc.Pick($"¡Terminé FASE! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} oros 🌗 {Share.Url}", $"I finished FASE! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} golds 🌗 {Share.Url}");
+                string text = Loc.Pick($"¡Terminé FASE! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} oros 🌗 {Share.Url}", $"I finished FASE! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} golds 🌗 {Share.Url}",
+                    $"Terminei FASE! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} ouros 🌗 {Share.Url}", $"J'ai fini FASE ! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} ors 🌗 {Share.Url}");
                 label.text = Loc.Get(Share.Text(text));
             }, 32);
             button.GetComponent<Image>().color = dark;

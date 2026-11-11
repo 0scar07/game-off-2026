@@ -59,7 +59,7 @@ namespace Fase
                 line.localRotation = Quaternion.Euler(0f, 0f, shift.angle);
             }
             int minutes = PlayToday.Minutes;
-            today.text = Loc.Pick($"Hoy: {minutes} min", $"Today: {minutes} min");
+            today.text = Loc.Pick($"Hoy: {minutes} min", $"Today: {minutes} min", $"Hoje: {minutes} min", $"Aujourd'hui : {minutes} min");
             rest.text = minutes >= 60 ? Loc.Pick("¿Un descanso?", "Time for a break?") : "";
         }
 

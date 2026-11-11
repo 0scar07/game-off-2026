@@ -31,8 +31,8 @@ namespace Fase
             bool back = PlayerPrefs.GetInt(SeenKey, 0) == 1;
             PlayerPrefs.SetInt(SeenKey, 1);
             string name = PlayerName.Has ? ", " + PlayerName.Value : "";
-            string hello = back ? Loc.Pick($"¡Has vuelto{name}! ¿Seguimos?", $"You're back{name}! Shall we go on?")
-                                : Loc.Pick($"¡Hola{name}! Soy Lumi.", $"Hi{name}! I'm Lumi.");
+            string hello = back ? Loc.Pick($"¡Has vuelto{name}! ¿Seguimos?", $"You're back{name}! Shall we go on?", $"Você voltou{name}! Vamos continuar?", $"Te revoilà{name} ! On continue ?")
+                                : Loc.Pick($"¡Hola{name}! Soy Lumi.", $"Hi{name}! I'm Lumi.", $"Olá{name}! Eu sou a Lumi.", $"Salut{name} ! Je suis Lumi.");
             walker.Wave(3.2f);
             Invoke(nameof(SayHello), 0.8f);
             helloText = hello;

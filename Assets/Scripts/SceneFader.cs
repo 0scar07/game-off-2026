@@ -158,7 +158,7 @@ namespace Fase
                 if (best <= 0f) return title;
                 var parts = new System.Collections.Generic.List<string> { $"⏱ {Loc.Pick("Récord", "Best")} {Hud.FormatTime(best)}" };
                 int have = Progress.Fragments(level), total = levels[i].fragments;
-                if (total > 0) parts.Add(have >= total ? Loc.Pick("☾ toda la luna", "☾ whole moon") : Loc.Pick($"☾ te falta{(total - have > 1 ? "n" : "")} {total - have} de {total}", $"☾ {total - have} of {total} left"));
+                if (total > 0) parts.Add(have >= total ? Loc.Pick("☾ toda la luna", "☾ whole moon") : Loc.Pick($"☾ te falta{(total - have > 1 ? "n" : "")} {total - have} de {total}", $"☾ {total - have} of {total} left", $"☾ falta{(total - have > 1 ? "m" : "")} {total - have} de {total}", $"☾ encore {total - have} sur {total}"));
                 int medal = Medals.Best(level);
                 if (medal > 0) parts.Add($"★ {Medals.Name(medal)}");
                 return title + $"\n<size=30><color=#ffd98a>{string.Join("      ", parts)}</color></size>";

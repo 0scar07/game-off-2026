@@ -32,9 +32,11 @@ namespace Fase
         public static string LevelTime(int level, string name, float seconds, int medal)
         {
             string medalText = medal > 0 ? $" · {Medals.Name(medal)}" : "";
-            return Loc.English
-                ? $"I beat level {level} \"{name}\" of FASE in {Hud.FormatTime(seconds)}{medalText} 🌗 Can you beat it? {Url}"
-                : $"Hice el nivel {level} \"{name}\" de FASE en {Hud.FormatTime(seconds)}{medalText} 🌗 ¿Me superas? {Url}";
+            return Loc.Pick(
+                $"Hice el nivel {level} \"{name}\" de FASE en {Hud.FormatTime(seconds)}{medalText} 🌗 ¿Me superas? {Url}",
+                $"I beat level {level} \"{name}\" of FASE in {Hud.FormatTime(seconds)}{medalText} 🌗 Can you beat it? {Url}",
+                $"Fiz o nível {level} \"{name}\" de FASE em {Hud.FormatTime(seconds)}{medalText} 🌗 Consegue me superar? {Url}",
+                $"J'ai fait le niveau {level} \"{name}\" de FASE en {Hud.FormatTime(seconds)}{medalText} 🌗 Tu me bats ? {Url}");
         }
 
         /// <summary>Guarda una captura: en la web la descarga; en el editor, en la carpeta del proyecto.</summary>

@@ -122,7 +122,7 @@ namespace Fase
                 int days = DailyStreak.Current;
                 holder.gameObject.SetActive(days >= 2);
                 number.text = days.ToString();
-                caption.text = Loc.Pick($"{days} días seguidos", $"{days}-day streak");
+                caption.text = Loc.Pick($"{days} días seguidos", $"{days}-day streak", $"{days} dias seguidos", $"{days} jours d'affilée");
             });
         }
 
@@ -139,7 +139,7 @@ namespace Fase
             refreshers.Add(() =>
             {
                 hello.gameObject.SetActive(PlayerName.Has);
-                hello.text = Loc.Pick($"¡Hola, {PlayerName.Value}!", $"Hi, {PlayerName.Value}!");
+                hello.text = Loc.Pick($"¡Hola, {PlayerName.Value}!", $"Hi, {PlayerName.Value}!", $"Olá, {PlayerName.Value}!", $"Salut, {PlayerName.Value} !");
             });
         }
 
@@ -187,7 +187,7 @@ namespace Fase
             element.preferredHeight = 80f;
             open.transform.SetSiblingIndex(Mathf.Max(0, options.childCount - 3));
             var openLabel = open.GetComponentInChildren<Text>();
-            refreshers.Add(() => openLabel.text = PlayerName.Has ? Loc.Pick($"Tu nombre: {PlayerName.Value}", $"Your name: {PlayerName.Value}") : Loc.Pick("Tu nombre", "Your name"));
+            refreshers.Add(() => openLabel.text = PlayerName.Has ? Loc.Pick($"Tu nombre: {PlayerName.Value}", $"Your name: {PlayerName.Value}", $"Seu nome: {PlayerName.Value}", $"Ton prénom : {PlayerName.Value}") : Loc.Pick("Tu nombre", "Your name"));
         }
 
         // ───────── Tienda ─────────
@@ -197,14 +197,16 @@ namespace Fase
         {
             var panel = Panel("Tienda", "shop", out var content);
             var balance = UiKit.Text(content, "Saldo", "", new Vector2(1f, 1f), new Vector2(-10f, 70f), new Vector2(560f, 50f), 34, TextAnchor.MiddleRight, UiKit.Gold);
-            refreshers.Add(() => balance.text = Loc.Pick($"☾ {Shop.Balance} fragmentos para gastar", $"☾ {Shop.Balance} fragments to spend"));
+            refreshers.Add(() => balance.text = Loc.Pick($"☾ {Shop.Balance} fragmentos para gastar", $"☾ {Shop.Balance} fragments to spend", $"☾ {Shop.Balance} fragmentos para gastar", $"☾ {Shop.Balance} fragments à dépenser"));
             for (int i = 0; i < Shop.Items.Length; i++)
             {
                 var item = Shop.Items[i];
                 float y = 190f - i * 130f;
                 var card = UiKit.Box(content, item.id, new Vector2(0.5f, 0.5f), new Vector2(0f, y), new Vector2(1000f, 110f), new Color(1f, 1f, 1f, 0.07f));
                 UiKit.Box(card.transform, "Color", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(70f, 70f), item.color).rectTransform.pivot = new Vector2(0.5f, 0.5f);
-                UiKit.Text(card.transform, "Nombre", item.Name, new Vector2(0f, 0.5f), new Vector2(130f, 14f), new Vector2(500f, 50f), 36, TextAnchor.MiddleLeft).rectTransform.pivot = new Vector2(0f, 0.5f);
+                var itemName = UiKit.Text(card.transform, "Nombre", item.Name, new Vector2(0f, 0.5f), new Vector2(130f, 14f), new Vector2(500f, 50f), 36, TextAnchor.MiddleLeft);
+                itemName.rectTransform.pivot = new Vector2(0f, 0.5f);
+                refreshers.Add(() => itemName.text = item.Name);
                 UiKit.Text(card.transform, "Precio", $"☾ {item.price}", new Vector2(0f, 0.5f), new Vector2(130f, -26f), new Vector2(300f, 36f), 26, TextAnchor.MiddleLeft, UiKit.Gold).rectTransform.pivot = new Vector2(0f, 0.5f);
                 var button = UiKit.Button(card.transform, "Accion", "", new Vector2(1f, 0.5f), new Vector2(-30f, 0f), new Vector2(280f, 80f), null, 30);
                 ((RectTransform)button.transform).pivot = new Vector2(1f, 0.5f);
@@ -266,7 +268,7 @@ namespace Fase
                 name.rectTransform.pivot = new Vector2(0f, 0.5f);
                 var desc = UiKit.Text(card.transform, "Detalle", "", new Vector2(0f, 0.5f), new Vector2(80f, -17f), new Vector2(246f, 28f), 16, TextAnchor.MiddleLeft, UiKit.Soft);
                 desc.rectTransform.pivot = new Vector2(0f, 0.5f);
-                foreach (var (t, min) in new[] { (name, 17), (desc, 12) })
+                foreach (var (t, min) in new[] { (name, 13), (desc, 10) })
                 {
                     t.horizontalOverflow = HorizontalWrapMode.Wrap;
                     t.resizeTextForBestFit = true;
@@ -362,7 +364,7 @@ namespace Fase
             {
                 int level = page + 1;
                 count.text = $"{Diary.Found} / {Diary.Pages.Length}";
-                title.text = Loc.English ? $"Page {level}" : $"Página {level}";
+                title.text = Loc.Pick($"Página {level}", $"Page {level}", $"Página {level}", $"Page {level}");
                 body.text = Diary.Has(level) ? Loc.Pick(Diary.Pages[page].es, Diary.Pages[page].en)
                     : Loc.Pick("Esta página está en el cofre secreto del nivel " + level + ".", "This page is in level " + level + "'s secret chest.");
                 body.color = Diary.Has(level) ? new Color(0.35f, 0.23f, 0.12f) : new Color(0.55f, 0.45f, 0.35f, 0.7f);
@@ -506,13 +508,16 @@ namespace Fase
                 var title = UiKit.Text(card.transform, "Titulo", "", new Vector2(0.5f, 1f), new Vector2(0f, -34f), new Vector2(310f, 40f), 28, TextAnchor.MiddleCenter, UiKit.Gold);
                 var body = UiKit.Text(card.transform, "Texto", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -24f), new Vector2(310f, 130f), 21);
                 body.horizontalOverflow = HorizontalWrapMode.Wrap;
+                body.resizeTextForBestFit = true;
+                body.resizeTextMinSize = 14;
+                body.resizeTextMaxSize = 21;
                 var mark = UiKit.Text(card.transform, "Interrogacion", "?", new Vector2(0.5f, 0.5f), new Vector2(0f, 24f), new Vector2(120f, 100f), 76, TextAnchor.MiddleCenter, new Color(0.4f, 0.37f, 0.65f));
                 refreshers.Add(() =>
                 {
                     bool open = fact.open();
                     card.color = open ? new Color(1f, 0.94f, 0.78f, 0.12f) : new Color(1f, 1f, 1f, 0.04f);
                     title.text = open ? Loc.Pick(fact.titleEs, fact.titleEn) : "";
-                    body.text = open ? Loc.Pick(fact.es, fact.en) : Loc.Pick(fact.howEs, fact.howEn);
+                    body.text = (open ? Loc.Pick(fact.es, fact.en) : Loc.Pick(fact.howEs, fact.howEn)).Replace("\n", " ");
                     body.color = open ? Color.white : new Color(0.6f, 0.58f, 0.78f);
                     body.rectTransform.anchoredPosition = new Vector2(0f, open ? -24f : -58f);
                     mark.enabled = !open;

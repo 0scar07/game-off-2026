@@ -353,7 +353,7 @@ namespace Fase
             var button = UiKit.Button(journey, "Fantasma", "", new Vector2(1f, 0f), new Vector2(-40f, 40f), new Vector2(520f, 96f), () => { Settings.GhostRace = !Settings.GhostRace; Refresh(); }, 30);
             ((RectTransform)button.transform).pivot = new Vector2(1f, 0f);
             var label = button.GetComponentInChildren<Text>();
-            refreshers.Add(() => label.text = Loc.Pick($"Correr contra mi récord: {(Settings.GhostRace ? "Sí" : "No")}", $"Race my best: {(Settings.GhostRace ? "On" : "Off")}"));
+            refreshers.Add(() => label.text = Loc.Pick($"Correr contra mi récord: {(Settings.GhostRace ? "Sí" : "No")}", $"Race my best: {(Settings.GhostRace ? "On" : "Off")}", $"Correr contra meu recorde: {(Settings.GhostRace ? "Sim" : "Não")}", $"Courir contre mon record : {(Settings.GhostRace ? "Oui" : "Non")}"));
         }
     }
 }

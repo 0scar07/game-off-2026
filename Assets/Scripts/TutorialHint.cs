@@ -43,7 +43,7 @@ namespace Fase
             if (Gamepad.current != null)
             {
                 string buttons = InputGlyphs.LineButtons.Replace("/", " + ");
-                UiKit.Text(root, "Mando", Loc.Pick($"Línea · stick derecho / {buttons}", $"Line · right stick / {buttons}"), new Vector2(0.5f, 0.5f), new Vector2(140f, -165f), new Vector2(640f, 90f), 30);
+                UiKit.Text(root, "Mando", Loc.Pick($"Línea · stick derecho / {buttons}", $"Line · right stick / {buttons}", $"Linha · analógico direito / {buttons}", $"Ligne · stick droit / {buttons}"), new Vector2(0.5f, 0.5f), new Vector2(140f, -165f), new Vector2(640f, 90f), 30);
 
             }
             else if (Touchscreen.current == null)

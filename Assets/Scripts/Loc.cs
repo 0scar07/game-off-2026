@@ -32,13 +32,29 @@ namespace Fase
 
         public static event System.Action Changed;
 
+#if UNITY_EDITOR
+        static readonly HashSet<string> Missing = new HashSet<string>();
+#endif
+
         /// <summary>Elige el texto del idioma actual: español, inglés o (por el texto en español) portugués y francés.</summary>
         public static string Pick(string es, string en)
         {
             int language = Language;
             if (language == 0 || string.IsNullOrEmpty(en)) return es;
-            if (language >= 2 && es != null && Translations.TryGetValue(es, out var t)) return language == 2 ? t.pt : t.fr;
+            if (language >= 2 && es != null && (Translations.TryGetValue(es, out var t) || MoreTranslations.TryGetValue(es, out t))) return language == 2 ? t.pt : t.fr;
+#if UNITY_EDITOR
+            // En el editor se apunta lo que sale en inglés por falta de traducción (Logs/sin-traducir.txt).
+            if (language >= 2 && es != null && es != en && Missing.Add(es))
+                System.IO.File.AppendAllText("Logs/sin-traducir.txt", es.Replace("\n", "\\n") + "\n");
+#endif
             return en;
+        }
+
+        /// <summary>Texto con variables en los cuatro idiomas (no se puede buscar en la tabla).</summary>
+        public static string Pick(string es, string en, string pt, string fr)
+        {
+            int language = Language;
+            return language == 0 ? es : language == 1 ? en : language == 2 ? pt : fr;
         }
 
         public static string Get(string key) =>

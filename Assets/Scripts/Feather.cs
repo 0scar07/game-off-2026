@@ -71,7 +71,7 @@ namespace Fase
             if (player == null || Vector2.Distance(player.position, transform.position) > 1.1f) return;
             Feathers.Take(level);
             Sfx.Play("pluma", 0.7f);
-            LumiBubble.Say(player, $"{Loc.Pick("¡Una", "A")} {Feathers.Name(chapter, false)}! {Feathers.Count(chapter)}/{Feathers.Total(chapter)}", 2f);
+            LumiBubble.Say(player, $"{(chapter == 2 ? Loc.Pick("¡Una hoja!", "A leaf!", "Uma folha!", "Une feuille !") : chapter == 3 ? Loc.Pick("¡Un copo!", "A snowflake!", "Um floco!", "Un flocon !") : Loc.Pick("¡Una pluma!", "A feather!", "Uma pena!", "Une plume !"))} {Feathers.Count(chapter)}/{Feathers.Total(chapter)}", 2f);
             Destroy(gameObject);
         }
     }

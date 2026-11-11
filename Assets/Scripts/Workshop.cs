@@ -259,7 +259,8 @@ namespace Fase
         {
             Save();
             string code = LevelCode.Encode(Rows());
-            message.text = Loc.Get(Share.Text(Loc.Pick($"Juega mi nivel de FASE: {LinkOpener.Link(code)}\n(o pega este código en el Taller: {code})", $"Play my FASE level: {LinkOpener.Link(code)}\n(or paste this code in the Workshop: {code})")));
+            message.text = Loc.Get(Share.Text(Loc.Pick($"Juega mi nivel de FASE: {LinkOpener.Link(code)}\n(o pega este código en el Taller: {code})", $"Play my FASE level: {LinkOpener.Link(code)}\n(or paste this code in the Workshop: {code})",
+                $"Jogue meu nível de FASE: {LinkOpener.Link(code)}\n(ou cole este código na Oficina: {code})", $"Joue à mon niveau de FASE : {LinkOpener.Link(code)}\n(ou colle ce code dans l'Atelier : {code})")));
 
         }
 

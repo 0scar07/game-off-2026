@@ -99,7 +99,7 @@ namespace Fase
             var canvas = UiKit.Canvas("FinCrono", 45);
             var shade = UiKit.Fill(canvas.transform, "Fondo").gameObject.AddComponent<Image>();
             shade.color = new Color(0.02f, 0.02f, 0.08f, 0.85f);
-            UiKit.Text(canvas.transform, "Titulo", Loc.Pick($"Capítulo {chapter} contrarreloj", $"Chapter {chapter} time trial"), new Vector2(0.5f, 0.5f), new Vector2(0f, 300f), new Vector2(1400f, 100f), 72);
+            UiKit.Text(canvas.transform, "Titulo", Loc.Pick($"Capítulo {chapter} contrarreloj", $"Chapter {chapter} time trial", $"Capítulo {chapter} contra o relógio", $"Chapitre {chapter} contre-la-montre"), new Vector2(0.5f, 0.5f), new Vector2(0f, 300f), new Vector2(1400f, 100f), 72);
             UiKit.Text(canvas.transform, "Total", $"⏱ {Hud.FormatTime(total)}", new Vector2(0.5f, 0.5f), new Vector2(0f, 170f), new Vector2(1000f, 130f), 110, TextAnchor.MiddleCenter, UiKit.Gold);
             UiKit.Text(canvas.transform, "Record", record ? Loc.Get("record") : $"{Loc.Get("best")}: {Hud.FormatTime(Best(chapter))}", new Vector2(0.5f, 0.5f), new Vector2(0f, 60f), new Vector2(1000f, 60f), 40, TextAnchor.MiddleCenter, UiKit.Soft);
             for (int i = 0; i < splits.Count; i++)

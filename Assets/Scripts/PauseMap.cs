@@ -107,7 +107,7 @@ namespace Fase
                 if (!taken) left++;
             }
             missing.text = left == 0 ? Loc.Pick("¡Tienes toda la luna!", "You have the whole moon!")
-                : Loc.English ? $"{left} fragment{(left > 1 ? "s" : "")} left" : $"Falta{(left > 1 ? "n" : "")} {left} fragmento{(left > 1 ? "s" : "")}";
+                : Loc.Pick($"Falta{(left > 1 ? "n" : "")} {left} fragmento{(left > 1 ? "s" : "")}", $"{left} fragment{(left > 1 ? "s" : "")} left", $"Falta{(left > 1 ? "m" : "")} {left} fragmento{(left > 1 ? "s" : "")}", $"Encore {left} fragment{(left > 1 ? "s" : "")}");
         }
     }
 }

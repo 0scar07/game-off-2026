@@ -30,8 +30,12 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
   iconos que pisaban el texto (Logros, Tienda, Extras, Estadísticas), nombres encima de las muestras
   del vestuario, textos que no se encogían (faltaba el ajuste de línea) y el fondo de Opciones y los
   botones del menú, que salían ovalados (al sprite le faltaba el borde de 9 cortes).
-- Encontrado: unos 300 de los ~400 textos no tienen traducción al portugués y al francés (salen en
-  inglés, mezclados).
+- Portugués y francés completados: faltaban ~400 textos (logros, diario, vestuario, tienda, taller,
+  curiosidades, historia, pistas, niveles extra y desafíos). Los textos con números ahora tienen sus
+  cuatro idiomas (Loc.Pick de 4). En el editor, Loc apunta en Logs/sin-traducir.txt lo que salga en
+  inglés por falta de traducción: tras la gira de paneles y de las 60 escenas en portugués, vacío.
+- Arreglado: al coger un copo salía "¡Una copo!"; la tienda no cambiaba de idioma hasta reiniciar;
+  en Curiosidades el texto largo se salía de la tarjeta.
 
 ---
 
@@ -120,7 +124,7 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 | Bocadillos de Lumi y Chispa | ✅ |
 | Transiciones entre escenas | ⬜ |
 | Controles táctiles y glifos de mando | ⬜ |
-| Cuatro idiomas sin textos que se salgan | 🔧 menús sin textos cortados · ❌ portugués y francés incompletos |
+| Cuatro idiomas sin textos que se salgan | 🔧 menús y niveles sin textos cortados ni sin traducir |
 | Texto grande de accesibilidad | ⬜ |
 | Resoluciones 16:9, 21:9, 4:3 y móvil | ⬜ |
 
@@ -163,7 +167,9 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 | 3 | Bot de pruebas | No salta los pinchos del nivel 1 | Herramienta | ❌ |
 | 4 | Menús (11 paneles) | Textos pisándose, filas bajo "Volver", iconos sobre el texto | Molesta | 🔧 |
 | 5 | Opciones y botones del menú | Se veían ovalados (sprite sin borde de 9 cortes) | Molesta | 🔧 |
-| 6 | Portugués y francés | ~300 textos salen en inglés | Molesta | ❌ |
+| 6 | Portugués y francés | ~400 textos salían en inglés | Molesta | 🔧 |
+| 7 | Plumas del capítulo III | "¡Una copo!" | Molesta | 🔧 |
+| 8 | Tienda | Los nombres no cambiaban de idioma | Molesta | 🔧 |
 
 ---
 

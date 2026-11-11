@@ -108,7 +108,8 @@ namespace Fase
                 imported = FriendGhost.Import(field.text);
                 var catalog = LevelCatalog.Get;
                 status = imported > 0 && imported <= catalog.levels.Length
-                    ? Loc.Pick($"¡Listo! Su fantasma te espera en el nivel {imported}: {catalog.levels[imported - 1].name}", $"Done! Their ghost is waiting in level {imported}: {catalog.levels[imported - 1].nameEn}")
+                    ? Loc.Pick($"¡Listo! Su fantasma te espera en el nivel {imported}: {catalog.levels[imported - 1].name}", $"Done! Their ghost is waiting in level {imported}: {catalog.levels[imported - 1].nameEn}",
+                        $"Pronto! O fantasma te espera no nível {imported}: {Loc.Pick(catalog.levels[imported - 1].name, catalog.levels[imported - 1].nameEn)}", $"C'est prêt ! Son fantôme t'attend au niveau {imported} : {Loc.Pick(catalog.levels[imported - 1].name, catalog.levels[imported - 1].nameEn)}")
                     : Loc.Pick("Ese código no vale. Cópialo entero.", "That code doesn't work. Copy all of it.");
                 if (imported > catalog.levels.Length) imported = 0;
                 Refresh();
@@ -125,7 +126,7 @@ namespace Fase
             {
                 var catalog = LevelCatalog.Get;
                 int level = Mathf.Clamp(Progress.Unlocked, 1, Mathf.Max(1, catalog.MainCount));
-                return Loc.Pick($"▶ Carrera en el nivel {level}", $"▶ Race on level {level}");
+                return Loc.Pick($"▶ Carrera en el nivel {level}", $"▶ Race on level {level}", $"▶ Corrida no nível {level}", $"▶ Course au niveau {level}");
             }, () => RaceMode.Begin(RaceScene()), null, 34);
             return panel;
         }
@@ -144,7 +145,7 @@ namespace Fase
                     () => { Skills.SetEnabled(s.id, !Skills.Enabled(s.id)); Refresh(); }, () => Skills.Unlocked(s.id), 34);
                 Note(content, "Como" + s.id, new Vector2(0f, y - 70f), 900f, () => Skills.Unlocked(s.id) ? "" : Loc.Pick(s.howEs, s.howEn), 24);
             }
-            Note(content, "Plumas", new Vector2(0f, -300f), 1000f, () => Loc.Pick($"Plumas, hojas y copos: {Feathers.Count(0)}", $"Feathers, leaves and snowflakes: {Feathers.Count(0)}"), 26);
+            Note(content, "Plumas", new Vector2(0f, -300f), 1000f, () => Loc.Pick($"Plumas, hojas y copos: {Feathers.Count(0)}", $"Feathers, leaves and snowflakes: {Feathers.Count(0)}", $"Penas, folhas e flocos: {Feathers.Count(0)}", $"Plumes, feuilles et flocons : {Feathers.Count(0)}"), 26);
             return panel;
         }
     }

@@ -140,7 +140,7 @@ namespace Fase
             label.alpha = Mathf.MoveTowards(label.alpha, near ? 1f : 0f, Time.deltaTime * 2.5f);
             if (near) Achievements.Unlock("flor");
 
-            labelText.text = Loc.Pick($"Aquí te caíste {shownFalls} veces", $"You fell here {shownFalls} times");
+            labelText.text = Loc.Pick($"Aquí te caíste {shownFalls} veces", $"You fell here {shownFalls} times", $"Você caiu aqui {shownFalls} vezes", $"Tu es tombé ici {shownFalls} fois");
         }
     }
 }

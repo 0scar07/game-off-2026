@@ -39,8 +39,10 @@ namespace Fase
             PlayerPrefs.Save();
         }
 
-        public static string Summary() => Loc.English
-            ? $"Total: {Jumps:N0} jumps · {Meters / 1000f:0.0} km · line moved {LineMoves:N0} times"
-            : $"Total: {Jumps:N0} saltos · {Meters / 1000f:0.0} km · línea movida {LineMoves:N0} veces";
+        public static string Summary() => Loc.Pick(
+            $"Total: {Jumps:N0} saltos · {Meters / 1000f:0.0} km · línea movida {LineMoves:N0} veces",
+            $"Total: {Jumps:N0} jumps · {Meters / 1000f:0.0} km · line moved {LineMoves:N0} times",
+            $"Total: {Jumps:N0} pulos · {Meters / 1000f:0.0} km · linha movida {LineMoves:N0} vezes",
+            $"Total : {Jumps:N0} sauts · {Meters / 1000f:0.0} km · ligne bougée {LineMoves:N0} fois");
     }
 }

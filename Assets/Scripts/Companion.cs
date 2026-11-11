@@ -65,7 +65,7 @@ namespace Fase
             Destroy(star.gameObject);
             Sfx.Play("pluma", 0.8f, 1.2f);
             LumiBubble.Say(orb, AllFound ? Loc.Pick("¡Gracias! Toma mi luz: ya tienes el farol Chispa.", "Thank you! Take my light: the Spark lantern is yours.")
-                                        : Loc.Pick($"¡Mi estrella! Gracias. ({Count}/{Levels.Length})", $"My star! Thank you. ({Count}/{Levels.Length})"), 3f, 0.8f);
+                                        : Loc.Pick($"¡Mi estrella! Gracias. ({Count}/{Levels.Length})", $"My star! Thank you. ({Count}/{Levels.Length})", $"Minha estrela! Obrigada. ({Count}/{Levels.Length})", $"Mon étoile ! Merci. ({Count}/{Levels.Length})"), 3f, 0.8f);
         }
     }
 }

@@ -290,13 +290,16 @@ namespace Fase
             bool night = nearest.world == World.Night;
             string whatEs = night ? "Lo azul solo existe de noche" : "La madera solo existe de día";
             string whatEn = night ? "Blue things only exist at night" : "Wood only exists by day";
+            string whatPt = night ? "O azul só existe à noite" : "A madeira só existe de dia";
+            string whatFr = night ? "Le bleu n'existe que la nuit" : "Le bois n'existe que le jour";
             if (line == null || Mathf.Abs(Mathf.DeltaAngle(0f, line.angle)) > 20f)
-                return Loc.Pick($"{whatEs}: mueve la línea hasta que {(night ? "la noche" : "el día")} lo cubra.", $"{whatEn}: move the line until {(night ? "night" : "day")} covers it.");
+                return Loc.Pick($"{whatEs}: mueve la línea hasta que {(night ? "la noche" : "el día")} lo cubra.", $"{whatEn}: move the line until {(night ? "night" : "day")} covers it.",
+                    $"{whatPt}: mova a linha até que {(night ? "a noite" : "o dia")} o cubra.", $"{whatFr} : bouge la ligne jusqu'à ce que {(night ? "la nuit" : "le jour")} le couvre.");
             // Con el día a la izquierda, la noche queda por delante al dejar la línea atrás.
             bool behind = night == line.dayOnLeft;
             return behind
-                ? Loc.Pick($"{whatEs}: arrastra la línea detrás de ti.", $"{whatEn}: drag the line behind you.")
-                : Loc.Pick($"{whatEs}: lleva la línea por delante.", $"{whatEn}: move the line ahead of you.");
+                ? Loc.Pick($"{whatEs}: arrastra la línea detrás de ti.", $"{whatEn}: drag the line behind you.", $"{whatPt}: arraste a linha atrás de você.", $"{whatFr} : traîne la ligne derrière toi.")
+                : Loc.Pick($"{whatEs}: lleva la línea por delante.", $"{whatEn}: move the line ahead of you.", $"{whatPt}: leve a linha à sua frente.", $"{whatFr} : place la ligne devant toi.");
 
         }
     }

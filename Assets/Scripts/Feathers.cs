@@ -27,9 +27,9 @@ namespace Fase
             return n;
         }
 
-        public static string Name(int chapter, bool plural) => chapter == 2 ? Loc.Pick(plural ? "hojas" : "hoja", plural ? "leaves" : "leaf")
-            : chapter == 3 ? Loc.Pick(plural ? "copos" : "copo", plural ? "snowflakes" : "snowflake")
-            : Loc.Pick(plural ? "plumas" : "pluma", plural ? "feathers" : "feather");
+        public static string Name(int chapter, bool plural) => chapter == 2 ? Loc.Pick(plural ? "hojas" : "hoja", plural ? "leaves" : "leaf", plural ? "folhas" : "folha", plural ? "feuilles" : "feuille")
+            : chapter == 3 ? Loc.Pick(plural ? "copos" : "copo", plural ? "snowflakes" : "snowflake", plural ? "flocos" : "floco", plural ? "flocons" : "flocon")
+            : Loc.Pick(plural ? "plumas" : "pluma", plural ? "feathers" : "feather", plural ? "penas" : "pena", plural ? "plumes" : "plume");
 
         public static void Take(int level)
         {

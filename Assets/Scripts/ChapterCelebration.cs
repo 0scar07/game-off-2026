@@ -44,7 +44,7 @@ namespace Fase
             var slots = new Image[3];
             for (int i = 0; i < 3; i++) slots[i] = Shard(moon, Slots[i], SlotAngles[i], i < chapter - 1 ? Gold : Hole);
 
-            UiKit.Text(root, "Titulo", Loc.Pick($"Capítulo {chapter} completado", $"Chapter {chapter} complete"), new Vector2(0.5f, 1f), new Vector2(0f, -110f), new Vector2(1600f, 110f), 84);
+            UiKit.Text(root, "Titulo", Loc.Pick($"Capítulo {chapter} completado", $"Chapter {chapter} complete", $"Capítulo {chapter} concluído", $"Chapitre {chapter} terminé"), new Vector2(0.5f, 1f), new Vector2(0f, -110f), new Vector2(1600f, 110f), 84);
             var subtitle = UiKit.Text(root, "Subtitulo", Loc.Pick(new[] { "La luna recupera su primer trozo", "La luna recupera su segundo trozo", "La luna vuelve a estar entera" }[chapter - 1],
                 new[] { "The moon gets its first piece back", "The moon gets its second piece back", "The moon is whole again" }[chapter - 1]),
                 new Vector2(0.5f, 1f), new Vector2(0f, -205f), new Vector2(1400f, 60f), 40, TextAnchor.MiddleCenter, UiKit.Soft);

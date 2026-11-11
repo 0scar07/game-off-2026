@@ -58,7 +58,7 @@ namespace Fase
         /// <summary>Cada golpe abre una fase nueva: empuja más rápido y lanza ondas más seguidas.</summary>
         void UpdatePhase()
         {
-            if (phaseLabel != null) phaseLabel.text = Loc.Pick($"Fase {Mathf.Min(hits + 1, health)}/{health}", $"Phase {Mathf.Min(hits + 1, health)}/{health}");
+            if (phaseLabel != null) phaseLabel.text = Loc.Pick($"Fase {Mathf.Min(hits + 1, health)}/{health}", $"Phase {Mathf.Min(hits + 1, health)}/{health}", $"Fase {Mathf.Min(hits + 1, health)}/{health}", $"Phase {Mathf.Min(hits + 1, health)}/{health}");
         }
 
         void Update()

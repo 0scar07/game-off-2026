@@ -112,7 +112,7 @@ namespace Fase
             UiKit.Text(canvas.transform, "Record", record ? Loc.Get("record") : $"{Loc.Get("best")}: {Best:0} m", new Vector2(0.5f, 0.5f), new Vector2(0f, -70f), new Vector2(1000f, 60f), 44, TextAnchor.MiddleCenter, UiKit.Soft);
             var again = UiKit.Button(canvas.transform, "Otra", Loc.Get("retry"), new Vector2(0.5f, 0.5f), new Vector2(-220f, -220f), new Vector2(380f, 110f), () => SceneFader.Load(gameObject.scene.name), 46);
             UiKit.Button(canvas.transform, "Menu", Loc.Get("menu"), new Vector2(0.5f, 0.5f), new Vector2(220f, -220f), new Vector2(380f, 110f), () => SceneFader.Load(PauseMenu.MenuScene), 46);
-            string shareText = Loc.English ? $"I ran {meters:0} m in FASE's endless mode 🌗 {Share.Url}" : $"Recorrí {meters:0} m en el modo sin fin de FASE 🌗 {Share.Url}";
+            string shareText = Loc.Pick($"Recorrí {meters:0} m en el modo sin fin de FASE 🌗 {Share.Url}", $"I ran {meters:0} m in FASE's endless mode 🌗 {Share.Url}", $"Corri {meters:0} m no modo sem fim de FASE 🌗 {Share.Url}", $"J'ai couru {meters:0} m dans le mode sans fin de FASE 🌗 {Share.Url}");
             var share = UiKit.Button(canvas.transform, "Compartir", Loc.Get("share"), new Vector2(0.5f, 0.5f), new Vector2(0f, -360f), new Vector2(380f, 90f), null, 38);
             var label = share.GetComponentInChildren<Text>();
             share.onClick.AddListener(() => label.text = Loc.Get(Share.Text(shareText)));

@@ -90,7 +90,7 @@ namespace Fase
             // Tiempo y fragmentos.
             string moon = hud != null && hud.fragmentsTotal > 0 ? $"   ·   ☾ {hud.Fragments}/{hud.fragmentsTotal}" : "";
             int deaths = hud != null ? hud.Deaths : 0;
-            string falls = Loc.English ? (deaths == 1 ? "1 fall" : $"{deaths} falls") : (deaths == 1 ? "1 caída" : $"{deaths} caídas");
+            string falls = deaths == 1 ? Loc.Pick("1 caída", "1 fall", "1 queda", "1 chute") : Loc.Pick($"{deaths} caídas", $"{deaths} falls", $"{deaths} quedas", $"{deaths} chutes");
             UiKit.Box(root, "FondoTiempo", new Vector2(0.5f, 0.5f), new Vector2(0f, -190f), new Vector2(900f, 80f), new Color(1f, 1f, 1f, 0.1f));
             UiKit.Text(root, "Tiempo", $"⏱ {Hud.FormatTime(time)}{moon}   ·   {falls}", new Vector2(0.5f, 0.5f), new Vector2(0f, -190f), new Vector2(900f, 80f), 40);
             string note = LevelGoal.LastWasNightRoute ? Loc.Pick("☾ ¡Ruta de la noche!", "☾ Night route!")
@@ -110,7 +110,7 @@ namespace Fase
             {
                 (Stats.ChallengeNoFall, Loc.Pick("Sin caer", "No falls")),
                 (Stats.ChallengeAllMoon, Loc.Pick("Toda la luna", "Whole moon")),
-                (Stats.ChallengeFewGrabs, Loc.Pick($"Línea ≤ {Stats.GrabPar} veces", $"Line ≤ {Stats.GrabPar} times")),
+                (Stats.ChallengeFewGrabs, Loc.Pick($"Línea ≤ {Stats.GrabPar} veces", $"Line ≤ {Stats.GrabPar} times", $"Linha ≤ {Stats.GrabPar} vezes", $"Ligne ≤ {Stats.GrabPar} fois")),
             };
             for (int i = 0; i < challenges.Length; i++)
             {
