@@ -65,7 +65,15 @@ namespace Fase
             if (left <= 0f || target == null || cam == null) { bubble.gameObject.SetActive(false); return; }
             var screen = cam.WorldToScreenPoint(target.position + offset);
             if (screen.z > 0f && RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, screen, null, out var local))
-                bubble.anchoredPosition = local + canvas.rect.size * 0.5f;
+            {
+                // Siempre dentro de la pantalla (si Lumi queda en un borde, el bocadillo no se corta).
+                var size = canvas.rect.size;
+                var at = local + size * 0.5f;
+                float half = bubble.sizeDelta.x * 0.5f + 16f;
+                at.x = Mathf.Clamp(at.x, half, size.x - half);
+                at.y = Mathf.Clamp(at.y, 16f, size.y - bubble.sizeDelta.y - 140f);
+                bubble.anchoredPosition = at;
+            }
             // Aparece con un pequeño salto y se va encogiendo al final.
             float born = total - left;
             bubble.localScale = Vector3.one * Mathf.Min(Mathf.Min(1f, born * 6f), Mathf.Clamp01(left * 4f));
