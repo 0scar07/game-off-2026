@@ -139,6 +139,7 @@ namespace Fase
             ["chaptermap"] = ("Mapa de capítulos", "Chapter map"),
             ["weekly"] = ("Retos de la semana", "Weekly challenges"),
             ["weeklylevel"] = ("Nivel de la semana", "Level of the week"),
+            ["twitch"] = ("Twitch", "Twitch"),
             ["challenges"] = ("Retos", "Challenges"),
             ["friends"] = ("Con amigos", "With friends"),
             ["skills"] = ("Habilidades", "Skills"),

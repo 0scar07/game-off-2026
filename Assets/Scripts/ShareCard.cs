@@ -32,7 +32,7 @@ namespace Fase
                 new Vector2(0.5f, 0.5f), new Vector2(0f, -28f), new Vector2(580f, 40f), 24, TextAnchor.MiddleCenter, new Color(0.35f, 0.29f, 0.55f));
             Object.Destroy(extra.GetComponent<Shadow>());
             Text label = null;
-            var button = UiKit.Button(card.transform, "Compartir", Loc.Pick("Compartir", "Share"), new Vector2(0.5f, 0f), new Vector2(0f, 30f), new Vector2(320f, 70f), () =>
+            var button = UiKit.Button(card.transform, "Compartir", Loc.Pick("Compartir", "Share"), new Vector2(0.5f, 0f), new Vector2(-140f, 30f), new Vector2(260f, 70f), () =>
             {
                 string text = Loc.Pick($"¡Terminé FASE! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} oros 🌗 {Share.Url}", $"I finished FASE! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} golds 🌗 {Share.Url}",
                     $"Terminei FASE! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} ouros 🌗 {Share.Url}", $"J'ai fini FASE ! ⏱ {time} · ☾ {moon}/{total} · ★ {golds} ors 🌗 {Share.Url}");
@@ -40,6 +40,11 @@ namespace Fase
             }, 32);
             button.GetComponent<Image>().color = dark;
             label = button.GetComponentInChildren<Text>();
+            // Encuesta corta: abre la plantilla de prueba de juego del repositorio (no hace falta
+            // contestar todo).
+            var opinion = UiKit.Button(card.transform, "Opinion", Loc.Pick("Tu opinión", "Your opinion", "Sua opinião", "Ton avis"), new Vector2(0.5f, 0f), new Vector2(140f, 30f), new Vector2(260f, 70f),
+                () => Application.OpenURL(WeeklyLevel.Repo + "/issues/new?template=prueba.yml"), 32);
+            opinion.GetComponent<Image>().color = new Color(0.55f, 0.36f, 0.75f);
         }
     }
 }

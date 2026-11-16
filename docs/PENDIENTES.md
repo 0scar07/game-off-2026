@@ -95,7 +95,7 @@ Guardadas para más adelante. Como siempre: primero maqueta, luego Unity.
 
 | # | Idea | Estado |
 |---|---|---|
-| 43 | Niveles de la semana: un nivel del Taller elegido, cargado desde el repositorio de GitHub | ⬜ |
+| 43 | Niveles de la semana: un nivel del Taller elegido, cargado desde el repositorio de GitHub | ✅ semana/nivel.txt en el repo; Extras → Nivel de la semana |
 | 44 | Plataformas que crecen: de día brotan como plantas y de noche se recogen poco a poco | ⬜ |
 | 45 | Agua que sube de noche (marea) y baja de día: la línea controla el nivel del agua | ⬜ |
 | 46 | Viento solo de día que empuja a Lumi; de noche, calma | ⬜ |
@@ -114,7 +114,7 @@ Guardadas para más adelante. Como siempre: primero maqueta, luego Unity.
 | 59 | Vibración del mando distinta para día y noche | ⬜ |
 | 60 | Título del nivel escrito a mano que aparece trazado por la línea | ⬜ |
 | 61 | Final secreto si se reúnen todas las lunas y todas las páginas del diario | ⬜ |
-| 62 | Encuesta corta al terminar el juego (qué te gustó, qué cambiarías) que abre un issue en GitHub | ⬜ |
+| 62 | Encuesta corta al terminar el juego (qué te gustó, qué cambiarías) que abre un issue en GitHub | ✅ botón «Tu opinión» al final: abre la plantilla de prueba |
 
 ## Ideas por impacto (63-92), de menor a mayor
 
@@ -182,7 +182,7 @@ Guardadas para más adelante. Como siempre: primero maqueta, luego Unity.
 | 117 | Sistema de habilidades que se desbloquean (doble salto, planear con el farol) | Alto | ⬜ |
 | 118 | Historia con decisiones: ayudar a la noche o al día cambia el final | Muy alto | ⬜ |
 | 119 | Versión para consolas (Switch) con controles adaptados | Muy alto | ⬜ |
-| 120 | Integración con Twitch: el público mueve la línea por votación | Muy alto | ⬜ |
+| 120 | Integración con Twitch: el público mueve la línea por votación | Muy alto | ✅ Extras → Twitch: chat anónimo, votos !izquierda / !derecha |
 | 121 | Herramientas para la comunidad: editor de niveles completo y Steam Workshop | Muy alto | ⬜ |
 | 122 | Secuela o expansión: "FASE: Eclipse", con una tercera línea | Muy alto | ⬜ |
 

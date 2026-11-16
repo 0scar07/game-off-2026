@@ -30,12 +30,13 @@ namespace Fase
             var friends = BuildFriends();
             var skills = BuildSkills();
             var weeklyLevel = BuildWeeklyLevel();
+            var twitch = BuildTwitch();
             var entries = new (string key, string icon, GameObject panel)[]
             {
                 ("stats", "⏱", stats), ("soundtrack", "♪", music), ("gallery", "☺", gallery),
                 ("album", "▦", album), ("chaptermap", "☾", map), ("weekly", "★", weekly),
                 ("help", "✔", help), ("extralevels", "✦", extraLevels), ("challenges", "⚑", challenges),
-                ("friends", "☺", friends), ("skills", "✧", skills), ("weeklylevel", "✎", weeklyLevel),
+                ("friends", "☺", friends), ("skills", "✧", skills), ("weeklylevel", "✎", weeklyLevel), ("twitch", "●", twitch),
             };
             for (int i = 0; i < entries.Length; i++)
             {
@@ -43,7 +44,8 @@ namespace Fase
                 UnityEngine.Events.UnityAction open = () => menu.Show(panel);
 
                 // Rejilla de 3 columnas.
-                var button = UiKit.Button(content, key, "", new Vector2(0.5f, 0.5f), new Vector2((i % 3 - 1) * 450f, 250f - (i / 3) * 140f), new Vector2(430f, 120f), open, 34);
+                bool many = entries.Length > 12;
+                var button = UiKit.Button(content, key, "", new Vector2(0.5f, 0.5f), new Vector2((i % 3 - 1) * 450f, (many ? 262f : 250f) - (i / 3) * (many ? 114f : 140f)), new Vector2(430f, many ? 100f : 120f), open, 34);
                 var label = button.GetComponentInChildren<Text>();
                 // El texto empieza después del icono y se encoge si es largo ("Retos de la semana").
                 label.rectTransform.anchoredPosition = new Vector2(50f, 0f);
@@ -58,7 +60,7 @@ namespace Fase
                 refreshers.Add(() => label.text = Loc.Get(k));
             }
             extraPanels.Add(extrasPanel);
-            foreach (var p in new[] { stats, music, gallery, album, map, weekly, help, extraLevels, challenges, friends, skills, weeklyLevel }) extraPanels.Add(p);
+            foreach (var p in new[] { stats, music, gallery, album, map, weekly, help, extraLevels, challenges, friends, skills, weeklyLevel, twitch }) extraPanels.Add(p);
 
             BuildGhostToggle();
         }
@@ -131,6 +133,62 @@ namespace Fase
             Refresh();
             yield return download;
             Refresh();
+        }
+
+        // ───────── Twitch: el chat vota hacia dónde va la línea ─────────
+
+        GameObject BuildTwitch()
+        {
+            var panel = Panel("Twitch", "twitch", out var content, BackToExtras);
+            Note(content, "TwitchAyuda", new Vector2(0f, 260f), 1300f, () => Loc.Pick(
+                "Para jugar en directo: el chat de tu canal vota cada 3 segundos hacia dónde va la línea.",
+                "For streaming: your channel's chat votes every 3 seconds on where the line goes.",
+                "Para jogar ao vivo: o chat do seu canal vota a cada 3 segundos para onde vai a linha.",
+                "Pour les lives : le chat de ta chaîne vote toutes les 3 secondes pour diriger la ligne."), 28);
+            Note(content, "TwitchVotar", new Vector2(0f, 205f), 1300f, () => Loc.Pick(
+                "En el chat: !izquierda o < · !derecha o >  (un voto por persona y ronda). No hace falta cuenta.",
+                "In chat: !left or < · !right or >  (one vote per person per round). No account needed.",
+                "No chat: !esquerda ou < · !direita ou >  (um voto por pessoa por rodada). Não precisa de conta.",
+                "Dans le chat : !gauche ou < · !droite ou >  (un vote par personne et par manche). Pas besoin de compte."), 24);
+
+            var fieldBack = UiKit.Box(content, "Campo", new Vector2(0.5f, 0.5f), new Vector2(-150f, 110f), new Vector2(760f, 84f), new Color(1f, 1f, 1f, 0.95f));
+            fieldBack.raycastTarget = true;
+            var field = fieldBack.gameObject.AddComponent<InputField>();
+            var typed = UiKit.Text(fieldBack.transform, "Texto", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(720f, 76f), 30, TextAnchor.MiddleLeft, new Color(0.2f, 0.14f, 0.36f));
+            Destroy(typed.GetComponent<Shadow>());
+            typed.supportRichText = false;
+            var hint = UiKit.Text(fieldBack.transform, "Ejemplo", "", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(720f, 76f), 30, TextAnchor.MiddleLeft, new Color(0.5f, 0.48f, 0.6f));
+            Destroy(hint.GetComponent<Shadow>());
+            field.textComponent = typed;
+            field.placeholder = hint;
+            field.lineType = InputField.LineType.SingleLine;
+            field.characterLimit = 25;
+            field.text = TwitchVotes.Channel;
+            refreshers.Add(() => hint.text = Loc.Pick("nombre de tu canal", "your channel name", "nome do seu canal", "nom de ta chaîne"));
+
+            Row(content, "TwitchConectar", new Vector2(470f, 110f), new Vector2(300f, 84f),
+                () => TwitchVotes.On ? Loc.Pick("Apagar", "Turn off", "Desligar", "Couper") : Loc.Pick("Conectar", "Connect", "Conectar", "Connecter"),
+                () => { if (TwitchVotes.On) TwitchVotes.End(); else TwitchVotes.Begin(field.text); Refresh(); },
+                () => TwitchVotes.On || field.text.Trim().Length > 2);
+            var state = Note(content, "TwitchEstado", new Vector2(0f, 20f), 1300f, () => !TwitchVotes.On
+                ? Loc.Pick("Apagado", "Off", "Desligado", "Désactivé")
+                : TwitchVotes.Instance.Status == 2 ? Loc.Pick($"✔ Conectado a #{TwitchVotes.Channel}: entra en un nivel y que vote el chat.", $"✔ Connected to #{TwitchVotes.Channel}: start a level and let chat vote.", $"✔ Conectado a #{TwitchVotes.Channel}: entre em um nível e deixe o chat votar.", $"✔ Connecté à #{TwitchVotes.Channel} : lance un niveau et laisse le chat voter.")
+                : TwitchVotes.Instance.Status == 3 ? Loc.Pick("No se pudo conectar. Revisa el nombre del canal.", "Couldn't connect. Check the channel name.", "Não foi possível conectar. Confira o nome do canal.", "Connexion impossible. Vérifie le nom de la chaîne.")
+                : Loc.Pick("Conectando…", "Connecting…", "Conectando…", "Connexion…"), 28);
+            state.color = UiKit.Gold;
+            // El estado cambia solo (conectando → conectado): se refresca mientras el panel está abierto.
+            StartCoroutine(RefreshWhileOpen(panel));
+            return panel;
+        }
+
+        System.Collections.IEnumerator RefreshWhileOpen(GameObject panel)
+        {
+            var wait = new WaitForSecondsRealtime(0.5f);
+            while (true)
+            {
+                if (panel.activeInHierarchy) Refresh();
+                yield return wait;
+            }
         }
 
         // ───────── Ayudas ─────────
