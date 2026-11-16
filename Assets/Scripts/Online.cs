@@ -64,6 +64,8 @@ namespace Fase
         {
             if (runner == null)
             {
+                // Al cerrar el juego (o salir de Play) no se crean objetos nuevos.
+                if (quitting) return;
                 var go = new GameObject("EnLinea") { hideFlags = HideFlags.HideInHierarchy };
                 UnityEngine.Object.DontDestroyOnLoad(go);
                 runner = go.AddComponent<UiRunner>();
@@ -72,6 +74,19 @@ namespace Fase
         }
 
         static UiRunner runner;
+        static bool quitting;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void Reset()
+        {
+            quitting = false;
+            Application.quitting += () => quitting = true;
+        }
+
+        /// <summary>Crea el corredor ya, para no tener que crearlo mientras se cierra una escena.</summary>
+        public static void Warm() { if (Enabled) Run(Idle()); }
+
+        static IEnumerator Idle() { yield break; }
     }
 
     /// <summary>Récords en línea (idea 80): los 10 mejores tiempos de cada nivel, uno por nombre.</summary>
@@ -128,6 +143,7 @@ namespace Fase
         {
             GameEvents.Died += () => Add("death");
             GameEvents.GoalReached += () => { Add("finish"); finished = true; Flush(); };
+            Online.Warm();
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += (scene, mode) => OnScene();
             UnityEngine.SceneManagement.SceneManager.sceneUnloaded += scene => { if (level > 0) { Add("quit"); Flush(); level = 0; } };
             OnScene();

@@ -104,6 +104,8 @@ namespace Fase
         }
 
         float cheerLeft;
+        bool bigTitle = true;
+        CanvasGroup cornerGroup;
 
         void Start()
         {
@@ -111,7 +113,10 @@ namespace Fase
             // Los niveles secretos y extra no son de la historia: llevan ★ en vez de número.
             string number = Secret ? "★" : levelNumber.ToString();
             string name = sandbox ? Loc.Pick(levelName, levelNameEn) : daily ? $"{Loc.Get("daily")} · {Loc.Pick(levelName, levelNameEn)}" : $"{number}. {Loc.Pick(levelName, levelNameEn)}";
-            title.text = name;
+            // Si la cortinilla ya enseñó el número y el nombre, no se repite en grande: queda solo la
+            // esquina. Si no (Taller, desafío, primera carga), sale el título y luego la esquina.
+            bigTitle = SceneFader.TitledScene != UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            title.text = bigTitle ? name : "";
             hintText.text = resumed ? Loc.Pick("Sigues desde el último punto de control.", "Picking up from your last checkpoint.") : InputGlyphs.Adapt(Loc.Pick(hint, hintEn));
 
             corner.text = sandbox || daily ? name : Loc.Pick(levelName, levelNameEn);
@@ -179,6 +184,8 @@ namespace Fase
         {
             var pill = transform.Find("FondoEsquina") as RectTransform;
             if (pill == null) return;
+            cornerGroup = pill.GetComponent<CanvasGroup>();
+            if (cornerGroup == null) cornerGroup = pill.gameObject.AddComponent<CanvasGroup>();
             float textX = 60f;
             if (!sandbox && !daily && levelNumber > 0)
             {
@@ -229,9 +236,12 @@ namespace Fase
 
             if (!finished) elapsed += Time.deltaTime;
             // El título se ve 2,5 s y se desvanece; la pista se queda un poco más.
-            SetAlpha(title, Fade(age, 2.5f, 0.8f));
+            SetAlpha(title, bigTitle ? Fade(age, 2.5f, 0.8f) : 0f);
             SetAlpha(hintText, Fade(age, 6f, 1f));
-            SetAlpha(corner, 1f - Fade(age, 2.5f, 0.8f));
+            float cornerAlpha = bigTitle ? 1f - Fade(age, 2.5f, 0.8f) : 1f;
+            SetAlpha(corner, cornerAlpha);
+            // El fondo y el círculo del número aparecen a la vez que el nombre de la esquina.
+            if (cornerGroup != null) cornerGroup.alpha = cornerAlpha;
             if (timer != null) timer.text = "⏱ " + FormatTime(elapsed);
             if (hintGroup != null) hintGroup.alpha = Fade(age, 6f, 1f);
             if (cheerLeft > 0f)

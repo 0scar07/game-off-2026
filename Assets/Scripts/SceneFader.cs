@@ -143,6 +143,9 @@ namespace Fase
 
         Text title;
 
+        /// <summary>Escena cuyo número y nombre acaba de enseñar la cortinilla (o vacío).</summary>
+        public static string TitledScene { get; private set; } = "";
+
         /// <summary>"2 · Noche estrellada" si la escena es un nivel de la historia (★ si es secreto).</summary>
         static string TitleFor(string scene)
         {
@@ -225,6 +228,8 @@ namespace Fase
             var t0 = Tips[Random.Range(0, Tips.Length)];
             if (tip != null) tip.text = $"{Loc.Get("tip")}: {Loc.Pick(t0.es, t0.en)}";
             if (title != null) title.text = TitleFor(scene);
+            // El HUD no repite el nombre en grande si esta cortinilla ya lo enseñó.
+            TitledScene = TitleFor(scene).Length > 0 ? scene : "";
 
             for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime / Duration)
             {
