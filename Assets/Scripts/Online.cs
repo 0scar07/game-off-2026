@@ -16,8 +16,8 @@ namespace Fase
     /// </summary>
     public static class Online
     {
-        public const string Url = "";
-        public const string Key = "";
+        public const string Url = "https://nxbhkkyesztocwsowvei.supabase.co";
+        public const string Key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54Ymhra3llc3p0b2N3c293dmVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQ4NTk5OTIsImV4cCI6MjExMDQzNTk5Mn0.XiZhKRsRm0MjrfdrmNmfj3Kg4u2vHWV_AyqE547crPE";
 
         public static bool Enabled => Url.Length > 0 && Key.Length > 0;
 

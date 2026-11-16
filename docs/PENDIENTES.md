@@ -137,7 +137,7 @@ Guardadas para más adelante. Como siempre: primero maqueta, luego Unity.
 | 77 | Escenas cortas entre capítulos con dibujos y texto (estilo cuento) | Medio-alto | ⬜ |
 | 78 | Banda sonora que se puede escuchar en el menú (reproductor de pistas) | Medio-alto | ⬜ |
 | 79 | Modo "speedrun" con cronómetro por tramos y comparación con tu récord | Medio-alto | ⬜ |
-| 80 | Tabla de récords en línea por nivel (con nombre corto) | Medio-alto | 🔧 listo en el código; se enciende con la URL y la clave de Supabase |
+| 80 | Tabla de récords en línea por nivel (con nombre corto) | Medio-alto | ✅ Supabase (proyecto «fase»); tabla al terminar cada nivel |
 | 81 | Editor de niveles con compartir por enlace (el código va en la URL) | Alto | ⬜ |
 | 82 | Capítulo 4: un mundo nuevo (ciudad de noche, cielo de auroras) | Alto | ⬜ |
 | 83 | Mecánica de tercera fase: el atardecer como mundo propio entre día y noche | Alto | ⬜ |
@@ -207,7 +207,7 @@ Guardadas para más adelante. Como siempre: primero maqueta, luego Unity.
 | 137 | Modo de un solo toque para móvil (la línea sigue a Lumi sola, tú solo saltas) | Alto | ⬜ |
 | 138 | Iluminación en tiempo real con sombras largas al atardecer | Alto | ⬜ |
 | 139 | Capítulo submarino: de día agua clara, de noche bioluminiscencia | Alto | ⬜ |
-| 140 | Analítica anónima: dónde se atasca la gente, para ajustar niveles | Muy alto | 🔧 listo en el código (Supabase); se apaga en Opciones → Controles |
+| 140 | Analítica anónima: dónde se atasca la gente, para ajustar niveles | Muy alto | ✅ Supabase; se apaga en Opciones → Controles |
 | 141 | Modo creador con IA: describes un nivel y se genera una propuesta | Muy alto | ⬜ |
 | 142 | Lanzamiento completo: página de Steam, prensa y festival de juegos indie | Muy alto | ⬜ |
 

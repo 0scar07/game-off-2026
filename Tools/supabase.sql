@@ -21,6 +21,8 @@ create policy "leer records" on public.records for select to anon using (true);
 drop policy if exists "subir records" on public.records;
 create policy "subir records" on public.records for insert to anon with check (true);
 
+grant select, insert on public.records to anon;
+
 -- Los 10 mejores de un nivel, un tiempo por nombre (su mejor marca).
 create or replace function public.top_records(lvl int)
 returns table (name text, time_ms int)
@@ -49,6 +51,7 @@ alter table public.events enable row level security;
 -- El juego solo puede añadir eventos; leerlos solo se puede desde el panel de Supabase.
 drop policy if exists "subir eventos" on public.events;
 create policy "subir eventos" on public.events for insert to anon with check (true);
+grant insert on public.events to anon;
 
 -- Resumen para ajustar niveles: dónde muere más gente en cada nivel (verlo en el SQL Editor).
 -- select level, round(x) as x, count(*) as muertes from events where kind = 'death'

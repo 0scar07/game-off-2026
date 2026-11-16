@@ -225,6 +225,10 @@ Edita `semana/nivel.txt` en GitHub (línea 1: «nombre | name», línea 2: autor
 publicar una versión nueva: el juego lo descarga al abrir el panel.
 
 ### Récords en línea y analítica (Supabase)
+- Proyecto **fase** en la organización 0scar07 de Supabase (plan gratis), ya con las tablas
+  creadas y probado: se puede subir y leer récords, nadie puede borrarlos ni leer los eventos, y los
+  tiempos imposibles se rechazan. **Ojo:** el plan gratis pausa el proyecto tras una semana sin uso;
+  si pasa, se reactiva en el panel de Supabase (el juego sigue funcionando sin él).
 - Las tablas se crean pegando `Tools/supabase.sql` en Supabase → SQL Editor → Run.
 - La URL del proyecto y la clave pública (*anon*) van en `Assets/Scripts/Online.cs` (`Url` y `Key`).
   Con las dos vacías, todo lo en línea se apaga solo.
