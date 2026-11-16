@@ -29,12 +29,13 @@ namespace Fase
             var challenges = BuildChallenges();
             var friends = BuildFriends();
             var skills = BuildSkills();
+            var weeklyLevel = BuildWeeklyLevel();
             var entries = new (string key, string icon, GameObject panel)[]
             {
                 ("stats", "⏱", stats), ("soundtrack", "♪", music), ("gallery", "☺", gallery),
                 ("album", "▦", album), ("chaptermap", "☾", map), ("weekly", "★", weekly),
                 ("help", "✔", help), ("extralevels", "✦", extraLevels), ("challenges", "⚑", challenges),
-                ("friends", "☺", friends), ("skills", "✧", skills),
+                ("friends", "☺", friends), ("skills", "✧", skills), ("weeklylevel", "✎", weeklyLevel),
             };
             for (int i = 0; i < entries.Length; i++)
             {
@@ -57,7 +58,7 @@ namespace Fase
                 refreshers.Add(() => label.text = Loc.Get(k));
             }
             extraPanels.Add(extrasPanel);
-            foreach (var p in new[] { stats, music, gallery, album, map, weekly, help, extraLevels, challenges, friends, skills }) extraPanels.Add(p);
+            foreach (var p in new[] { stats, music, gallery, album, map, weekly, help, extraLevels, challenges, friends, skills, weeklyLevel }) extraPanels.Add(p);
 
             BuildGhostToggle();
         }
@@ -85,6 +86,51 @@ namespace Fase
                 n++;
             }
             return panel;
+        }
+
+        // ───────── Nivel de la semana (descargado del repositorio) ─────────
+
+        GameObject BuildWeeklyLevel()
+        {
+            var panel = Panel("NivelSemana", "weeklylevel", out var content, BackToExtras);
+            var card = UiKit.Box(content, "Tarjeta", new Vector2(0.5f, 0.5f), new Vector2(0f, 120f), new Vector2(1000f, 300f), new Color(1f, 1f, 1f, 0.08f));
+            var name = UiKit.Text(card.transform, "Nombre", "", new Vector2(0.5f, 0.5f), new Vector2(0f, 60f), new Vector2(940f, 80f), 56, TextAnchor.MiddleCenter, UiKit.Gold);
+            var author = UiKit.Text(card.transform, "Autor", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -20f), new Vector2(940f, 50f), 32, TextAnchor.MiddleCenter, UiKit.Soft);
+            var status = UiKit.Text(card.transform, "Estado", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -90f), new Vector2(940f, 50f), 26, TextAnchor.MiddleCenter, UiKit.Soft);
+            var play = UiKit.Button(content, "JugarSemana", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -100f), new Vector2(480f, 100f), WeeklyLevel.Play, 42);
+            var playLabel = play.GetComponentInChildren<Text>();
+            var send = UiKit.Button(content, "EnviarNivel", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -220f), new Vector2(620f, 76f), () => Application.OpenURL(WeeklyLevel.SubmitUrl), 28);
+            var sendLabel = send.GetComponentInChildren<Text>();
+            refreshers.Add(() =>
+            {
+                var state = WeeklyLevel.Status;
+                bool ready = state == WeeklyLevel.State.Ready;
+                name.text = ready ? WeeklyLevel.Name : "✎";
+                author.text = ready ? Loc.Pick($"por {WeeklyLevel.Author}", $"by {WeeklyLevel.Author}", $"por {WeeklyLevel.Author}", $"par {WeeklyLevel.Author}") : "";
+                status.text = state == WeeklyLevel.State.Failed
+                    ? Loc.Pick("No se pudo descargar. ¿Hay conexión?", "Couldn't download it. Are you online?", "Não foi possível baixar. Você está online?", "Impossible de le télécharger. Es-tu en ligne ?")
+                    : ready ? Loc.Pick("Un nivel del Taller elegido cada semana.", "A Workshop level picked every week.", "Um nível da Oficina escolhido toda semana.", "Un niveau de l'Atelier choisi chaque semaine.")
+                    : Loc.Pick("Descargando…", "Downloading…", "Baixando…", "Téléchargement…");
+                play.interactable = ready || state == WeeklyLevel.State.Failed;
+                playLabel.text = state == WeeklyLevel.State.Failed ? "↻ " + Loc.Pick("Reintentar", "Retry", "Tentar de novo", "Réessayer") : "▶ " + Loc.Get("play");
+                sendLabel.text = Loc.Pick("✎ Envía tu nivel del Taller", "✎ Send your Workshop level", "✎ Envie seu nível da Oficina", "✎ Envoie ton niveau de l'Atelier");
+            });
+            // Al abrir el panel se descarga (o se reintenta) y se refresca al terminar.
+            menu.Shown += shown =>
+            {
+                if (shown != panel || WeeklyLevel.Status == WeeklyLevel.State.Ready) return;
+                StartCoroutine(FetchWeekly());
+            };
+            play.onClick.AddListener(() => { if (WeeklyLevel.Status == WeeklyLevel.State.Failed) StartCoroutine(FetchWeekly()); });
+            return panel;
+        }
+
+        System.Collections.IEnumerator FetchWeekly()
+        {
+            var download = StartCoroutine(WeeklyLevel.Fetch());
+            Refresh();
+            yield return download;
+            Refresh();
         }
 
         // ───────── Ayudas ─────────

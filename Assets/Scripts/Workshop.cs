@@ -95,11 +95,16 @@ namespace Fase
             runtime = GetComponent<RuntimeLevel>();
             player = FindAnyObjectByType<PlayerController>();
             // Un nivel que llegó por enlace manda sobre el guardado.
-            if (!string.IsNullOrEmpty(LinkOpener.PendingCode)) { Load(LinkOpener.PendingCode); LinkOpener.PendingCode = null; }
+            // Un nivel ajeno (enlace o nivel de la semana) no pisa el nivel guardado del jugador
+            // hasta que lo cambie con el pincel.
+            bool playNow = LinkOpener.PlayNow;
+            LinkOpener.PlayNow = false;
+            if (!string.IsNullOrEmpty(LinkOpener.PendingCode)) { Load(LinkOpener.PendingCode); LinkOpener.PendingCode = null; borrowed = true; }
             else Load(PlayerPrefs.GetString(SaveKey, ""));
             BuildEditor();
             // Si se vuelve de probar el nivel (meta → "Siguiente"), se sigue editando.
-            Edit();
+            if (playNow) Play();
+            else Edit();
         }
 
         // ───────── Mapa ─────────
@@ -133,7 +138,12 @@ namespace Fase
             return rows;
         }
 
-        void Save() => PlayerPrefs.SetString(SaveKey, LevelCode.Encode(Rows()));
+        bool borrowed;
+
+        void Save()
+        {
+            if (!borrowed) PlayerPrefs.SetString(SaveKey, LevelCode.Encode(Rows()));
+        }
 
         // ───────── Interfaz ─────────
 
@@ -232,6 +242,7 @@ namespace Fase
             if (brush == 'S' || brush == 'G')
                 for (int rr = 0; rr < RowsCount; rr++) for (int cc = 0; cc < Cols; cc++) if (map[rr, cc] == brush) map[rr, cc] = ' ';
             map[r, c] = brush;
+            borrowed = false;
             Refresh();
             Save();
         }
@@ -251,6 +262,7 @@ namespace Fase
         void ClearMap()
         {
             for (int r = 0; r < RowsCount; r++) for (int c = 0; c < Cols; c++) map[r, c] = ' ';
+            borrowed = false;
             Refresh();
             Save();
         }

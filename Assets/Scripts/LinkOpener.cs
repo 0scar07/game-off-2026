@@ -12,6 +12,9 @@ namespace Fase
     {
         public static string PendingCode { get; set; }
 
+        /// <summary>Si es true, el Taller empieza jugando el nivel recibido en vez de editarlo.</summary>
+        public static bool PlayNow { get; set; }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Read()
         {

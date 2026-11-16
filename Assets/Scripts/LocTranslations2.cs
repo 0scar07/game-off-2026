@@ -402,6 +402,7 @@ namespace Fase
             ["Desafío 12"] = ("Desafio 12", "Défi 12"),
             ["Desafío 13"] = ("Desafio 13", "Défi 13"),
             ["Desafío 14"] = ("Desafio 14", "Défi 14"),
+            ["Nivel de la semana"] = ("Nível da semana", "Niveau de la semaine"),
         };
     }
 }
