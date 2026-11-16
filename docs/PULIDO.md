@@ -51,6 +51,17 @@ el juego) · día 7 repetir todas las pruebas · día 8 versión final, README, 
 
 ---
 
+### Día 2 · 16 de noviembre
+- Nuevo: **nivel de la semana** (43) descargado del repositorio (`semana/nivel.txt`), **encuesta**
+  al terminar (62, botón «Tu opinión»), **Twitch** (120: el chat vota la línea, sin cuenta) y
+  **récords en línea y analítica anónima** (80 y 140, con Supabase; ver más abajo).
+- Resultados revisados con todas las medallas, con algunas y con ninguna, en los cuatro idiomas y
+  a 16:9, 21:9 y 4:3: alineados y ordenados. Arreglado: la pista de la luciérnaga asomaba entre
+  los botones.
+- Gira de las 60 escenas con capturas: todo carga sin errores. Arreglado: los bocadillos de Lumi y
+  Chispa se podían salir de la pantalla.
+- README reescrito, CONTRIBUTING.md nuevo y descripción y temas del repositorio mejorados.
+
 ## 1 · Pantallas y paneles
 
 | Qué | Estado | Notas |
@@ -190,4 +201,54 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 
 ## Para seguir sin Claude
 
-*(Se completa antes del día 8.)*
+Todo lo necesario para mantener y publicar FASE a mano.
+
+### Probar un cambio
+1. Abre el proyecto en Unity 6000.6.7f1 y, si tocaste niveles, **Fase → Generar niveles**.
+2. Pulsa Play en la escena `Menu` y prueba lo que cambiaste.
+3. `python Tools/comprobar_niveles.py` (con `PYTHONIOENCODING=utf-8` en Windows) debe decir que
+   todos los niveles se pueden terminar.
+4. Para ver textos sin traducir: cambia el idioma a portugués o francés, juega un poco y mira
+   `Logs/sin-traducir.txt`. Se añaden con `Tools/anadir_traducciones.py`.
+
+### Publicar la versión web en itch
+1. **Cierra todo** menos Unity (Discord, navegador, Unity Hub…): la exportación necesita mucha
+   memoria. Si aun así falla por memoria, reinicia Unity antes de exportar.
+2. **Fase → Exportar web** (tarda ~1 hora). El resultado queda en `Logs/web-build.txt`.
+3. Comprime el *contenido* de `Builds/Web` (index.html y la carpeta Build) en `Builds/FASE-web.zip`.
+4. Crea la release: `gh release create web-AAAAMMDD-1 Builds/FASE-web.zip --target fase --title "FASE web AAAA-MM-DD"`.
+   GitHub la prueba en Chrome y, si va bien, la sube a itch sola (pestaña *Actions*).
+
+### Cambiar el nivel de la semana
+Edita `semana/nivel.txt` en GitHub (línea 1: «nombre | name», línea 2: autor, línea 3: código
+`FASE-…`). Los jugadores mandan los suyos con la plantilla «Nivel de la comunidad». No hace falta
+publicar una versión nueva: el juego lo descarga al abrir el panel.
+
+### Récords en línea y analítica (Supabase)
+- Las tablas se crean pegando `Tools/supabase.sql` en Supabase → SQL Editor → Run.
+- La URL del proyecto y la clave pública (*anon*) van en `Assets/Scripts/Online.cs` (`Url` y `Key`).
+  Con las dos vacías, todo lo en línea se apaga solo.
+- Para ver dónde se atasca la gente: Supabase → SQL Editor →
+  `select level, round(x) as x, count(*) from events where kind = 'death' group by 1, 2 order by 1, 3 desc;`
+- Para borrar un récord falso: Supabase → Table Editor → `records` → borrar la fila.
+
+### Twitch
+No necesita nada: Extras → Twitch → nombre del canal → Conectar. El chat vota con `!izquierda` /
+`!derecha` (o `<` / `>`).
+
+### Lo que queda por hacer (ver también PENDIENTES.md)
+- 84 · Cooperativo en línea (otro PC): necesita un servidor de juego en tiempo real; no se hizo.
+- 92 y 142 · Tráiler nuevo, campaña y lanzamiento: no son programación.
+- Final secreto y «dejar el mundo partido»: comprobados en código, falta verlos jugando.
+- Probar en un móvil de verdad (táctil, rendimiento, giro de pantalla).
+
+### Herramientas útiles
+| Herramienta | Para qué |
+|---|---|
+| `Tools/niveles.py` | Escribe los niveles en texto (luego Fase → Generar niveles) |
+| `Tools/comprobar_niveles.py` | Comprueba que todos los niveles se pueden terminar |
+| `Tools/nivel_semana.py` | Crea un nivel de la semana de ejemplo |
+| `Tools/anadir_traducciones.py` | Añade traducciones a portugués y francés |
+| `Tools/fuente_simbolos.py` | Añade símbolos a la fuente FredokaFase |
+| `Tools/prueba_web` | Abre la web exportada en Chrome y la prueba sola |
+| Fase → Probar niveles jugando (bot) | Un jugador automático recorre los niveles |
