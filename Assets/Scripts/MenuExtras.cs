@@ -391,6 +391,7 @@ namespace Fase
             // Icono de sol o luna en las piezas, para no depender del color.
             Toggle(content, "pieceicons", new Vector2(-350f, row -= 74f), () => Settings.PieceIcons, v => Settings.PieceIcons = v);
             Toggle(content, "vibration", new Vector2(-350f, row -= 74f), () => Settings.Vibration, v => Settings.Vibration = v);
+            if (Online.Enabled) Toggle(content, "analytics", new Vector2(-350f, row -= 74f), () => Analytics.Allowed, v => Analytics.Allowed = v);
             Toggle(content, "mirror", new Vector2(-350f, row -= 74f), () => MirrorMode.Enabled, v => MirrorMode.Enabled = v, () => MirrorMode.Unlocked);
             Toggle(content, "coop", new Vector2(-350f, row -= 74f), () => Settings.Coop, v => Settings.Coop = v);
             // Velocidad de la línea: cada clic pasa a la siguiente.

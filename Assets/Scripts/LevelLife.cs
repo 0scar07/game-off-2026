@@ -268,7 +268,7 @@ namespace Fase
             Invoke(nameof(HideHint), 6f);
         }
 
-        void HideHint() { if (guideText != null) guideText.transform.parent.gameObject.SetActive(false); }
+        public void HideHint() { if (guideText != null) guideText.transform.parent.gameObject.SetActive(false); }
 
         /// <summary>Pista según lo que hay justo delante.</summary>
         static string HintFor(Vector3 at)

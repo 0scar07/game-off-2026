@@ -44,6 +44,8 @@ namespace Fase
             var hud = Hud.Instance;
             // El mensaje de la meta del HUD se quedaba debajo, grande y borroso, detrás de las medallas.
             if (hud != null) hud.ClearBanner();
+            // La pista de la luciérnaga tampoco debe asomar entre los botones.
+            foreach (var life in FindObjectsByType<LevelLife>()) life.HideHint();
 
             int level = hud != null ? hud.levelNumber : 1;
             float time = hud != null ? hud.Elapsed : 0f;
@@ -127,6 +129,33 @@ namespace Fase
             summary.resizeTextForBestFit = true;
             summary.resizeTextMinSize = 16;
             summary.resizeTextMaxSize = 24;
+
+            // Récords en línea: los 10 mejores del nivel (y se sube el tuyo si tienes nombre).
+            if (Online.Enabled && hud != null && !hud.Daily && !hud.sandbox)
+            {
+                bool fair = !assist && !(Mutators.Unlocked && Mutators.Any);
+                var board = UiKit.Box(root, "RecordsEnLinea", new Vector2(1f, 0.5f), new Vector2(-24f, 70f), new Vector2(330f, 470f), new Color(0.07f, 0.05f, 0.2f, 0.75f));
+                board.rectTransform.pivot = new Vector2(1f, 0.5f);
+                UiKit.Text(board.transform, "Titulo", Loc.Pick("Récords en línea", "Online records", "Recordes online", "Records en ligne"), new Vector2(0.5f, 1f), new Vector2(0f, -34f), new Vector2(310f, 44f), 30, TextAnchor.MiddleCenter, UiKit.Gold);
+                var list = UiKit.Text(board.transform, "Lista", Loc.Pick("Cargando…", "Loading…", "Carregando…", "Chargement…"), new Vector2(0.5f, 1f), new Vector2(0f, -250f), new Vector2(300f, 360f), 24, TextAnchor.UpperLeft);
+                list.horizontalOverflow = HorizontalWrapMode.Wrap;
+                string me = PlayerName.Has ? PlayerName.Value : "";
+                Online.Run(OnlineRecords.SubmitAndFetch(level, time, fair, rows =>
+                {
+                    if (list == null) return;
+                    if (rows == null) { list.text = Loc.Pick("Sin conexión.", "Offline.", "Sem conexão.", "Hors ligne."); return; }
+                    var sb = new System.Text.StringBuilder();
+                    for (int r = 0; r < rows.Count; r++)
+                    {
+                        bool mine = me.Length > 0 && rows[r].name == (me.Length > 12 ? me.Substring(0, 12) : me);
+                        string row = $"{r + 1,2}. {rows[r].name}  <color=#ffd98a>{Hud.FormatTime(rows[r].seconds)}</color>";
+                        sb.AppendLine(mine ? $"<b>{row}</b>" : row);
+                    }
+                    if (rows.Count == 0) sb.Append(Loc.Pick("¡Sé el primero!", "Be the first!", "Seja o primeiro!", "Sois le premier !"));
+                    if (!PlayerName.Has) sb.Append("\n" + Loc.Pick("Ponte un nombre en Opciones para salir aquí.", "Set a name in Options to appear here.", "Defina um nome em Opções para aparecer aqui.", "Choisis un nom dans Options pour apparaître ici."));
+                    list.text = sb.ToString();
+                }));
+            }
 
             // Botones.
             var next = UiKit.Button(root, "Siguiente", Loc.Get("next"), new Vector2(0.5f, 0.5f), new Vector2(330f, -385f), new Vector2(380f, 110f), Next, 50);

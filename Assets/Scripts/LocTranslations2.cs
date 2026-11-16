@@ -405,6 +405,7 @@ namespace Fase
             ["Nivel de la semana"] = ("Nível da semana", "Niveau de la semaine"),
             ["oros"] = ("ouros", "ors"),
             ["Compartir"] = ("Compartilhar", "Partager"),
+            ["Datos anónimos"] = ("Dados anônimos", "Données anonymes"),
         };
     }
 }

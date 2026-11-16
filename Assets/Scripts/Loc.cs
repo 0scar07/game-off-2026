@@ -140,6 +140,7 @@ namespace Fase
             ["weekly"] = ("Retos de la semana", "Weekly challenges"),
             ["weeklylevel"] = ("Nivel de la semana", "Level of the week"),
             ["twitch"] = ("Twitch", "Twitch"),
+            ["analytics"] = ("Datos anónimos", "Anonymous data"),
             ["challenges"] = ("Retos", "Challenges"),
             ["friends"] = ("Con amigos", "With friends"),
             ["skills"] = ("Habilidades", "Skills"),
