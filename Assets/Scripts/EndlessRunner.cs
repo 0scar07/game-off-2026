@@ -17,6 +17,7 @@ namespace Fase
         RuntimeLevel runtime;
         PlayerController player;
         Text distanceLabel;
+        Image distanceBack;
         float startX;
         bool over;
         System.Random random;
@@ -41,8 +42,9 @@ namespace Fase
 
             var canvas = UiKit.Canvas("Distancia", 6);
             canvas.transform.SetParent(transform, false);
-            UiKit.Box(canvas.transform, "Fondo", new Vector2(0.5f, 1f), new Vector2(0f, -40f), new Vector2(420f, 70f), new Color(0.04f, 0.03f, 0.14f, 0.55f));
-            distanceLabel = UiKit.Text(canvas.transform, "Texto", "", new Vector2(0.5f, 1f), new Vector2(0f, -75f), new Vector2(420f, 70f), 40);
+            // Fondo y texto en el mismo sitio; el fondo crece con el texto (los metros suben).
+            distanceBack = UiKit.Box(canvas.transform, "Fondo", new Vector2(0.5f, 1f), new Vector2(0f, -40f), new Vector2(420f, 76f), new Color(0.04f, 0.03f, 0.14f, 0.55f));
+            distanceLabel = UiKit.Text(canvas.transform, "Texto", "", new Vector2(0.5f, 1f), new Vector2(0f, -40f), new Vector2(900f, 76f), 40);
         }
 
         void Update()
@@ -50,6 +52,7 @@ namespace Fase
             if (over || player == null) return;
             float meters = Mathf.Max(0f, player.transform.position.x - startX);
             distanceLabel.text = $"∞  {meters:0} m   ·   {Loc.Get("best")} {Mathf.Max(Best, meters):0} m";
+            distanceBack.rectTransform.sizeDelta = new Vector2(distanceLabel.preferredWidth + 70f, 76f);
             if (player.transform.position.x > runtime.Width - 45f) Grow();
         }
 

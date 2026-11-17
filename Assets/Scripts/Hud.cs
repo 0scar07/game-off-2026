@@ -165,7 +165,13 @@ namespace Fase
         {
             if (hintText == null || string.IsNullOrEmpty(hintText.text)) return;
             var rect = hintText.rectTransform;
-            float width = Mathf.Min(hintText.preferredWidth, rect.sizeDelta.x) + 150f;
+            hintText.text = hintText.text.Replace("\n", " ");
+            hintText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            // preferredWidth es lo que mide en una sola línea; si pasa de 1150 se reparte en varias.
+            float textWidth = Mathf.Min(hintText.preferredWidth + 4f, 1150f);
+            rect.sizeDelta = new Vector2(textWidth, rect.sizeDelta.y);
+            rect.sizeDelta = new Vector2(textWidth, Mathf.Max(rect.sizeDelta.y, hintText.preferredHeight));
+            float width = textWidth + 150f;
             hintBack = UiKit.Box(rect.parent, "FondoPista", rect.anchorMin, rect.anchoredPosition,
                 new Vector2(width, hintText.preferredHeight + 40f), CardColor);
             hintBack.rectTransform.pivot = rect.pivot;

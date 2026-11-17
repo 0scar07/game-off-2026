@@ -32,6 +32,7 @@ public static class WebBuild
     [MenuItem("Fase/Exportar web")]
     public static void Build()
     {
+        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL);
         PlayerSettings.productName = "FASE";
         PlayerSettings.companyName = "0scar07";
         // Brotli comprime un 15-20 % más que Gzip; con "decompression fallback" funciona en itch
@@ -73,6 +74,10 @@ public static class WebBuild
     {
         PlayerSettings.productName = "FASE";
         PlayerSettings.companyName = "0scar07";
+        // Primero se cambia de plataforma: si se compila con el editor en "Web", Unity decide qué
+        // recursos quitar mirando el perfil de calidad de la web (sin SSAO) y en Windows el perfil
+        // "PC" se quedaba sin los suyos (pantalla negra).
+        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64);
         PlayerSettings.fullScreenMode = FullScreenMode.FullScreenWindow;
         PlayerSettings.defaultScreenWidth = 1920;
         PlayerSettings.defaultScreenHeight = 1080;
@@ -97,6 +102,7 @@ public static class WebBuild
     {
         PlayerSettings.productName = "FASE";
         PlayerSettings.companyName = "0scar07";
+        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
         PlayerSettings.SetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Android, "com.oscar07.fase");
         PlayerSettings.defaultInterfaceOrientation = UIOrientation.AutoRotation;
         PlayerSettings.allowedAutorotateToPortrait = PlayerSettings.allowedAutorotateToPortraitUpsideDown = false;

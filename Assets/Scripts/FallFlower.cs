@@ -140,6 +140,18 @@ namespace Fase
             label.alpha = Mathf.MoveTowards(label.alpha, near ? 1f : 0f, Time.deltaTime * 2.5f);
             if (near) Achievements.Unlock("flor");
 
+            // Junto al borde del nivel, el letrero se corre para no cortarse.
+            var cam = Camera.main;
+            if (cam != null && label.alpha > 0f)
+            {
+                float half = labelText.preferredWidth * 0.005f * 0.5f + 0.15f;
+                float depth = flower.position.z - cam.transform.position.z;
+                float left = cam.ViewportToWorldPoint(new Vector3(0f, 0.5f, depth)).x;
+                float right = cam.ViewportToWorldPoint(new Vector3(1f, 0.5f, depth)).x;
+                float x = left + half < right - half ? Mathf.Clamp(flower.position.x, left + half, right - half) : flower.position.x;
+                labelText.canvas.transform.localPosition = new Vector3((x - flower.position.x) / Mathf.Max(0.01f, flower.localScale.x), 1.4f, 0f);
+            }
+
             labelText.text = Loc.Pick($"Aquí te caíste {shownFalls} veces", $"You fell here {shownFalls} times", $"Você caiu aqui {shownFalls} vezes", $"Tu es tombé ici {shownFalls} fois");
         }
     }

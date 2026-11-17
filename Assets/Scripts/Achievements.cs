@@ -245,11 +245,14 @@ namespace Fase
             var canvas = UiKit.Canvas("AvisoLogro", 50);
             var box = UiKit.Box(canvas.transform, "Aviso", new Vector2(1f, 0f), new Vector2(-40f, 40f), new Vector2(640f, 130f), new Color(0.08f, 0.06f, 0.2f, 0.94f));
             box.rectTransform.pivot = new Vector2(1f, 0f);
-            var glow = UiKit.Box(box.transform, "Brillo", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(120f, 120f), new Color(1f, 0.8f, 0.4f, 0.35f));
-            UiKit.Box(box.transform, "Estrella", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(76f, 76f), new Color(1f, 0.84f, 0.35f));
-            UiKit.Text(box.transform, "Icono", "★", new Vector2(0f, 0.5f), new Vector2(70f, 2f), new Vector2(76f, 76f), 46, TextAnchor.MiddleCenter, new Color(0.55f, 0.35f, 0.1f));
-            UiKit.Text(box.transform, "Titulo", (info.id == "__diario" ? "" : Loc.Get("achievement") + " ") + info.Name, new Vector2(0f, 0.5f), new Vector2(130f, 22f), new Vector2(490f, 50f), 36, TextAnchor.MiddleLeft, UiKit.Gold).rectTransform.pivot = new Vector2(0f, 0.5f);
-            UiKit.Text(box.transform, "Detalle", info.Description, new Vector2(0f, 0.5f), new Vector2(130f, -24f), new Vector2(490f, 40f), 26, TextAnchor.MiddleLeft, UiKit.Soft).rectTransform.pivot = new Vector2(0f, 0.5f);
+            // Brillo, estrella e icono centrados en x = 70 (con el punto de giro en el borde, la estrella
+            // y su brillo se montaban sobre el «¡Logro!»).
+            var glow = UiKit.Box(box.transform, "Brillo", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(100f, 100f), new Color(1f, 0.8f, 0.4f, 0.35f));
+            glow.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            UiKit.Box(box.transform, "Estrella", new Vector2(0f, 0.5f), new Vector2(70f, 0f), new Vector2(76f, 76f), new Color(1f, 0.84f, 0.35f)).rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            UiKit.Text(box.transform, "Icono", "★", new Vector2(0f, 0.5f), new Vector2(70f, 2f), new Vector2(76f, 76f), 46, TextAnchor.MiddleCenter, new Color(0.55f, 0.35f, 0.1f)).rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            UiKit.Text(box.transform, "Titulo", (info.id == "__diario" ? "" : Loc.Get("achievement") + " ") + info.Name, new Vector2(0f, 0.5f), new Vector2(148f, 22f), new Vector2(472f, 50f), 36, TextAnchor.MiddleLeft, UiKit.Gold).rectTransform.pivot = new Vector2(0f, 0.5f);
+            UiKit.Text(box.transform, "Detalle", info.Description, new Vector2(0f, 0.5f), new Vector2(148f, -24f), new Vector2(472f, 40f), 26, TextAnchor.MiddleLeft, UiKit.Soft).rectTransform.pivot = new Vector2(0f, 0.5f);
             DontDestroyOnLoad(canvas.gameObject);
 
             var rect = box.rectTransform;
