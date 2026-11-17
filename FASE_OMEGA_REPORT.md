@@ -39,8 +39,9 @@ siendo manipulables hasta aplicar el SQL de endurecimiento, y la página de itch
 
 ## Rendimiento medido
 
-Windows, nivel 5, 1920×1080, gráfica integrada AMD Vega 3: **Auto ~48 FPS · Baja 60 · Máxima 27–45**,
-0 excepciones, ~255 MB de memoria. Detalle y método en [`FASE_TEST_MATRIX.md`](FASE_TEST_MATRIX.md).
+Windows, nivel 5, 1920×1080, gráfica integrada AMD Vega 3, build final: **Auto 41–50 FPS · Baja 60 ·
+Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria. Detalle y método en
+[`FASE_TEST_MATRIX.md`](FASE_TEST_MATRIX.md).
 
 ## Estado por área
 
@@ -74,4 +75,15 @@ Windows, nivel 5, 1920×1080, gráfica integrada AMD Vega 3: **Auto ~48 FPS · B
 
 ## Resultados de la exportación final
 
-*(se completa al terminar la exportación en cola)*
+Todas exportadas con los arreglos de las revisiones (`cff8fda`) y empaquetadas en `Builds/`.
+La cola del editor sacó Windows y Android; el PC se reinició antes de la web, que se exportó
+después con Unity en modo batch (`-buildTarget WebGL`, sin cambio de plataforma en caliente).
+
+| Versión | Archivo | Tamaño | Verificación |
+|---|---|---|---|
+| Web | `Builds/FASE-web.zip` (`index.html` en la raíz) | 25,6 MB | Chrome local: carga 6,5 s, menú, nivel 1 y teclas sin errores de consola; un solo título por nivel |
+| Windows | `Builds/FASE-windows.zip` (315 archivos, sin carpetas de depuración) | 51,6 MB | Dos ejecuciones de 32 s en el nivel 5: 0 excepciones; rendimiento arriba |
+| Android | `Builds/FASE-android.apk` | 47,4 MB | `aapt2`: `com.oscar07.fase` 0.1.0 (1), target 36, arm64-v8a. `apksigner`: firma de depuración válida. Sin probar en un móvil |
+
+Estas versiones **no están publicadas**: en itch siguen las de la madrugada del 17 nov (antes de los arreglos). Publicarlas
+(releases `web-20261117-2` y `build-20261117-2`) queda a la espera del permiso del autor.

@@ -46,15 +46,17 @@ Resultados: **SUPERADA** · **FALLIDA** · **NO PROBADA** · **BLOQUEADA** (hay 
 | Cooperativo en línea | — | — | BLOQUEADA | No implementado (necesita servidor en tiempo real) | — |
 | itch: canales `html5`, `win64` y `android` actualizados | itch | `butler status` | SUPERADA | ✓ en los tres: `web-20261117-1` (html5) y `build-20261117-1` (win64, android) | 17 nov 2026 |
 | Página de itch pública | itch | — | BLOQUEADA | La página sigue RESTRICTED; la hace el autor | — |
-| Rendimiento en Windows (medición) | Windows | — | NO PROBADA | Tarea READY en el tablero | — |
-| Revisión de seguridad independiente | — | — | NO PROBADA | En curso (ver tablero) | — |
+| Rendimiento en Windows (medición) | Windows | `FASE.exe -medir` | SUPERADA | Auto 41–50 FPS, Máxima 20–24 FPS en gráfica integrada; 0 excepciones (tabla abajo) | 17 nov 2026 |
+| Revisión de seguridad independiente | — | — | SUPERADA | Sin secretos en el historial; cliente endurecido en `cff8fda`; SQL del servidor pendiente de permiso | 17 nov 2026 |
+| Build web final en Chrome | Web | `Tools/prueba_web/prueba.mjs` | SUPERADA | Carga 6,5 s, menú, nivel 1 y teclas sin errores; un solo título por nivel | 17 nov 2026 |
+| APK final revisado | Android | `aapt2` + `apksigner` | SUPERADA | `com.oscar07.fase` 0.1.0 (1), target 36, arm64-v8a, firma de depuración válida | 17 nov 2026 |
 
 ## Cobertura por plataforma
 
 | Plataforma | Qué se ha probado | Qué falta |
 |---|---|---|
 | Web | Carga, menú, nivel 1 y teclas en Chrome (local y CI) | Móvil real; Twitch; nivel de la semana; opciones de Gráficos |
-| Windows | Arranca, menú, 0 excepciones | Jugar con teclado; rendimiento; Gráficos |
+| Windows | Arranca, menú, 0 excepciones, rendimiento medido en Auto, Baja y Máxima | Jugar con teclado; probar el menú de Gráficos en la build |
 | Android | El APK se genera con los datos correctos | Todo lo que sea ejecutarlo (sin dispositivo) |
 | Editor | Interfaz en 3 proporciones, 60 escenas, flujo de meta y resultados | Resoluciones 1366×768, 1280×720 y 2560×1440 |
 
@@ -78,4 +80,17 @@ Equipo: AMD Radeon Vega 3 integrada (gama baja), Direct3D 11. Medias de 5 s, sin
 
 Hallazgo: el ajuste automático de resolución (`QualityGuard.cs`) bajaba la escala también con una
 calidad elegida a mano (Máxima pasaba de 1,5 a 1,0). Corregido: ahora solo actúa en «Auto».
-Hay que repetir la medición de Máxima con la build siguiente.
+
+### Repetición con la build final (17 nov 2026, 09:55)
+
+Mismo equipo y método, build de Windows exportada con todos los arreglos (`cff8fda`). El primer
+tramo de cada medición incluye la carga del nivel y no se cuenta.
+
+| Calidad | Escala | FPS (por tramo de 5 s) | Peor fotograma | Memoria total |
+|---|---|---|---|---|
+| Máxima | 1,50 (se mantiene) | 24,3 · 20,6 · 19,6 · 23,6 · 20,2 | 67–83 ms | 257 MB |
+| Auto | 1,00 → 0,90 | 41,4 · 43,4 · 43,3 · 45,8 · 49,6 | 33 ms | 256 MB |
+
+Conclusión: la calidad elegida ya se respeta (Máxima no baja de 1,5). En una gráfica integrada
+Máxima va a ~22 FPS, como avisa su descripción («Para equipos potentes»); Auto queda en 41–50 FPS
+bajando la escala sola, y Baja llega a 60. 0 excepciones en las dos ejecuciones.
