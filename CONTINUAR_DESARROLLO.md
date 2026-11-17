@@ -129,3 +129,12 @@ Las herramientas de Python necesitan `numpy`, `scipy`, `Pillow` y `fontTools` (v
 - Revisión de código (12 hallazgos): todos arreglados y compilando; vistos en Unity la meta, los
   resultados y el cronómetro quieto bajo la cortinilla.
 - Sin probar en un móvil de verdad: botones táctiles y fotos en Android.
+
+### 17 de noviembre de 2026 (segunda etapa)
+- Revisión de código independiente y de seguridad: todos los hallazgos del juego corregidos
+  (`cff8fda`); SQL de Supabase preparado en `Tools/supabase-endurecer.sql` **sin aplicar**.
+- Rendimiento medido en Windows con `FASE.exe -medir -calidad N -nivel 05-criaturas -salir 32`.
+- Exportación: menú **Fase → Exportar las tres** (cola que cambia de plataforma antes de compilar).
+- Último estado estable: rama `fase` local con commits sin subir desde `e59e8d0` (esperan permiso).
+- Siguiente acción concreta: probar las builds nuevas, pedir permiso para push y publicación, y
+  después aplicar el SQL de Supabase con permiso. Ver `FASE_OMEGA_REPORT.md`.
