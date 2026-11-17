@@ -9,7 +9,7 @@ Resultados: **SUPERADA** · **FALLIDA** · **NO PROBADA** · **BLOQUEADA** (hay 
 | Funcionalidad | Plataforma | Método | Resultado | Evidencia | Fecha |
 |---|---|---|---|---|---|
 | Carga de la build, menú, entrada al nivel 1 y respuesta a teclas | Web | `Tools/prueba_web/prueba.mjs` en Chrome con servidor HTTP local | SUPERADA | Carga en 6,6 s; sin errores de consola; capturas en `Tools/prueba_web/capturas-1117b` | 16-17 nov 2026 |
-| Misma prueba web antes de subir a itch | Web (CI) | GitHub Actions, job `probar` de `.github/workflows/itch-web.yml` | SUPERADA | Run de la release `web-20261117-1`: success | 17 nov 2026 |
+| Misma prueba web antes de subir a itch | Web (CI) | GitHub Actions, job `probar` de `.github/workflows/itch-web.yml` | SUPERADA | Runs de las releases `web-20261117-1` y `web-20261117-2`: success | 17 nov 2026 |
 | Abrir la build, menú y ausencia de excepciones | Windows | Build abierta a mano; revisión de `Player.log` | SUPERADA | `Player.log` con 0 excepciones; captura del menú renderizado | 16-17 nov 2026 |
 | Pantalla negra en el arranque (SSAO) | Windows | Build abierta tras recompilar con la cola de exportación | SUPERADA | Antes salía en negro por recursos de SSAO quitados al compilar; corregido con la cola de exportación (commit `5b1f7fa`) | 16-17 nov 2026 |
 | Jugar con teclado dentro de la build | Windows | — | NO PROBADA | Solo se jugó en el editor | — |
@@ -44,10 +44,10 @@ Resultados: **SUPERADA** · **FALLIDA** · **NO PROBADA** · **BLOQUEADA** (hay 
 | Nivel de la semana: descarga y juego | Editor | Prueba manual | SUPERADA | Descarga de `semana/nivel.txt` y partida | 16-17 nov 2026 |
 | Nivel de la semana en web, Windows y Android | Web / PC / Android | — | NO PROBADA | — | — |
 | Cooperativo en línea | — | — | BLOQUEADA | No implementado (necesita servidor en tiempo real) | — |
-| itch: canales `html5`, `win64` y `android` actualizados | itch | `butler status` | SUPERADA | ✓ en los tres: `web-20261117-1` (html5) y `build-20261117-1` (win64, android) | 17 nov 2026 |
+| itch: canales `html5`, `win64` y `android` actualizados | itch | `butler status` | SUPERADA | ✓ en los tres: `web-20261117-2` (html5) y `build-20261117-2` (win64, android), build final | 17 nov 2026 |
 | Página de itch pública | itch | — | BLOQUEADA | La página sigue RESTRICTED; la hace el autor | — |
 | Rendimiento en Windows (medición) | Windows | `FASE.exe -medir` | SUPERADA | Auto 41–50 FPS, Máxima 20–24 FPS en gráfica integrada; 0 excepciones (tabla abajo) | 17 nov 2026 |
-| Revisión de seguridad independiente | — | — | SUPERADA | Sin secretos en el historial; cliente endurecido en `cff8fda`; SQL del servidor pendiente de permiso | 17 nov 2026 |
+| Revisión de seguridad independiente | — | — | SUPERADA | Sin secretos en el historial; cliente endurecido en `9a09faa`; SQL del servidor pendiente de permiso | 17 nov 2026 |
 | Build web final en Chrome | Web | `Tools/prueba_web/prueba.mjs` | SUPERADA | Carga 6,5 s, menú, nivel 1 y teclas sin errores; un solo título por nivel | 17 nov 2026 |
 | APK final revisado | Android | `aapt2` + `apksigner` | SUPERADA | `com.oscar07.fase` 0.1.0 (1), target 36, arm64-v8a, firma de depuración válida | 17 nov 2026 |
 
@@ -83,7 +83,7 @@ calidad elegida a mano (Máxima pasaba de 1,5 a 1,0). Corregido: ahora solo act�
 
 ### Repetición con la build final (17 nov 2026, 09:55)
 
-Mismo equipo y método, build de Windows exportada con todos los arreglos (`cff8fda`). El primer
+Mismo equipo y método, build de Windows exportada con todos los arreglos (`9a09faa`). El primer
 tramo de cada medición incluye la carga del nivel y no se cuenta.
 
 | Calidad | Escala | FPS (por tramo de 5 s) | Peor fotograma | Memoria total |

@@ -55,7 +55,7 @@ Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria.
 | Android | APK generado y revisado (`com.oscar07.fase`, minSdk 26, arm64, firma de depuración); **sin probar en un móvil** |
 | Web | Exportada y probada en Chrome (local y CI) sin errores |
 | GitHub | Historial a nombre del autor; flujos endurecidos; `SECURITY.md` y Dependabot. Pendiente: rama `main` con un flujo viejo que sube a itch |
-| itch.io | Tres canales actualizados el 17 nov; página **RESTRICTED**; queda un `GameOff2026.exe` viejo |
+| itch.io | Tres canales con la build final (`web-20261117-2`, `build-20261117-2`); página **RESTRICTED**; queda un `GameOff2026.exe` viejo |
 
 ## Riesgos principales
 
@@ -66,8 +66,8 @@ Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria.
 
 ## Próximos pasos (en orden)
 
-1. Con permiso del autor: subir los commits, publicar las versiones nuevas en itch, aplicar el SQL de
-   Supabase, borrar los eventos de prueba y la rama `main`.
+1. Con permiso del autor: aplicar el SQL de Supabase, borrar los eventos de prueba y la rama `main`
+   (commits y versiones nuevas ya publicados el 17 nov).
 2. Probar el APK en un móvil (USB con depuración) y jugar la build de Windows con teclado.
 3. Hacer pública la página de itch, cambiar el título a «FASE», borrar el `.exe` viejo y enviar a la
    jam antes del 1 de diciembre.
@@ -75,7 +75,7 @@ Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria.
 
 ## Resultados de la exportación final
 
-Todas exportadas con los arreglos de las revisiones (`cff8fda`) y empaquetadas en `Builds/`.
+Todas exportadas con los arreglos de las revisiones (`9a09faa`) y empaquetadas en `Builds/`.
 La cola del editor sacó Windows y Android; el PC se reinició antes de la web, que se exportó
 después con Unity en modo batch (`-buildTarget WebGL`, sin cambio de plataforma en caliente).
 
@@ -85,5 +85,6 @@ después con Unity en modo batch (`-buildTarget WebGL`, sin cambio de plataforma
 | Windows | `Builds/FASE-windows.zip` (315 archivos, sin carpetas de depuración) | 51,6 MB | Dos ejecuciones de 32 s en el nivel 5: 0 excepciones; rendimiento arriba |
 | Android | `Builds/FASE-android.apk` | 47,4 MB | `aapt2`: `com.oscar07.fase` 0.1.0 (1), target 36, arm64-v8a. `apksigner`: firma de depuración válida. Sin probar en un móvil |
 
-Estas versiones **no están publicadas**: en itch siguen las de la madrugada del 17 nov (antes de los arreglos). Publicarlas
-(releases `web-20261117-2` y `build-20261117-2`) queda a la espera del permiso del autor.
+**Publicadas el 17 nov 2026 (15:20 UTC)** con permiso del autor: releases `web-20261117-2` y
+`build-20261117-2`. `butler status` con ✓ en `html5` (`web-20261117-2`), `win64` y `android`
+(`build-20261117-2`); la prueba web de CI pasó antes de subir.

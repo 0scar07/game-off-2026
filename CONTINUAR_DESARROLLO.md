@@ -132,7 +132,7 @@ Las herramientas de Python necesitan `numpy`, `scipy`, `Pillow` y `fontTools` (v
 
 ### 17 de noviembre de 2026 (segunda etapa)
 - Revisión de código independiente y de seguridad: todos los hallazgos del juego corregidos
-  (`cff8fda`); SQL de Supabase preparado en `Tools/supabase-endurecer.sql` **sin aplicar**.
+  (`9a09faa`); SQL de Supabase preparado en `Tools/supabase-endurecer.sql` **sin aplicar**.
 - Rendimiento medido en Windows con `FASE.exe -medir -calidad N -nivel 05-criaturas -salir 32`.
 - Exportación: menú **Fase → Exportar las tres** (cola que cambia de plataforma antes de compilar).
 - Último estado estable: rama `fase` local con commits sin subir desde `e59e8d0` (esperan permiso).
