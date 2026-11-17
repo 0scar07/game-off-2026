@@ -46,7 +46,7 @@ Ver [ROADMAP.md](ROADMAP.md). Lo esencial:
 - **Proyecto:** «fase», en la organización 0scar07, plan gratis.
 - **URL:** `https://nxbhkkyesztocwsowvei.supabase.co`
 - **Pausa:** el plan gratis **pausa el proyecto tras una semana sin uso**. Si pasa, se reactiva en el panel de Supabase; mientras tanto, el juego funciona igual sin lo en línea.
-- **Clave en el juego:** la clave *anon* es **pública por diseño** y está en `Assets/Scripts/Online.cs` (`Url` y `Key`). Lo que puede hacer lo deciden las reglas de `Tools/supabase.sql`: leer récords y añadir filas, nunca cambiar ni borrar. **Nunca pongas la clave `service_role` en el cliente** (ni en el repositorio): da acceso total.
+- **Clave en el juego:** la clave *anon* es **pública por diseño** y está en `Assets/Scripts/Online.cs` (`Url` y `Key`). Lo que puede hacer lo deciden `Tools/supabase.sql` y `Tools/supabase-endurecer.sql` (aplicado): añadir récords y eventos con las columnas justas y leer los 10 mejores con `top_records`; nunca leer las tablas, cambiar ni borrar. **Nunca pongas la clave `service_role` en el cliente** (ni en el repositorio): da acceso total.
 - Con `Url` o `Key` vacíos, todo lo en línea se apaga solo.
 - **Crear las tablas desde cero:** pegar `Tools/supabase.sql` en Supabase → SQL Editor → Run.
 - **Consultas útiles** (SQL Editor):
@@ -132,9 +132,9 @@ Las herramientas de Python necesitan `numpy`, `scipy`, `Pillow` y `fontTools` (v
 
 ### 17 de noviembre de 2026 (segunda etapa)
 - Revisión de código independiente y de seguridad: todos los hallazgos del juego corregidos
-  (`9a09faa`); SQL de Supabase preparado en `Tools/supabase-endurecer.sql` **sin aplicar**.
+  (`9a09faa`); SQL de Supabase `Tools/supabase-endurecer.sql` aplicado y probado en producción.
 - Rendimiento medido en Windows con `FASE.exe -medir -calidad N -nivel 05-criaturas -salir 32`.
 - Exportación: menú **Fase → Exportar las tres** (cola que cambia de plataforma antes de compilar).
-- Último estado estable: rama `fase` local con commits sin subir desde `e59e8d0` (esperan permiso).
-- Siguiente acción concreta: probar las builds nuevas, pedir permiso para push y publicación, y
-  después aplicar el SQL de Supabase con permiso. Ver `FASE_OMEGA_REPORT.md`.
+- Último estado estable: rama `fase` en GitHub; builds `web-20261117-2` y `build-20261117-2` en itch.
+- Siguiente acción concreta: probar el APK en un móvil y, con permiso, borrar los eventos de prueba
+  y la rama `main`. Ver `FASE_OMEGA_REPORT.md`.

@@ -19,6 +19,6 @@ Estados: BACKLOG · READY · IN PROGRESS · BLOCKED · VERIFIED · COMPLETED. Pr
 | T-11 | Probar Twitch y el nivel de la semana en la build web | P2 | — | BACKLOG | Solo probados en el editor |
 | T-12 | Exportaciones y subida a itch de las tres versiones | P0 | — | COMPLETED | `butler status` con ✓ en `html5` (`web-20261117-1`), `win64` y `android` (`build-20261117-1`); run de CI de la web en success |
 | T-13 | Prueba de la build web en Chrome (local y CI) | P0 | T-12 | VERIFIED | `Tools/prueba_web/prueba.mjs`: carga 6,6 s, sin errores de consola; capturas en `Tools/prueba_web/capturas-1117b` |
-| T-14 | Aplicar `Tools/supabase-endurecer.sql` en producción | P1 | Permiso del autor | BLOCKED | SQL listo; probar después que el juego sigue subiendo récords |
+| T-14 | Aplicar `Tools/supabase-endurecer.sql` en producción | P1 | Permiso del autor | VERIFIED | Aplicado el 17 nov con permiso del autor; pruebas con la clave pública: récord válido 201, tiempo imposible, nombre con etiquetas, fecha falsa y lectura directa rechazados; `top_records` 200; eventos en lote 201 y fuera de rango rechazados. Filas de prueba borradas |
 | T-15 | Borrar la rama `main` (o su `build.yml`) y proteger `fase` | P1 | Permiso del autor | BLOCKED | KI-17 |
 | T-16 | Exportar de nuevo las tres versiones con los arreglos, probar y publicar | P0 | T-01, T-02 | COMPLETED | Exportadas y probadas el 17 nov; publicadas con permiso del autor: `web-20261117-2` y `build-20261117-2`, `butler status` con ✓ en `html5`, `win64` y `android` |

@@ -47,7 +47,8 @@ Resultados: **SUPERADA** · **FALLIDA** · **NO PROBADA** · **BLOQUEADA** (hay 
 | itch: canales `html5`, `win64` y `android` actualizados | itch | `butler status` | SUPERADA | ✓ en los tres: `web-20261117-2` (html5) y `build-20261117-2` (win64, android), build final | 17 nov 2026 |
 | Página de itch pública | itch | — | BLOQUEADA | La página sigue RESTRICTED; la hace el autor | — |
 | Rendimiento en Windows (medición) | Windows | `FASE.exe -medir` | SUPERADA | Auto 41–50 FPS, Máxima 20–24 FPS en gráfica integrada; 0 excepciones (tabla abajo) | 17 nov 2026 |
-| Revisión de seguridad independiente | — | — | SUPERADA | Sin secretos en el historial; cliente endurecido en `9a09faa`; SQL del servidor pendiente de permiso | 17 nov 2026 |
+| Revisión de seguridad independiente | — | — | SUPERADA | Sin secretos en el historial; cliente endurecido en `9a09faa`; SQL del servidor aplicado | 17 nov 2026 |
+| Supabase endurecido: récords y eventos tras aplicar el SQL | Supabase | `curl` con la clave pública | SUPERADA | Récord válido 201; tiempo por debajo del mínimo, nombre con `<b>`, `created_at` enviado y lectura directa rechazados (400/401); `top_records` 200; lote de eventos 201; `x` fuera de rango rechazado; lectura de `events` rechazada | 17 nov 2026 |
 | Build web final en Chrome | Web | `Tools/prueba_web/prueba.mjs` | SUPERADA | Carga 6,5 s, menú, nivel 1 y teclas sin errores; un solo título por nivel | 17 nov 2026 |
 | APK final revisado | Android | `aapt2` + `apksigner` | SUPERADA | `com.oscar07.fase` 0.1.0 (1), target 36, arm64-v8a, firma de depuración válida | 17 nov 2026 |
 

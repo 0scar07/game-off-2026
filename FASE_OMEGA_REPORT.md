@@ -9,8 +9,8 @@ Documentos de detalle: [tablero](FASE_TASK_BOARD.md) · [requisitos](FASE_REQUIR
 
 FASE está en estado **RELEASE CANDIDATE** para la GitHub Game Off: las tres versiones se exportan,
 la web y Windows se han ejecutado sin errores y están publicadas en itch (página aún restringida).
-No es **GOLD MASTER** porque el APK no se ha probado en un móvil real, los récords en línea siguen
-siendo manipulables hasta aplicar el SQL de endurecimiento, y la página de itch no es pública.
+No es **GOLD MASTER** porque el APK no se ha probado en un móvil real y la página de itch no es
+pública. Los récords en línea ya están protegidos en el servidor (SQL aplicado el 17 nov).
 
 ## Cómo se trabajó
 
@@ -47,7 +47,7 @@ Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria.
 
 | Área | Estado |
 |---|---|
-| Supabase | Récords y analítica funcionando (probado con curl). Sin secretos expuestos. **Pendiente con permiso:** `Tools/supabase-endurecer.sql` (permisos mínimos, tiempo mínimo por nivel, nombres y topes) |
+| Supabase | Récords y analítica funcionando (probado con curl). Sin secretos expuestos. `Tools/supabase-endurecer.sql` **aplicado el 17 nov** y probado: permisos mínimos, tiempo mínimo por nivel, nombres y topes |
 | Cooperativo en línea | No implementado (decisión documentada); cooperativo local sí |
 | Twitch | IRC anónimo de solo lectura; probado en el editor; sin secretos en el cliente |
 | Nivel de la semana / encuesta | Funcionan en el editor; la «encuesta» es un botón a la plantilla de GitHub |
@@ -60,14 +60,14 @@ Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria.
 ## Riesgos principales
 
 1. APK sin probar en dispositivo real.
-2. Récords manipulables y `events` sin topes hasta aplicar el SQL.
+2. Tiempos falsos pero verosímiles (por encima del mínimo) siguen siendo posibles sin cuentas de jugador.
 3. Rama `main` con `build.yml` que podría sobrescribir itch.
 4. Proyecto de Supabase gratis que se pausa tras una semana sin uso.
 
 ## Próximos pasos (en orden)
 
-1. Con permiso del autor: aplicar el SQL de Supabase, borrar los eventos de prueba y la rama `main`
-   (commits y versiones nuevas ya publicados el 17 nov).
+1. Con permiso del autor: borrar los eventos de prueba y la rama `main` (commits, versiones nuevas y
+   SQL de Supabase ya aplicados el 17 nov).
 2. Probar el APK en un móvil (USB con depuración) y jugar la build de Windows con teclado.
 3. Hacer pública la página de itch, cambiar el título a «FASE», borrar el `.exe` viejo y enviar a la
    jam antes del 1 de diciembre.
