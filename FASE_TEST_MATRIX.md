@@ -63,3 +63,19 @@ Resultados: **SUPERADA** · **FALLIDA** · **NO PROBADA** · **BLOQUEADA** (hay 
 - `Tools/comprobar_niveles.py` analiza el diseño del nivel; no ejecuta una partida.
 - `Tools/prueba_web/prueba.mjs` comprueba carga, menú, entrada al nivel 1 y que el juego responde a teclas y no da errores; no recorre niveles.
 - No hay Unity Test Framework (ver `FASE_DECISIONS.md`, registro f).
+
+## Rendimiento medido (17 nov 2026)
+
+Build de Windows, nivel `05-criaturas`, ventana 1920×1080, VSync activo (pantalla de 60 Hz), con
+`FASE.exe -medir -calidad N -nivel 05-criaturas -salir 32` (`Assets/Scripts/PerfLog.cs`).
+Equipo: AMD Radeon Vega 3 integrada (gama baja), Direct3D 11. Medias de 5 s, sin excepciones.
+
+| Calidad | FPS (por tramo de 5 s) | Peor fotograma | Memoria total |
+|---|---|---|---|
+| Auto | 44,7 · 48,0 · 51,2 · 49,2 | 33 ms (100 ms al cargar) | 261 MB |
+| Máxima | 27,1 · 36,8 · 35,6 · 45,2 | 33–217 ms | 253 MB |
+| Baja | 59,8 · 57,8 · 59,6 · 60,1 | 17–33 ms | 256 MB |
+
+Hallazgo: el ajuste automático de resolución (`QualityGuard.cs`) bajaba la escala también con una
+calidad elegida a mano (Máxima pasaba de 1,5 a 1,0). Corregido: ahora solo actúa en «Auto».
+Hay que repetir la medición de Máxima con la build siguiente.

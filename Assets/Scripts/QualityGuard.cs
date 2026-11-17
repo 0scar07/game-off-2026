@@ -5,8 +5,9 @@ using UnityEngine.Rendering.Universal;
 namespace Fase
 {
     /// <summary>
-    /// Calidad automática: si el juego va a menos de 40 imágenes por segundo durante un rato,
-    /// baja la resolución interna un poco (sin que se note la interfaz), y si va sobrado la sube.
+    /// Calidad automática (solo con Opciones → Gráficos en «Auto»): si el juego va a menos de 40
+    /// imágenes por segundo durante un rato, baja la resolución interna un poco (sin que se note la
+    /// interfaz), y si va sobrado la sube.
     /// </summary>
     public class QualityGuard : MonoBehaviour
     {
@@ -22,6 +23,8 @@ namespace Fase
 
         void Update()
         {
+            // Solo en calidad «Auto»: si el jugador eligió una calidad en Opciones → Gráficos, se respeta.
+            if (Settings.GraphicsTier != 0) { window = frames = 0f; return; }
             if (!(GraphicsSettings.currentRenderPipeline is UniversalRenderPipelineAsset urp)) return;
             window += Time.unscaledDeltaTime;
             frames++;
