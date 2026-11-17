@@ -255,6 +255,12 @@ namespace Fase
                 QualitySettings.vSyncCount = VSync ? 1 : 0;
                 Application.targetFrameRate = VSync || FpsStep == 3 ? -1 : new[] { 30, 60, 120 }[FpsStep];
             }
+            else if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                // En el navegador (también el del móvil) manda su propio ritmo de pantalla: con otro
+                // valor Unity temporiza por software y da tirones.
+                Application.targetFrameRate = -1;
+            }
             else if (mobile)
             {
                 // En el móvil Unity limita a 30 si no se le dice nada.

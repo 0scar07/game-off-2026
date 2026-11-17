@@ -64,7 +64,7 @@ namespace Fase
         {
             // Ni en pausa ni bajo la cortina; el jugador se busca solo cuando falta.
             if (player == null) player = FindAnyObjectByType<PlayerController>();
-            if (PauseMenu.Paused || SceneFader.Covering || player == null) return;
+            if (PauseMenu.Paused || SceneFader.Busy || player == null) return;
             total += Time.unscaledDeltaTime;
             levelTime += Time.unscaledDeltaTime;
             clock.text = $"⏱ {Hud.FormatTime(total)}";

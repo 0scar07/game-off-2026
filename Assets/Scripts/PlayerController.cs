@@ -46,6 +46,7 @@ namespace Fase
         float lastFallSpeed, stepLeft, landLeft, carried;
         bool braking;
         bool celebrating;
+        Vector2 celebrateAt;
         float idleTime, boredLeft;
         // Quieta mucho rato: bosteza y se duerme (se despierta con cualquier movimiento).
         float stillTime;
@@ -112,6 +113,7 @@ namespace Fase
         public void Celebrate()
         {
             celebrating = true;
+            celebrateAt = body.position;
             bufferLeft = 0f;
         }
 
@@ -303,7 +305,14 @@ namespace Fase
         {
             // Tras tocar la meta ya no se cae: antes una pieza que desaparecía o la marea podían
             // contar una caída (y quitar el reto «Sin caer») con los resultados en pantalla.
-            if (celebrating) return;
+            if (celebrating)
+            {
+                body.linearVelocity = Vector2.zero;
+                body.position = celebrateAt;
+                transform.position = celebrateAt;
+                body.constraints = RigidbodyConstraints2D.FreezeAll;
+                return;
+            }
             LastDeathPosition = transform.position;
 
 

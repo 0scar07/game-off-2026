@@ -29,8 +29,12 @@ namespace Fase
             return Prefix + b64.TrimEnd('=').Replace('+', '-').Replace('/', '_');
         }
 
+        // Topes: los niveles del Taller miden 64 columnas; se deja margen para niveles más anchos.
+        const int MaxCodeLength = 8192, MaxRow = 256;
+
         public static string[] Decode(string code)
         {
+            if (string.IsNullOrEmpty(code) || code.Length > MaxCodeLength) return null;
             try
             {
                 code = code.Trim();
@@ -47,8 +51,10 @@ namespace Fase
                     for (int i = 0; i < row.Length; i++)
                     {
                         int run = 0;
-                        while (i < row.Length && char.IsDigit(row[i])) run = run * 10 + (row[i++] - '0');
+                        while (i < row.Length && row[i] >= '0' && row[i] <= '9' && run <= MaxRow) run = run * 10 + (row[i++] - '0');
+                        if (run > MaxRow) return null;
                         if (i < row.Length) sb.Append(row[i], run > 0 ? run : 1);
+                        if (sb.Length > MaxRow) return null;
                     }
                     result[r] = sb.ToString();
                 }

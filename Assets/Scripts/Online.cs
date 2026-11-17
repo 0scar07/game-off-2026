@@ -47,6 +47,24 @@ namespace Fase
             }
         }
 
+        /// <summary>
+        /// Texto de otros (nombres de récords, nivel de la semana) listo para mostrar: sin etiquetas
+        /// de formato, saltos de línea ni caracteres invisibles, y con un largo máximo.
+        /// </summary>
+        public static string SafeName(string s, int max)
+        {
+            var sb = new StringBuilder();
+            foreach (char c in s ?? "")
+            {
+                var cat = char.GetUnicodeCategory(c);
+                if (c == '<' || c == '>' || char.IsControl(c) || cat == System.Globalization.UnicodeCategory.Format
+                    || cat == System.Globalization.UnicodeCategory.LineSeparator || cat == System.Globalization.UnicodeCategory.ParagraphSeparator) continue;
+                sb.Append(c);
+            }
+            string clean = sb.ToString().Trim();
+            return clean.Length > max ? clean.Substring(0, max) : clean;
+        }
+
         public static string Escape(string s)
         {
             var sb = new StringBuilder();
@@ -93,14 +111,28 @@ namespace Fase
     public static class OnlineRecords
     {
         [Serializable] class Row { public string name; public int time_ms; }
+
+        /// <summary>
+        /// El nombre tal como se sube: solo letras (con tildes), números, espacio, _ . - y 12
+        /// caracteres, igual que la regla del servidor (Tools/supabase-endurecer.sql).
+        /// </summary>
+        public static string SubmitName
+        {
+            get
+            {
+                if (!PlayerName.Has) return "";
+                string clean = System.Text.RegularExpressions.Regex.Replace(PlayerName.Value, "[^A-Za-z0-9ÁÉÍÓÚÜÑÇáéíóúüñçÀÈÌÒÙàèìòùÂÊÎÔÛâêîôûÃÕãõ _.-]", "").Trim();
+                return clean.Length > 12 ? clean.Substring(0, 12).Trim() : clean;
+            }
+        }
         [Serializable] class Rows { public Row[] items; }
 
         /// <summary>Sube el tiempo (si hay nombre) y luego trae la tabla del nivel.</summary>
         public static IEnumerator SubmitAndFetch(int level, float seconds, bool submit, Action<List<(string name, float seconds)>> done)
         {
-            if (submit && PlayerName.Has)
+            string name = SubmitName;
+            if (submit && name.Length > 0)
             {
-                string name = PlayerName.Value.Length > 12 ? PlayerName.Value.Substring(0, 12) : PlayerName.Value;
                 int ms = Mathf.RoundToInt(seconds * 1000f);
                 yield return Online.Send("/rest/v1/records", $"{{\"level\":{level},\"name\":\"{Online.Escape(name)}\",\"time_ms\":{ms}}}");
             }
@@ -168,7 +200,8 @@ namespace Fase
             // "quit" solo cuenta si se sale sin terminar el nivel.
             if (kind == "quit" && finished) return;
             var player = UnityEngine.Object.FindAnyObjectByType<PlayerController>();
-            string x = player != null ? player.transform.position.x.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) : "null";
+            float px = player != null ? player.transform.position.x : float.NaN;
+            string x = float.IsFinite(px) ? px.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture) : "null";
             string secs = (Time.time - started).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
             pending.Add($"{{\"level\":{level},\"kind\":\"{kind}\",\"x\":{x},\"seconds\":{secs}}}");
         }

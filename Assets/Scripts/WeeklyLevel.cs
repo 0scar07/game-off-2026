@@ -37,7 +37,9 @@ namespace Fase
             {
                 request.timeout = 10;
                 yield return request.SendWebRequest();
-                if (request.result != UnityWebRequest.Result.Success || !Parse(request.downloadHandler.text))
+                // Un nivel de la semana ocupa unos cientos de bytes: un archivo enorme se rechaza.
+                if (request.result != UnityWebRequest.Result.Success || request.downloadHandler.data == null
+                    || request.downloadHandler.data.Length > 8192 || !Parse(request.downloadHandler.text))
                 {
                     Status = State.Failed;
                     yield break;
@@ -53,9 +55,9 @@ namespace Fase
             string code = lines[2].Trim();
             if (LevelCode.Decode(code) == null) return false;
             var names = lines[0].Split('|');
-            NameEs = names[0].Trim();
-            NameEn = names.Length > 1 ? names[1].Trim() : NameEs;
-            Author = lines[1].Trim();
+            NameEs = Online.SafeName(names[0], 40);
+            NameEn = names.Length > 1 ? Online.SafeName(names[1], 40) : NameEs;
+            Author = Online.SafeName(lines[1], 24);
             Code = code;
             return true;
         }

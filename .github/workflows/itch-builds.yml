@@ -22,16 +22,21 @@ on:
         description: "Release con FASE-windows.zip y FASE-android.apk"
         required: true
 
+# El token de GitHub solo puede leer el repositorio.
+permissions:
+  contents: read
+
 jobs:
   upload:
     if: startsWith(github.event.release.tag_name || inputs.tag, 'build-')
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
-      GH_TOKEN: ${{ github.token }}
       TAG: ${{ github.event.release.tag_name || inputs.tag }}
     steps:
       - name: Descargar las versiones de la release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern FASE-windows.zip --pattern FASE-android.apk
           mkdir -p windows android

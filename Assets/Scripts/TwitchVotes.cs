@@ -42,8 +42,8 @@ namespace Fase
         public static void Begin(string channel)
         {
             End();
-            Channel = channel;
-            if (string.IsNullOrEmpty(Channel)) return;
+            Channel = (channel ?? "").Trim().TrimStart('#').ToLowerInvariant();
+            if (!System.Text.RegularExpressions.Regex.IsMatch(Channel, "^[a-z0-9_]{3,25}$")) { Channel = ""; return; }
             var go = new GameObject("Twitch");
             DontDestroyOnLoad(go);
             Instance = go.AddComponent<TwitchVotes>();

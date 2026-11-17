@@ -65,7 +65,7 @@ namespace Fase
             }
             var kb = Keyboard.current;
             if (kb == null) return;
-            if (!Active && kb.fKey.wasPressedThisFrame && !PauseMenu.Paused && !UiKit.Typing && FindAnyObjectByType<ResultsScreen>() == null) Enter();
+            if (!Active && kb.fKey.wasPressedThisFrame && !PauseMenu.Paused && !UiKit.Typing && !SceneFader.Covering && !ResultsScreen.Showing) Enter();
             else if (Active && (kb.fKey.wasPressedThisFrame || kb.escapeKey.wasPressedThisFrame)) Exit();
             if (!Active) return;
 
@@ -162,12 +162,14 @@ namespace Fase
             yield return new WaitForEndOfFrame();
             var shot = ScreenCapture.CaptureScreenshotAsTexture();
             ui.enabled = true;
-            Share.SavePicture(shot);
+            bool saved = Share.SavePicture(shot);
             Album.Add(shot);
 
             Achievements.Unlock("fotografo");
             Destroy(shot);
-            if (filterLabel != null) filterLabel.text = Loc.Pick("¡Foto guardada!", "Photo saved!");
+            // Siempre queda en el Álbum del juego; el archivo, si se pudo escribir.
+            if (filterLabel != null) filterLabel.text = saved ? Loc.Pick("¡Foto guardada!", "Photo saved!")
+                : Loc.Pick("Foto guardada en el Álbum", "Photo saved to the Album", "Foto salva no Álbum", "Photo enregistrée dans l'Album");
         }
     }
 }

@@ -47,7 +47,8 @@ public static class WebBuild
     static void RunQueue()
     {
         if (BuildPipeline.isBuildingPlayer || EditorApplication.isCompiling) { EditorApplication.delayCall += RunQueue; return; }
-        var items = SessionState.GetString(QueueKey, "").Split(',').Select(t => t.Trim()).Where(t => t.Length > 0).ToList();
+        var items = SessionState.GetString(QueueKey, "").Split(',').Select(t => t.Trim().ToLowerInvariant())
+            .Where(t => t == "windows" || t == "android" || t == "web").Distinct().ToList();
         if (items.Count == 0) return;
         var (group, target) = items[0] == "windows" ? (BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64)
             : items[0] == "android" ? (BuildTargetGroup.Android, BuildTarget.Android)
@@ -55,15 +56,28 @@ public static class WebBuild
         if (EditorUserBuildSettings.activeBuildTarget != target)
         {
             // Al cambiar de plataforma Unity recompila y recarga; ResumeQueue sigue después.
-            EditorUserBuildSettings.SwitchActiveBuildTarget(group, target);
+            if (!EditorUserBuildSettings.SwitchActiveBuildTarget(group, target))
+            {
+                // Sin el módulo de esa plataforma (o en Play): se quita de la cola en vez de reintentar sin fin.
+                Debug.LogError($"No se pudo cambiar a {target}: se quita de la cola de exportación.");
+                SessionState.SetString(QueueKey, string.Join(",", items.Skip(1)));
+                if (items.Count > 1) EditorApplication.delayCall += RunQueue;
+                return;
+            }
             EditorApplication.delayCall += RunQueue;
             return;
         }
         SessionState.SetString(QueueKey, string.Join(",", items.Skip(1)));
-        if (items[0] == "windows") BuildWindowsNow();
-        else if (items[0] == "android") BuildAndroidNow();
-        else BuildWebNow();
-        if (items.Count > 1) EditorApplication.delayCall += RunQueue;
+        try
+        {
+            if (items[0] == "windows") BuildWindowsNow();
+            else if (items[0] == "android") BuildAndroidNow();
+            else BuildWebNow();
+        }
+        finally
+        {
+            if (items.Count > 1) EditorApplication.delayCall += RunQueue;
+        }
     }
 
     [MenuItem("Fase/Exportar web")]
@@ -74,6 +88,9 @@ public static class WebBuild
 
     [MenuItem("Fase/Exportar Android (APK)")]
     public static void BuildAndroid() => Enqueue("android");
+
+    [MenuItem("Fase/Vaciar la cola de exportación")]
+    static void ClearQueue() => SessionState.EraseString(QueueKey);
 
     [MenuItem("Fase/Exportar las tres (Windows, Android y web)")]
     public static void BuildAll() => Enqueue("windows,android,web");

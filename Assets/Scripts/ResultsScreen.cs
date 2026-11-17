@@ -17,6 +17,7 @@ namespace Fase
         Text shareLabel;
         bool leaving;
         static int alive;
+        bool replaying;
 
         /// <summary>true mientras hay una pantalla de resultados (sin buscarla en la escena cada frame).</summary>
         public static bool Showing => alive > 0;
@@ -150,7 +151,7 @@ namespace Fase
                 UiKit.Text(board.transform, "Titulo", Loc.Pick("Récords en línea", "Online records", "Recordes online", "Records en ligne"), new Vector2(0.5f, 1f), new Vector2(0f, -34f), new Vector2(310f, 44f), 30, TextAnchor.MiddleCenter, UiKit.Gold);
                 var list = UiKit.Text(board.transform, "Lista", Loc.Pick("Cargando…", "Loading…", "Carregando…", "Chargement…"), new Vector2(0.5f, 1f), new Vector2(0f, -250f), new Vector2(300f, 360f), 24, TextAnchor.UpperLeft);
                 list.horizontalOverflow = HorizontalWrapMode.Wrap;
-                string me = PlayerName.Has ? PlayerName.Value : "";
+                string me = OnlineRecords.SubmitName;
                 Online.Run(OnlineRecords.SubmitAndFetch(level, time, fair, rows =>
                 {
                     if (list == null) return;
@@ -158,9 +159,9 @@ namespace Fase
                     var sb = new System.Text.StringBuilder();
                     for (int r = 0; r < rows.Count; r++)
                     {
-                        bool mine = me.Length > 0 && rows[r].name == (me.Length > 12 ? me.Substring(0, 12) : me);
+                        bool mine = me.Length > 0 && rows[r].name == me;
                         // Los nombres son de otros jugadores: sin < ni > no pueden meter formato en la tabla.
-                        string safe = (rows[r].name ?? "").Replace("<", "").Replace(">", "");
+                        string safe = Online.SafeName(rows[r].name, 12);
                         string row = $"{r + 1,2}. {safe}  <color=#ffd98a>{Hud.FormatTime(rows[r].seconds)}</color>";
                         sb.AppendLine(mine ? $"<b>{row}</b>" : row);
                     }
@@ -188,7 +189,7 @@ namespace Fase
             }
             if (Ghost.LastRun != null && Ghost.LastRun.Length > 10)
 
-                UiKit.Button(root, "Repeticion", "▶ " + Loc.Get("replay"), new Vector2(1f, 0f), new Vector2(-40f, 30f), new Vector2(300f, 72f), () => StartCoroutine(Replay(canvas)), 32)
+                UiKit.Button(root, "Repeticion", "▶ " + Loc.Get("replay"), new Vector2(1f, 0f), new Vector2(-40f, 30f), new Vector2(300f, 72f), () => { if (!replaying) StartCoroutine(Replay(canvas)); }, 32)
                     .GetComponent<RectTransform>().pivot = new Vector2(1f, 0f);
             int shownMedal = medal;
             share.onClick.AddListener(() => shareLabel.text = Loc.Get(Share.Text(Share.LevelTime(level, name, time, shownMedal))));
@@ -222,6 +223,7 @@ namespace Fase
             var player = FindAnyObjectByType<PlayerController>();
             var cam = Camera.main;
             if (run == null || player == null || cam == null) yield break;
+            replaying = true;
             results.enabled = false;
             var copy = Ghost.BuildCopy(player, new Color(1f, 0.85f, 0.55f, 0.6f));
             var follow = cam.GetComponent<CameraFollow>();
@@ -247,6 +249,7 @@ namespace Fase
             Destroy(bars.gameObject);
             cam.transform.position = camStart;
             results.enabled = true;
+            replaying = false;
         }
 
         /// <summary>Lluvia de estrellitas doradas al sacar oro (o Luna).</summary>
@@ -278,7 +281,7 @@ namespace Fase
         void Update()
         {
             var kb = Keyboard.current;
-            if (kb == null || leaving || !ready) return;
+            if (kb == null || leaving || !ready || replaying) return;
             // Con un botón enfocado, Enter ya lo pulsa la interfaz (si no, Enter en «Repetir» haría las dos cosas).
             bool focused = UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null;
             if (!focused && (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame)) Next();

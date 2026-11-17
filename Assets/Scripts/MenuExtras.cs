@@ -447,11 +447,14 @@ namespace Fase
             float row = 134f;
             // En el móvil la pantalla completa la pone el sistema.
             if (!Application.isMobilePlatform)
+            {
                 Toggle(content, "fullscreen", new Vector2(0f, row -= 84f), () => Settings.Fullscreen, v => Settings.Fullscreen = v);
+                if (Application.platform == RuntimePlatform.WebGLPlayer) WebFullscreenOnPress(content.Find("fullscreen"));
+            }
             if (Settings.IsDesktop)
                 Toggle(content, "vsync", new Vector2(0f, row -= 84f), () => Settings.VSync, v => Settings.VSync = v);
             // En el navegador manda el navegador: no hay VSync ni límite que elegir.
-            if (Settings.IsDesktop || Application.isMobilePlatform)
+            if (Settings.IsDesktop || Application.platform == RuntimePlatform.Android)
                 Toggle(content, "fpslimit", new Vector2(0f, row -= 84f), () => Settings.FpsStep == 3, _ => Settings.FpsStep++,
                     () => !Settings.IsDesktop || !Settings.VSync, _ => Settings.FpsName);
             // Brillo: cada clic sube un 10 % (de 80 % a 130 % y vuelta a empezar).
@@ -484,6 +487,22 @@ namespace Fase
             var openLabel = open.GetComponentInChildren<Text>();
             refreshers.Add(() => openLabel.text = Loc.Get("graphics"));
             return panel;
+        }
+
+        /// <summary>
+        /// En la web el navegador solo deja entrar en pantalla completa durante un clic: Unity lo
+        /// aplaza al siguiente evento, así que el botón actúa al pulsar (el soltar del mismo clic lo
+        /// aplica) en lugar de al soltar (que obligaba a hacer otro clic).
+        /// </summary>
+        void WebFullscreenOnPress(Transform target)
+        {
+            var button = target != null ? target.GetComponent<Button>() : null;
+            if (button == null) return;
+            button.onClick.RemoveAllListeners();
+            var trigger = button.gameObject.AddComponent<UnityEngine.EventSystems.EventTrigger>();
+            var down = new UnityEngine.EventSystems.EventTrigger.Entry { eventID = UnityEngine.EventSystems.EventTriggerType.PointerDown };
+            down.callback.AddListener(_ => { Settings.Fullscreen = !Settings.Fullscreen; Refresh(); });
+            trigger.triggers.Add(down);
         }
 
         void Toggle(RectTransform parent, string key, Vector2 position, System.Func<bool> get, System.Action<bool> set, System.Func<bool> available = null,

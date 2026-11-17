@@ -159,6 +159,9 @@ namespace Fase
         /// <summary>true mientras la cortina tapa el nivel ya cargado (el juego está quieto).</summary>
         public static bool Covering { get; private set; }
 
+        /// <summary>true durante toda la transición (entrada, carga y salida de la cortina).</summary>
+        public static bool Busy => instance != null && instance.busy;
+
         /// <summary>"2 · Noche estrellada" si la escena es un nivel de la historia (★ si es secreto).</summary>
         /// <summary>Si el título y el consejo no caben a lo alto (pantallas muy apaisadas), se encogen juntos.</summary>
         void FitBlock()
@@ -275,7 +278,7 @@ namespace Fase
             Covering = true;
             yield return CatchStars(covered);
             Covering = false;
-            Time.timeScale = PauseMenu.Paused ? 0f : speed;
+            if (!PhotoMode.Active) Time.timeScale = PauseMenu.Paused ? 0f : speed;
             for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime / Duration)
             {
                 SetCover(Mathf.SmoothStep(0f, 1f, t));

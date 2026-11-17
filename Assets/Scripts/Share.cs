@@ -43,12 +43,13 @@ namespace Fase
         /// Guarda una captura: en la web la descarga; en Windows, en Imágenes/FASE; en Android, en la
         /// carpeta del juego; en el editor, en la carpeta del proyecto.
         /// </summary>
-        public static void SavePicture(Texture2D picture)
+        public static bool SavePicture(Texture2D picture)
         {
             byte[] png = picture.EncodeToPNG();
             string name = $"FASE-{System.DateTime.Now:yyyyMMdd-HHmmss}.png";
 #if UNITY_WEBGL && !UNITY_EDITOR
             FaseDownload(name, System.Convert.ToBase64String(png));
+            return true;
 #else
             string folder = Application.isEditor ? ""
                 : Application.platform == RuntimePlatform.Android ? Application.persistentDataPath
@@ -58,8 +59,9 @@ namespace Fase
             {
                 if (folder.Length > 0) System.IO.Directory.CreateDirectory(folder);
                 System.IO.File.WriteAllBytes(System.IO.Path.Combine(folder, name), png);
+                return true;
             }
-            catch (System.Exception e) { Debug.LogWarning("No se pudo guardar la foto: " + e.Message); }
+            catch (System.Exception e) { Debug.LogWarning("No se pudo guardar la foto: " + e.Message); return false; }
 #endif
         }
 
