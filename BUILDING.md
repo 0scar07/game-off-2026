@@ -44,13 +44,20 @@ Ajustes que fija el script cada vez:
 
 ### Exportar sin tocar menús (aviso `auto-build.flag`)
 
-Si existe el archivo `Logs/auto-build.flag` **al abrir el editor**, el propio script lo borra y, una sola vez, ejecuta *Generar niveles* y después *Exportar web*. Sirve para lanzar todo desde fuera:
+Si existe el archivo `Logs/auto-build.flag` **al abrir el editor**, el propio script lo borra y:
+
+- si está **vacío**, ejecuta *Generar niveles* y después exporta la web;
+- si contiene una lista como `windows,android,web`, exporta esas plataformas en ese orden.
 
 ```
-echo. > Logs/auto-build.flag      (luego abrir Unity)
+echo windows,android,web> Logs/auto-build.flag      (luego abrir Unity)
 ```
 
-Solo afecta a la web. Windows y Android se lanzan siempre desde el menú.
+**Fase → Exportar las tres** hace lo mismo desde el menú. Cada exportación cambia primero de
+plataforma, deja que Unity se recargue y solo entonces compila: si se compila en la misma llamada
+del cambio, Unity quita recursos de render con los datos de la plataforma anterior (la versión de
+Windows salía en negro por el SSAO). Los resultados quedan en `Logs/web-build.txt`,
+`Logs/windows-build.txt` y `Logs/android-build.txt`.
 
 ### Probar la web en local
 

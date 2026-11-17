@@ -12,27 +12,74 @@ public static class WebBuild
 {
     public const string OutputFolder = "Builds/Web";
 
+    // ───────── Cola de exportaciones ─────────
+    // Cada plataforma se exporta con el editor YA cambiado a ella y recargado. Si se cambia de
+    // plataforma y se exporta en la misma llamada, Unity decide qué recursos de render quitar con
+    // los datos de la plataforma anterior: en Windows faltaban los del SSAO y salía la pantalla negra.
+
+    const string QueueKey = "fase_exportar_cola";
+
     /// <summary>
-    /// Si existe Logs/auto-build.flag al abrir el editor, genera los niveles y exporta la web
-    /// una sola vez (borra el aviso). Sirve para lanzar todo sin tocar menús.
+    /// Logs/auto-build.flag al abrir el editor: vacío = generar niveles y exportar la web; si no,
+    /// la lista de plataformas separadas por comas (p. ej. "windows,android,web").
     /// </summary>
     [InitializeOnLoadMethod]
-    static void AutoBuild()
+    static void ResumeQueue()
     {
         const string flag = "Logs/auto-build.flag";
-        if (!System.IO.File.Exists(flag)) return;
-        System.IO.File.Delete(flag);
-        EditorApplication.delayCall += () =>
+        if (System.IO.File.Exists(flag))
         {
-            LevelBuilder.BuildAll();
-            Build();
-        };
+            string wanted = System.IO.File.ReadAllText(flag).Trim();
+            System.IO.File.Delete(flag);
+            if (wanted.Length == 0) { EditorApplication.delayCall += () => { LevelBuilder.BuildAll(); Enqueue("web"); }; return; }
+            SessionState.SetString(QueueKey, wanted);
+        }
+        EditorApplication.delayCall += RunQueue;
+    }
+
+    static void Enqueue(string targets)
+    {
+        string queue = SessionState.GetString(QueueKey, "");
+        SessionState.SetString(QueueKey, queue.Length > 0 ? queue + "," + targets : targets);
+        RunQueue();
+    }
+
+    static void RunQueue()
+    {
+        if (BuildPipeline.isBuildingPlayer || EditorApplication.isCompiling) { EditorApplication.delayCall += RunQueue; return; }
+        var items = SessionState.GetString(QueueKey, "").Split(',').Select(t => t.Trim()).Where(t => t.Length > 0).ToList();
+        if (items.Count == 0) return;
+        var (group, target) = items[0] == "windows" ? (BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64)
+            : items[0] == "android" ? (BuildTargetGroup.Android, BuildTarget.Android)
+            : (BuildTargetGroup.WebGL, BuildTarget.WebGL);
+        if (EditorUserBuildSettings.activeBuildTarget != target)
+        {
+            // Al cambiar de plataforma Unity recompila y recarga; ResumeQueue sigue después.
+            EditorUserBuildSettings.SwitchActiveBuildTarget(group, target);
+            EditorApplication.delayCall += RunQueue;
+            return;
+        }
+        SessionState.SetString(QueueKey, string.Join(",", items.Skip(1)));
+        if (items[0] == "windows") BuildWindowsNow();
+        else if (items[0] == "android") BuildAndroidNow();
+        else BuildWebNow();
+        if (items.Count > 1) EditorApplication.delayCall += RunQueue;
     }
 
     [MenuItem("Fase/Exportar web")]
-    public static void Build()
+    public static void Build() => Enqueue("web");
+
+    [MenuItem("Fase/Exportar escritorio (Windows)")]
+    public static void BuildWindows() => Enqueue("windows");
+
+    [MenuItem("Fase/Exportar Android (APK)")]
+    public static void BuildAndroid() => Enqueue("android");
+
+    [MenuItem("Fase/Exportar las tres (Windows, Android y web)")]
+    public static void BuildAll() => Enqueue("windows,android,web");
+
+    static void BuildWebNow()
     {
-        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL);
         PlayerSettings.productName = "FASE";
         PlayerSettings.companyName = "0scar07";
         // Brotli comprime un 15-20 % más que Gzip; con "decompression fallback" funciona en itch
@@ -68,16 +115,11 @@ public static class WebBuild
         Debug.Log(result);
     }
 
-    /// <summary>Menú Fase → Exportar escritorio: versión descargable para Windows (Builds/Windows).</summary>
-    [MenuItem("Fase/Exportar escritorio (Windows)")]
-    public static void BuildWindows()
+    /// <summary>Versión descargable para Windows (Builds/Windows).</summary>
+    static void BuildWindowsNow()
     {
         PlayerSettings.productName = "FASE";
         PlayerSettings.companyName = "0scar07";
-        // Primero se cambia de plataforma: si se compila con el editor en "Web", Unity decide qué
-        // recursos quitar mirando el perfil de calidad de la web (sin SSAO) y en Windows el perfil
-        // "PC" se quedaba sin los suyos (pantalla negra).
-        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64);
         PlayerSettings.fullScreenMode = FullScreenMode.FullScreenWindow;
         PlayerSettings.defaultScreenWidth = 1920;
         PlayerSettings.defaultScreenHeight = 1080;
@@ -96,13 +138,11 @@ public static class WebBuild
         Debug.Log(result);
     }
 
-    /// <summary>Menú Fase → Exportar Android: APK para instalar a mano (Builds/Android/FASE.apk).</summary>
-    [MenuItem("Fase/Exportar Android (APK)")]
-    public static void BuildAndroid()
+    /// <summary>APK para instalar a mano (Builds/Android/FASE.apk).</summary>
+    static void BuildAndroidNow()
     {
         PlayerSettings.productName = "FASE";
         PlayerSettings.companyName = "0scar07";
-        EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
         PlayerSettings.SetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Android, "com.oscar07.fase");
         PlayerSettings.defaultInterfaceOrientation = UIOrientation.AutoRotation;
         PlayerSettings.allowedAutorotateToPortrait = PlayerSettings.allowedAutorotateToPortraitUpsideDown = false;
