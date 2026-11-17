@@ -49,10 +49,10 @@ Leyenda: ✅ hecho y comprobado · 🔧 hecho sin comprobar · ⏳ en curso · �
 ### Distribución
 | # | Tarea | Estado |
 |---|---|---|
-| 12 | Build Web nueva con todo lo de hoy, probada en Chrome con servidor HTTP | ⬜ |
-| 13 | Build Windows (`Builds/Windows/FASE.exe`), probada abriendo el .exe | ⬜ |
-| 14 | Build Android (`Builds/Android/FASE.apk`) | ⬜ (sin móvil ni emulador para probarlo aquí) |
-| 15 | Subir a itch las tres | ⬜ **con permiso del autor** |
+| 12 | Build Web nueva con todo lo de hoy, probada en Chrome con servidor HTTP | ✅ en itch (canal html5, web-20261117-1) |
+| 13 | Build Windows (`Builds/Windows/FASE.exe`), probada abriendo el .exe | ✅ en itch (canal win64, 52 MB) |
+| 14 | Build Android (`Builds/Android/FASE.apk`) | ✅ en itch (canal android, 47 MB); 🔧 sin probar en un móvil; firma de depuración |
+| 15 | Subir a itch las tres | ✅ 17 nov. Falta: hacer pública la página y borrar el GameOff2026.exe viejo (canal windows) |
 
 ### Final
 | # | Tarea | Estado |
