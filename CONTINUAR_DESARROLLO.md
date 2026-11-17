@@ -138,5 +138,7 @@ Las herramientas de Python necesitan `numpy`, `scipy`, `Pillow` y `fontTools` (v
 - Último estado estable: rama `fase` en GitHub; builds `web-20261117-2` y `build-20261117-2` en itch.
 - Supabase limpio el 17 nov: 0 récords y 0 eventos (los de prueba, borrados con permiso del autor).
 - El flujo viejo `build.yml` de `main` se quitó el 17 nov: solo publican los flujos de `fase`.
+- `fase` está protegida (regla «Proteger fase»): no se puede borrar ni hacer force-push. Si alguna
+  vez hiciera falta reescribir el historial, desactivarla en GitHub → Settings → Rules → Rulesets.
 - Siguiente acción concreta: probar el APK en un móvil y enviar el juego a la jam.
   Ver `FASE_OMEGA_REPORT.md`.

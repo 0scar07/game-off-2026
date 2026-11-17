@@ -54,7 +54,7 @@ Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria.
 | Windows | Exportado, ejecutado, sin excepciones, rendimiento medido; no jugado con teclado en la build |
 | Android | APK generado y revisado (`com.oscar07.fase`, minSdk 26, arm64, firma de depuración); **sin probar en un móvil** |
 | Web | Exportada y probada en Chrome (local y CI) sin errores |
-| GitHub | Historial a nombre del autor; flujos endurecidos; `SECURITY.md` y Dependabot. El flujo viejo de `main` que subía a itch, quitado el 17 nov. Opcional: proteger `fase` |
+| GitHub | Historial a nombre del autor; flujos endurecidos; `SECURITY.md` y Dependabot. El flujo viejo de `main` que subía a itch, quitado el 17 nov; `fase` protegida contra borrado y force-push |
 | itch.io | Tres canales con la build final (`web-20261117-2`, `build-20261117-2`); página **RESTRICTED**; queda un `GameOff2026.exe` viejo |
 
 ## Riesgos principales
@@ -66,7 +66,7 @@ Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria.
 ## Próximos pasos (en orden)
 
 1. Hecho el 17 nov con permiso del autor: commits y versiones nuevas publicados, SQL de Supabase
-   aplicado, 40 eventos de prueba borrados (la base queda a cero) y `build.yml` quitado de `main`.
+   aplicado, 40 eventos de prueba borrados (la base queda a cero), `build.yml` quitado de `main` y `fase` protegida.
 2. Probar el APK en un móvil (USB con depuración) y jugar la build de Windows con teclado.
 3. Hacer pública la página de itch, cambiar el título a «FASE», borrar el `.exe` viejo y enviar a la
    jam antes del 1 de diciembre.
