@@ -137,5 +137,6 @@ Las herramientas de Python necesitan `numpy`, `scipy`, `Pillow` y `fontTools` (v
 - Exportación: menú **Fase → Exportar las tres** (cola que cambia de plataforma antes de compilar).
 - Último estado estable: rama `fase` en GitHub; builds `web-20261117-2` y `build-20261117-2` en itch.
 - Supabase limpio el 17 nov: 0 récords y 0 eventos (los de prueba, borrados con permiso del autor).
-- Siguiente acción concreta: probar el APK en un móvil y, con permiso, quitar la rama `main`.
+- El flujo viejo `build.yml` de `main` se quitó el 17 nov: solo publican los flujos de `fase`.
+- Siguiente acción concreta: probar el APK en un móvil y enviar el juego a la jam.
   Ver `FASE_OMEGA_REPORT.md`.

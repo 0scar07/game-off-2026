@@ -54,20 +54,19 @@ Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria.
 | Windows | Exportado, ejecutado, sin excepciones, rendimiento medido; no jugado con teclado en la build |
 | Android | APK generado y revisado (`com.oscar07.fase`, minSdk 26, arm64, firma de depuración); **sin probar en un móvil** |
 | Web | Exportada y probada en Chrome (local y CI) sin errores |
-| GitHub | Historial a nombre del autor; flujos endurecidos; `SECURITY.md` y Dependabot. Pendiente: rama `main` con un flujo viejo que sube a itch |
+| GitHub | Historial a nombre del autor; flujos endurecidos; `SECURITY.md` y Dependabot. El flujo viejo de `main` que subía a itch, quitado el 17 nov. Opcional: proteger `fase` |
 | itch.io | Tres canales con la build final (`web-20261117-2`, `build-20261117-2`); página **RESTRICTED**; queda un `GameOff2026.exe` viejo |
 
 ## Riesgos principales
 
 1. APK sin probar en dispositivo real.
 2. Tiempos falsos pero verosímiles (por encima del mínimo) siguen siendo posibles sin cuentas de jugador.
-3. Rama `main` con `build.yml` que podría sobrescribir itch.
-4. Proyecto de Supabase gratis que se pausa tras una semana sin uso.
+3. Proyecto de Supabase gratis que se pausa tras una semana sin uso.
 
 ## Próximos pasos (en orden)
 
-1. Con permiso del autor: quitar la rama `main` o su `build.yml` (commits, versiones nuevas, SQL de
-   Supabase y borrado de los 40 eventos de prueba ya hechos el 17 nov; la base queda a cero).
+1. Hecho el 17 nov con permiso del autor: commits y versiones nuevas publicados, SQL de Supabase
+   aplicado, 40 eventos de prueba borrados (la base queda a cero) y `build.yml` quitado de `main`.
 2. Probar el APK en un móvil (USB con depuración) y jugar la build de Windows con teclado.
 3. Hacer pública la página de itch, cambiar el título a «FASE», borrar el `.exe` viejo y enviar a la
    jam antes del 1 de diciembre.
