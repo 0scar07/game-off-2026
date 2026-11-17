@@ -1,0 +1,54 @@
+# Sube las versiones de Windows y Android de FASE a itch.io cuando se publica una release
+# build-AAAAMMDD-N con los archivos FASE-windows.zip y FASE-android.apk.
+#
+# Cómo usarlo (ver BUILDING.md):
+#   1. En Unity: Fase → Exportar escritorio (Windows) y Fase → Exportar Android (APK).
+#   2. Comprimir el contenido de Builds/Windows en Builds/FASE-windows.zip y copiar
+#      Builds/Android/FASE.apk como Builds/FASE-android.apk.
+#   3. gh release create build-AAAAMMDD-N Builds/FASE-windows.zip Builds/FASE-android.apk --target fase --title "..."
+#
+# Canales de itch: win64 (Windows) y android, los mismos que usaba la versión anterior del juego,
+# así que cada subida sustituye a la anterior en lugar de añadir otro archivo.
+# Mismos ajustes del repo que la web: secreto BUTLER_API_KEY y variables ITCH_USER / ITCH_GAME.
+
+name: Subir Windows y Android a itch
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release con FASE-windows.zip y FASE-android.apk"
+        required: true
+
+jobs:
+  upload:
+    if: startsWith(github.event.release.tag_name || inputs.tag, 'build-')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ github.event.release.tag_name || inputs.tag }}
+    steps:
+      - name: Descargar las versiones de la release
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern FASE-windows.zip --pattern FASE-android.apk
+          mkdir -p windows android
+          unzip -q FASE-windows.zip -d windows
+          test -f windows/FASE.exe
+          cp FASE-android.apk android/FASE.apk
+          ls -la windows android
+
+      - name: Subir a itch.io (canales win64 y android)
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+          ITCH_TARGET: ${{ vars.ITCH_USER }}/${{ vars.ITCH_GAME }}
+        run: |
+          curl -fsSL -o /tmp/butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q /tmp/butler.zip -d ~/butler
+          chmod +x ~/butler/butler
+          ~/butler/butler push windows "$ITCH_TARGET:win64" --userversion "$TAG"
+          ~/butler/butler push android "$ITCH_TARGET:android" --userversion "$TAG"
+          sleep 30
+          ~/butler/butler status "$ITCH_TARGET"

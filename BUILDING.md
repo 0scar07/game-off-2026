@@ -108,6 +108,25 @@ La exportación se hace en el PC; la prueba y la subida las hace GitHub ([`.gith
 
 Solo las etiquetas `web-…` tocan itch: las versiones del juego (`v1.0`…) no.
 
+## Publicar Windows y Android en itch.io
+
+Lo hace [`.github/workflows/itch-builds.yml`](.github/workflows/itch-builds.yml) con las etiquetas `build-…`.
+
+1. Exportar las dos versiones (ver arriba) y preparar los archivos desde la raíz del proyecto:
+   ```
+   python -c "import shutil; shutil.make_archive('Builds/FASE-windows', 'zip', 'Builds/Windows')"
+   copy Builds\Android\FASE.apk Builds\FASE-android.apk
+   ```
+   (En el zip de Windows no hace falta la carpeta `FASE_BurstDebugInformation_DoNotShip`.)
+2. Crear la release:
+   ```
+   gh release create build-AAAAMMDD-N Builds/FASE-windows.zip Builds/FASE-android.apk --target fase --title "FASE Windows y Android AAAA-MM-DD"
+   ```
+3. GitHub sube la carpeta de Windows al canal `win64` y el APK al canal `android` con butler. Son
+   los mismos canales que usaba la versión anterior del juego, así que sustituyen a esos archivos.
+   Si en la página de itch queda algún archivo viejo en otro canal, se borra a mano en *Edit game →
+   Uploads*.
+
 ### Configuración que necesita el repositorio
 
 | Dónde | Nombre | Qué es |
