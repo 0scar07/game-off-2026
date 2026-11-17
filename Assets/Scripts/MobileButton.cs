@@ -18,6 +18,8 @@ namespace Fase
         public static MobileButton Selected;
         Vector2 defaultPosition;
         Vector3 defaultScale;
+        // Tamaño elegido en el editor de táctiles; al pulsar se encoge un poco desde ahí.
+        Vector3 restScale = Vector3.one;
         bool layoutKnown;
         string LayoutKey => "fase_tactil_" + kind;
 
@@ -136,7 +138,8 @@ namespace Fase
             held = pressed;
             if (!pressed) pointerId = int.MinValue;
             if (image != null) image.color = pressed ? new Color(1f, 1f, 1f, 0.55f) : idleColor;
-            transform.localScale = Vector3.one * (pressed ? 0.92f : 1f);
+            if (pressed) restScale = transform.localScale;
+            transform.localScale = restScale * (pressed ? 0.92f : 1f);
             switch (kind)
             {
                 case Kind.Left: MobileInput.Move += pressed ? -1f : 1f; break;

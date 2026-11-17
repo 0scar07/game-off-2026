@@ -14,6 +14,8 @@ namespace Fase
 
         readonly List<Vector2> recording = new List<Vector2>();
         Vector2[] best;
+        // Segundos entre puntos del fantasma guardado (los antiguos, 0,05; los nuevos, 0,1).
+        float bestStep = Step;
         Transform ghost, friendGhost;
         Vector2[] friend;
         float time, sample;
@@ -26,7 +28,7 @@ namespace Fase
             LastRun = null;
             if (Hud.Instance == null || Hud.Instance.Daily) { enabled = false; return; }
             level = Hud.Instance.levelNumber;
-            best = Load(level);
+            best = Load(level, out bestStep);
             if (best != null && best.Length > 1 && Settings.GhostRace) ghost = BuildGhost();
             // Fantasma de un amigo (código pegado en Extras → Con amigos), en rosa.
             friend = FriendGhost.Load(level);
@@ -90,7 +92,7 @@ namespace Fase
                 friendGhost.gameObject.SetActive(k < friend.Length - 1);
             }
             if (ghost == null) return;
-            float f = time / Step;
+            float f = time / bestStep;
 
             int i = Mathf.Min((int)f, best.Length - 2);
             Vector2 a = best[i], b = best[i + 1];
@@ -100,7 +102,7 @@ namespace Fase
             ghost.position = p + offset;
             float dx = b.x - a.x;
             if (Mathf.Abs(dx) > 0.01f) ghost.rotation = Quaternion.Euler(0f, -Mathf.Sign(dx) * 90f, 0f);
-            ghost.gameObject.SetActive(time / Step < best.Length - 1);
+            ghost.gameObject.SetActive(time / bestStep < best.Length - 1);
         }
 
         /// <summary>El recorrido del último nivel terminado (para la repetición).</summary>
@@ -110,23 +112,44 @@ namespace Fase
         {
             finished = true;
             LastRun = recording.ToArray();
+            // El HUD decide si es récord en este mismo evento; se mira un frame después para no
+            // depender del orden en que se apuntaron los dos al evento.
+            if (isActiveAndEnabled) StartCoroutine(SaveIfRecord());
+        }
+
+        System.Collections.IEnumerator SaveIfRecord()
+        {
+            yield return null;
             var hud = Hud.Instance;
             if (hud != null && hud.IsRecord) Save(level, recording);
         }
 
+        // Un punto cada 0,1 s y como mucho 2 minutos: en la web todo el guardado cabe en 1 MB.
+        const float SavedStep = 0.1f;
+        const int MaxSavedPoints = 1200;
+
         static void Save(int level, List<Vector2> points)
         {
-            var sb = new System.Text.StringBuilder();
-            foreach (var p in points) sb.Append(p.x.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)).Append(',')
-                .Append(p.y.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)).Append(';');
-            PlayerPrefs.SetString("fase_fantasma_" + level, sb.ToString());
-            PlayerPrefs.Save();
+            var inv = System.Globalization.CultureInfo.InvariantCulture;
+            var sb = new System.Text.StringBuilder("v2;");
+            int every = Mathf.RoundToInt(SavedStep / Step);
+            for (int i = 0, n = 0; i < points.Count && n < MaxSavedPoints; i += every, n++)
+                sb.Append(points[i].x.ToString("0.0", inv)).Append(',').Append(points[i].y.ToString("0.0", inv)).Append(';');
+            // Si el guardado está lleno (en la web hay 1 MB), se queda sin fantasma pero el juego sigue.
+            try
+            {
+                PlayerPrefs.SetString("fase_fantasma_" + level, sb.ToString());
+                PlayerPrefs.Save();
+            }
+            catch (System.Exception e) { Debug.LogWarning("No se pudo guardar el fantasma: " + e.Message); }
         }
 
-        static Vector2[] Load(int level)
+        static Vector2[] Load(int level, out float step)
         {
             string data = PlayerPrefs.GetString("fase_fantasma_" + level, "");
+            step = Step;
             if (data.Length == 0) return null;
+            if (data.StartsWith("v2;")) { step = SavedStep; data = data.Substring(3); }
             var parts = data.Split(new[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries);
             var points = new Vector2[parts.Length];
             var inv = System.Globalization.CultureInfo.InvariantCulture;

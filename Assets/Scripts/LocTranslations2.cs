@@ -406,6 +406,11 @@ namespace Fase
             ["oros"] = ("ouros", "ors"),
             ["Compartir"] = ("Compartilhar", "Partager"),
             ["Datos anónimos"] = ("Dados anônimos", "Données anonymes"),
+            ["Gráficos"] = ("Gráficos", "Graphismes"),
+            ["Calidad"] = ("Qualidade", "Qualité"),
+            ["Pantalla completa"] = ("Tela cheia", "Plein écran"),
+            ["Sincronización vertical"] = ("Sincronização vertical", "Synchronisation verticale"),
+            ["Límite de FPS"] = ("Limite de FPS", "Limite d'IPS"),
         };
     }
 }

@@ -39,7 +39,10 @@ namespace Fase
                 $"J'ai fait le niveau {level} \"{name}\" de FASE en {Hud.FormatTime(seconds)}{medalText} 🌗 Tu me bats ? {Url}");
         }
 
-        /// <summary>Guarda una captura: en la web la descarga; en el editor, en la carpeta del proyecto.</summary>
+        /// <summary>
+        /// Guarda una captura: en la web la descarga; en Windows, en Imágenes/FASE; en Android, en la
+        /// carpeta del juego; en el editor, en la carpeta del proyecto.
+        /// </summary>
         public static void SavePicture(Texture2D picture)
         {
             byte[] png = picture.EncodeToPNG();
@@ -47,7 +50,16 @@ namespace Fase
 #if UNITY_WEBGL && !UNITY_EDITOR
             FaseDownload(name, System.Convert.ToBase64String(png));
 #else
-            System.IO.File.WriteAllBytes(name, png);
+            string folder = Application.isEditor ? ""
+                : Application.platform == RuntimePlatform.Android ? Application.persistentDataPath
+                : System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures), "FASE");
+            // En Android la carpeta de trabajo es de solo lectura: antes la foto fallaba sin avisar.
+            try
+            {
+                if (folder.Length > 0) System.IO.Directory.CreateDirectory(folder);
+                System.IO.File.WriteAllBytes(System.IO.Path.Combine(folder, name), png);
+            }
+            catch (System.Exception e) { Debug.LogWarning("No se pudo guardar la foto: " + e.Message); }
 #endif
         }
 

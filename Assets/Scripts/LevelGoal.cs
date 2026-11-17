@@ -32,7 +32,10 @@ namespace Fase
             other.GetComponent<PlayerController>().Celebrate();
             var hud = Hud.Instance;
             if (hud != null && !hud.Daily) Progress.Complete(hud.levelNumber, hud.Fragments);
-            GameEvents.RaiseGoalReached();
+            // Si algo de lo que escucha la meta falla (p. ej. el guardado lleno en la web), los
+            // resultados salen igual: antes Lumi se quedaba celebrando para siempre.
+            try { GameEvents.RaiseGoalReached(); }
+            catch (System.Exception e) { Debug.LogException(e); }
             Share.Vibrate(60);
             ResultsScreen.Show(nextScene, delay);
         }

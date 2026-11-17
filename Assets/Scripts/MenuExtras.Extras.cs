@@ -129,9 +129,11 @@ namespace Fase
 
         System.Collections.IEnumerator FetchWeekly()
         {
-            var download = StartCoroutine(WeeklyLevel.Fetch());
+            // La descarga va en el corredor que sobrevive a las escenas: si se salía del menú a
+            // medias, se quedaba en «Descargando…» toda la sesión.
+            Online.Run(WeeklyLevel.Fetch());
             Refresh();
-            yield return download;
+            while (WeeklyLevel.Status == WeeklyLevel.State.Loading) yield return null;
             Refresh();
         }
 

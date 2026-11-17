@@ -13,7 +13,7 @@ namespace Fase
     public partial class MenuExtras : MonoBehaviour
     {
         MainMenu menu;
-        GameObject achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel, triviaPanel;
+        GameObject achievementsPanel, wardrobePanel, accessPanel, graphicsPanel, diaryPanel, shopPanel, triviaPanel;
         readonly List<System.Action> refreshers = new List<System.Action>();
         Settings.Action? rebinding;
         Text rebindLabel;
@@ -25,6 +25,7 @@ namespace Fase
             achievementsPanel = BuildAchievements();
             wardrobePanel = BuildWardrobe();
             accessPanel = BuildAccess();
+            graphicsPanel = BuildGraphics();
             diaryPanel = BuildDiary();
             shopPanel = BuildShop();
             triviaPanel = BuildTrivia();
@@ -32,7 +33,7 @@ namespace Fase
             BuildJourneyExtras();
             BuildJourneyPreview();
             JourneyWalker.Create(menu);
-            foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, diaryPanel, shopPanel, triviaPanel }) menu.AddPanel(panel);
+            foreach (var panel in new[] { achievementsPanel, wardrobePanel, accessPanel, graphicsPanel, diaryPanel, shopPanel, triviaPanel }) menu.AddPanel(panel);
             foreach (var panel in extraPanels) menu.AddPanel(panel);
 
             BuildGreeting();
@@ -380,28 +381,26 @@ namespace Fase
         GameObject BuildAccess()
         {
             var panel = Panel("Accesibilidad", "controls", out var content);
-            // Columna izquierda: nueve ajustes, de 74 en 74.
-            float row = 292f;
+            // Columna izquierda: nueve ajustes, de 71 en 71 (sin tocar el título ni «Volver»).
+            float row = 286f;
             Toggle(content, "assist", new Vector2(-350f, row), () => Settings.Assist, v => Settings.Assist = v);
-            Toggle(content, "contrast", new Vector2(-350f, row -= 74f), () => Settings.HighContrast, v => Settings.HighContrast = v);
-            Toggle(content, "reduceeffects", new Vector2(-350f, row -= 74f), () => Settings.ReduceEffects, v => Settings.ReduceEffects = v);
+            Toggle(content, "contrast", new Vector2(-350f, row -= 71f), () => Settings.HighContrast, v => Settings.HighContrast = v);
+            Toggle(content, "reduceeffects", new Vector2(-350f, row -= 71f), () => Settings.ReduceEffects, v => Settings.ReduceEffects = v);
             // Tamaño del texto: cada clic pasa al siguiente (se ve al momento en todo el menú).
-            Toggle(content, "textsize", new Vector2(-350f, row -= 74f), () => Settings.TextSize == 2, _ => Settings.TextSize++, null,
+            Toggle(content, "textsize", new Vector2(-350f, row -= 71f), () => Settings.TextSize == 2, _ => Settings.TextSize++, null,
                 _ => Loc.Pick(new[] { "Normal", "Grande", "Muy grande" }[Settings.TextSize], new[] { "Normal", "Large", "Extra large" }[Settings.TextSize]));
             // Icono de sol o luna en las piezas, para no depender del color.
-            Toggle(content, "pieceicons", new Vector2(-350f, row -= 74f), () => Settings.PieceIcons, v => Settings.PieceIcons = v);
-            Toggle(content, "vibration", new Vector2(-350f, row -= 74f), () => Settings.Vibration, v => Settings.Vibration = v);
-            if (Online.Enabled) Toggle(content, "analytics", new Vector2(-350f, row -= 74f), () => Analytics.Allowed, v => Analytics.Allowed = v);
-            Toggle(content, "mirror", new Vector2(-350f, row -= 74f), () => MirrorMode.Enabled, v => MirrorMode.Enabled = v, () => MirrorMode.Unlocked);
-            Toggle(content, "coop", new Vector2(-350f, row -= 74f), () => Settings.Coop, v => Settings.Coop = v);
+            Toggle(content, "pieceicons", new Vector2(-350f, row -= 71f), () => Settings.PieceIcons, v => Settings.PieceIcons = v);
+            Toggle(content, "vibration", new Vector2(-350f, row -= 71f), () => Settings.Vibration, v => Settings.Vibration = v);
+            Toggle(content, "mirror", new Vector2(-350f, row -= 71f), () => MirrorMode.Enabled, v => MirrorMode.Enabled = v, () => MirrorMode.Unlocked);
+            Toggle(content, "coop", new Vector2(-350f, row -= 71f), () => Settings.Coop, v => Settings.Coop = v);
             // Velocidad de la línea: cada clic pasa a la siguiente.
-            Toggle(content, "linespeed", new Vector2(-350f, row -= 74f), () => Settings.LineSpeed == 2, _ => Settings.LineSpeed++, null,
+            Toggle(content, "linespeed", new Vector2(-350f, row -= 71f), () => Settings.LineSpeed == 2, _ => Settings.LineSpeed++, null,
                 _ => Loc.Pick(new[] { "Lenta", "Normal", "Rápida" }[Settings.LineSpeed], new[] { "Slow", "Normal", "Fast" }[Settings.LineSpeed]));
             // Vista previa del tamaño del texto.
             var sample = UiKit.Text(content, "Muestra", "", new Vector2(0.5f, 0.5f), new Vector2(400f, -330f), new Vector2(560f, 50f), 28, TextAnchor.MiddleCenter, UiKit.Soft);
-            // Brillo: cada clic sube un 10 % (de 80 % a 130 % y vuelta a empezar).
-            Toggle(content, "brightness", new Vector2(400f, -262f), () => Settings.BrightnessStep == 5, _ => Settings.BrightnessStep++, null,
-                _ => $"{Settings.BrightnessPercent} %");
+            // Datos anónimos (récords y analítica en línea), debajo de las teclas.
+            if (Online.Enabled) Toggle(content, "analytics", new Vector2(400f, -262f), () => Analytics.Allowed, v => Analytics.Allowed = v);
             refreshers.Add(() => sample.text = Loc.Pick("Así se verá el texto", "This is how text will look"));
 
 
@@ -431,6 +430,59 @@ namespace Fase
             open.transform.SetSiblingIndex(Mathf.Max(0, options.childCount - 2));
             var openLabel = open.GetComponentInChildren<Text>();
             refreshers.Add(() => openLabel.text = Loc.Get("controls"));
+            return panel;
+        }
+
+        // ───────── Gráficos ─────────
+
+        GameObject BuildGraphics()
+        {
+            var panel = Panel("Graficos", "graphics", out var content);
+            // Calidad: cada clic pasa a la siguiente (Auto → Baja → Media → Alta → Máxima).
+            Toggle(content, "quality", new Vector2(0f, 220f), () => Settings.GraphicsTier == 4, _ => Settings.GraphicsTier++, null,
+                _ => Settings.GraphicsTierName);
+            var info = UiKit.Text(content, "Explicacion", "", new Vector2(0.5f, 0.5f), new Vector2(0f, 140f), new Vector2(1200f, 70f), 28, TextAnchor.MiddleCenter, UiKit.Soft);
+            info.horizontalOverflow = HorizontalWrapMode.Wrap;
+            refreshers.Add(() => info.text = Settings.GraphicsTierInfo);
+            float row = 134f;
+            // En el móvil la pantalla completa la pone el sistema.
+            if (!Application.isMobilePlatform)
+                Toggle(content, "fullscreen", new Vector2(0f, row -= 84f), () => Settings.Fullscreen, v => Settings.Fullscreen = v);
+            if (Settings.IsDesktop)
+                Toggle(content, "vsync", new Vector2(0f, row -= 84f), () => Settings.VSync, v => Settings.VSync = v);
+            // En el navegador manda el navegador: no hay VSync ni límite que elegir.
+            if (Settings.IsDesktop || Application.isMobilePlatform)
+                Toggle(content, "fpslimit", new Vector2(0f, row -= 84f), () => Settings.FpsStep == 3, _ => Settings.FpsStep++,
+                    () => !Settings.IsDesktop || !Settings.VSync, _ => Settings.FpsName);
+            // Brillo: cada clic sube un 10 % (de 80 % a 130 % y vuelta a empezar).
+            Toggle(content, "brightness", new Vector2(0f, row -= 84f), () => Settings.BrightnessStep == 5, _ => Settings.BrightnessStep++, null,
+                _ => $"{Settings.BrightnessPercent} %");
+
+            // Botón para llegar aquí desde Opciones: comparte fila con Controles (con una fila más,
+            // el panel de Opciones ya no cabía en la pantalla).
+            var options = menu.optionsPanel.transform;
+            var controls = options.Find("Controles");
+            var pairRow = UiKit.Rect(options, "ControlesYGraficos", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(620f, 96f));
+            var rowElement = pairRow.gameObject.AddComponent<LayoutElement>();
+            rowElement.preferredWidth = 620f;
+            rowElement.preferredHeight = 96f;
+            var pair = pairRow.gameObject.AddComponent<HorizontalLayoutGroup>();
+            pair.spacing = 20f;
+            pair.childControlWidth = pair.childControlHeight = true;
+            pair.childForceExpandWidth = pair.childForceExpandHeight = true;
+            pairRow.SetSiblingIndex(controls != null ? controls.GetSiblingIndex() : Mathf.Max(0, options.childCount - 2));
+            if (controls != null)
+            {
+                controls.SetParent(pairRow, false);
+                var controlsElement = controls.GetComponent<LayoutElement>();
+                if (controlsElement != null) controlsElement.preferredWidth = 300f;
+            }
+            var open = UiKit.Button(pairRow, "Graficos", Loc.Get("graphics"), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(300f, 96f), () => menu.Show(panel), 40);
+            var element = open.gameObject.AddComponent<LayoutElement>();
+            element.preferredWidth = 300f;
+            element.preferredHeight = 96f;
+            var openLabel = open.GetComponentInChildren<Text>();
+            refreshers.Add(() => openLabel.text = Loc.Get("graphics"));
             return panel;
         }
 

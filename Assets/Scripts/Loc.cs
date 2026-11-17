@@ -153,6 +153,11 @@ namespace Fase
 
             ["vibration"] = ("Vibración", "Vibration"),
             ["controls"] = ("Controles", "Controls"),
+            ["graphics"] = ("Gráficos", "Graphics"),
+            ["quality"] = ("Calidad", "Quality"),
+            ["fullscreen"] = ("Pantalla completa", "Fullscreen"),
+            ["vsync"] = ("Sincronización vertical", "VSync"),
+            ["fpslimit"] = ("Límite de FPS", "FPS limit"),
             ["presskey"] = ("Pulsa una tecla...", "Press a key..."),
             ["resetkeys"] = ("Teclas por defecto", "Default keys"),
             ["on"] = ("Sí", "On"),

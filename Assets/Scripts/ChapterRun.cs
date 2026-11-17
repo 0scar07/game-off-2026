@@ -21,6 +21,7 @@ namespace Fase
         int index;
         float total, levelTime;
         Text clock, split;
+        PlayerController player;
 
         static string BestKey(int chapter) => "fase_crono_" + chapter;
         static string SplitKey(int chapter, int i) => $"fase_crono_{chapter}_{i}";
@@ -61,7 +62,9 @@ namespace Fase
 
         void Update()
         {
-            if (PauseMenu.Paused || FindAnyObjectByType<PlayerController>() == null) return;
+            // Ni en pausa ni bajo la cortina; el jugador se busca solo cuando falta.
+            if (player == null) player = FindAnyObjectByType<PlayerController>();
+            if (PauseMenu.Paused || SceneFader.Covering || player == null) return;
             total += Time.unscaledDeltaTime;
             levelTime += Time.unscaledDeltaTime;
             clock.text = $"⏱ {Hud.FormatTime(total)}";

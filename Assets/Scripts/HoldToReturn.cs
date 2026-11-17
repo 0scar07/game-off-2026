@@ -44,7 +44,7 @@ namespace Fase
             if (player == null) return;
             var kb = Keyboard.current;
             var pad = Settings.PlayerGamepad;
-            bool busy = PauseMenu.Paused || PhotoMode.Active || UiKit.Typing || FindAnyObjectByType<ResultsScreen>() != null;
+            bool busy = PauseMenu.Paused || PhotoMode.Active || UiKit.Typing || ResultsScreen.Showing;
             bool pressing = !busy && ((kb != null && kb.rKey.isPressed) || (pad != null && pad.selectButton.isPressed));
             held = pressing ? held + Time.unscaledDeltaTime : 0f;
             ring.gameObject.SetActive(held > 0.05f);

@@ -160,7 +160,8 @@ namespace Fase
 
         static void Add(string kind)
         {
-            if (level <= 0 || !Allowed || !Online.Enabled) return;
+            // Las pruebas en el editor no cuentan: solo se analizan partidas de verdad.
+            if (level <= 0 || !Allowed || !Online.Enabled || Application.isEditor) return;
             // "quit" solo cuenta si se sale sin terminar el nivel.
             if (kind == "quit" && finished) return;
             var player = UnityEngine.Object.FindAnyObjectByType<PlayerController>();

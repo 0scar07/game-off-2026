@@ -156,6 +156,9 @@ namespace Fase
         /// <summary>Escena cuyo número y nombre acaba de enseñar la cortinilla (o vacío).</summary>
         public static string TitledScene { get; private set; } = "";
 
+        /// <summary>true mientras la cortina tapa el nivel ya cargado (el juego está quieto).</summary>
+        public static bool Covering { get; private set; }
+
         /// <summary>"2 · Noche estrellada" si la escena es un nivel de la historia (★ si es secreto).</summary>
         /// <summary>Si el título y el consejo no caben a lo alto (pantallas muy apaisadas), se encogen juntos.</summary>
         void FitBlock()
@@ -265,8 +268,14 @@ namespace Fase
             float covered = Time.unscaledTime;
             var load = SceneManager.LoadSceneAsync(scene);
             while (!load.isDone) yield return null;
-            // Un momento para leer el consejo... y atrapar estrellas que caen por la cortina.
+            // Un momento para leer el consejo... y atrapar estrellas que caen por la cortina. Mientras
+            // tapa, el nivel nuevo está quieto: antes el cronómetro y Lumi ya corrían sin verse.
+            float speed = Time.timeScale;
+            Time.timeScale = 0f;
+            Covering = true;
             yield return CatchStars(covered);
+            Covering = false;
+            Time.timeScale = PauseMenu.Paused ? 0f : speed;
             for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime / Duration)
             {
                 SetCover(Mathf.SmoothStep(0f, 1f, t));

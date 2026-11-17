@@ -16,6 +16,16 @@ namespace Fase
         string nextScene;
         Text shareLabel;
         bool leaving;
+        static int alive;
+
+        /// <summary>true mientras hay una pantalla de resultados (sin buscarla en la escena cada frame).</summary>
+        public static bool Showing => alive > 0;
+
+        void OnEnable() => alive++;
+        void OnDisable() => alive--;
+        // Las teclas solo cuentan cuando ya se ven los botones: antes, Enter en la celebración o en
+        // el final de capítulo saltaba al siguiente nivel sin guardar la medalla ni los retos.
+        bool ready;
 
         public static void Show(string nextScene, float delay)
         {
@@ -66,7 +76,8 @@ namespace Fase
 
             string name = hud != null ? Loc.Pick(hud.levelName, hud.levelNameEn) : "";
             UiKit.Text(root, "Titulo", Loc.Get("complete"), new Vector2(0.5f, 0.5f), new Vector2(0f, 412f), new Vector2(1600f, 130f), 104);
-            UiKit.Text(root, "Nivel", hud != null && hud.Daily ? Loc.Get("daily") : $"{level} · {name}", new Vector2(0.5f, 0.5f), new Vector2(0f, 328f), new Vector2(1400f, 60f), 44, TextAnchor.MiddleCenter, UiKit.Soft);
+            // El Taller y el nivel de la semana no son el desafío diario: llevan su propio nombre.
+            UiKit.Text(root, "Nivel", hud != null && hud.sandbox ? name : hud != null && hud.Daily ? Loc.Get("daily") : $"{level} · {name}", new Vector2(0.5f, 0.5f), new Vector2(0f, 328f), new Vector2(1400f, 60f), 44, TextAnchor.MiddleCenter, UiKit.Soft);
 
             // Medallas.
             var medals = new RectTransform[4];
@@ -148,7 +159,9 @@ namespace Fase
                     for (int r = 0; r < rows.Count; r++)
                     {
                         bool mine = me.Length > 0 && rows[r].name == (me.Length > 12 ? me.Substring(0, 12) : me);
-                        string row = $"{r + 1,2}. {rows[r].name}  <color=#ffd98a>{Hud.FormatTime(rows[r].seconds)}</color>";
+                        // Los nombres son de otros jugadores: sin < ni > no pueden meter formato en la tabla.
+                        string safe = (rows[r].name ?? "").Replace("<", "").Replace(">", "");
+                        string row = $"{r + 1,2}. {safe}  <color=#ffd98a>{Hud.FormatTime(rows[r].seconds)}</color>";
                         sb.AppendLine(mine ? $"<b>{row}</b>" : row);
                     }
                     if (rows.Count == 0) sb.Append(Loc.Pick("¡Sé el primero!", "Be the first!", "Seja o primeiro!", "Sois le premier !"));
@@ -178,6 +191,7 @@ namespace Fase
             int shownMedal = medal;
             share.onClick.AddListener(() => shareLabel.text = Loc.Get(Share.Text(Share.LevelTime(level, name, time, shownMedal))));
             next.Select();
+            ready = true;
 
             // Entrada: fundido y medallas una a una con un pequeño golpe.
             for (float t = 0f; t < 0.4f; t += Time.unscaledDeltaTime) { group.alpha = t / 0.4f; yield return null; }
@@ -262,8 +276,10 @@ namespace Fase
         void Update()
         {
             var kb = Keyboard.current;
-            if (kb == null || leaving) return;
-            if (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame) Next();
+            if (kb == null || leaving || !ready) return;
+            // Con un botón enfocado, Enter ya lo pulsa la interfaz (si no, Enter en «Repetir» haría las dos cosas).
+            bool focused = UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject != null;
+            if (!focused && (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame)) Next();
             else if (kb.rKey.wasPressedThisFrame) Retry();
         }
 

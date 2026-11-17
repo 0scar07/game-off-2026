@@ -301,6 +301,9 @@ namespace Fase
 
         public void Die()
         {
+            // Tras tocar la meta ya no se cae: antes una pieza que desaparecía o la marea podían
+            // contar una caída (y quitar el reto «Sin caer») con los resultados en pantalla.
+            if (celebrating) return;
             LastDeathPosition = transform.position;
 
 

@@ -11,6 +11,7 @@ namespace Fase
     {
         public float speed = 2.5f;
         float caught;
+        PlayerController player;
 
         void Start()
         {
@@ -34,7 +35,7 @@ namespace Fase
         void Update()
         {
             var line = ShiftLine.Instance;
-            var player = FindAnyObjectByType<PlayerController>();
+            if (player == null) player = FindAnyObjectByType<PlayerController>();
             if (line == null || player == null || PauseMenu.Paused) return;
             line.x = Mathf.Min(line.maxX, line.x + speed * Time.deltaTime);
             caught = ShiftLine.IsDay(player.transform.position) ? 0f : caught + Time.deltaTime;

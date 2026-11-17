@@ -13,6 +13,7 @@ namespace Fase
         public float minX, maxX;
         float level;
         Transform water, surface;
+        PlayerController player;
 
         void Start()
         {
@@ -34,7 +35,7 @@ namespace Fase
             float top = baseY + level;
             water.position = new Vector3(water.position.x, top - 10f, water.position.z);
             surface.position = new Vector3(surface.position.x, top + Mathf.Sin(Time.time * 2f) * 0.04f, surface.position.z);
-            var player = FindAnyObjectByType<PlayerController>();
+            if (player == null) player = FindAnyObjectByType<PlayerController>();
             if (player != null && player.transform.position.y - 0.7f < top) player.Die();
         }
     }

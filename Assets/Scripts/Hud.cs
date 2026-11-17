@@ -67,6 +67,7 @@ namespace Fase
 
         void OnDied()
         {
+            if (finished) return;
             Deaths++;
             Stats.AddFall();
             // El ánimo tras varias caídas lo da Lumi en su bocadillo (Encouragement) y la pista de
@@ -85,7 +86,8 @@ namespace Fase
         /// <summary>Al empezar: si quedó un punto de control guardado, Lumi aparece allí.</summary>
         void Resume()
         {
-            if (sandbox || daily || !SaveGuard.TryLoadCheckpoint(levelNumber, out var at, out float time)) return;
+            // En el contrarreloj de capítulo cada nivel empieza desde el principio.
+            if (sandbox || daily || ChapterRun.Active || !SaveGuard.TryLoadCheckpoint(levelNumber, out var at, out float time)) return;
             var player = FindAnyObjectByType<PlayerController>();
             if (player == null) return;
             player.transform.position = at;
@@ -252,8 +254,14 @@ namespace Fase
             }
         }
 
-        public static string FormatTime(float seconds) =>
-            seconds <= 0f ? "--:--.--" : $"{(int)(seconds / 60f)}:{seconds % 60f:00.00}";
+        public static string FormatTime(float seconds)
+        {
+            if (seconds <= 0f) return "--:--.--";
+            // Se redondea a centésimas antes de partir en minutos: antes 59,996 s salía «0:60,00».
+            int cs = Mathf.RoundToInt(seconds * 100f);
+            string dot = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            return $"{cs / 6000}:{cs % 6000 / 100:00}{dot}{cs % 100:00}";
+        }
 
         static float Fade(float t, float hold, float duration) => 1f - Mathf.Clamp01((t - hold) / duration);
 
@@ -301,7 +309,8 @@ namespace Fase
         {
             finished = true;
             SaveGuard.ClearCheckpoint(levelNumber);
-            IsRecord = !sandbox && !daily && !Settings.Assist && Progress.SaveTime(levelNumber, elapsed);
+            // Con mutadores no hay récord (tampoco hay medallas ni récord en línea).
+            IsRecord = !sandbox && !daily && !Settings.Assist && !(Mutators.Unlocked && Mutators.Any) && Progress.SaveTime(levelNumber, elapsed);
             bool record = IsRecord;
             string text = Loc.Get("complete");
             if (fragmentsTotal > 0 && fragments == fragmentsTotal) text += "\n" + Loc.Get("allmoon");
