@@ -1,0 +1,7 @@
+# Dependabot no admite Unity; solo se actualizan las acciones de los workflows.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

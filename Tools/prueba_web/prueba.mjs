@@ -41,7 +41,8 @@ let ok = true;
 const fail = (why) => { ok = false; console.error("FALLO:", why); };
 
 const start = Date.now();
-await page.goto(url, { waitUntil: "load" });
+// ?prueba=1: el juego no manda analítica en las pruebas automáticas (no ensucian los datos reales).
+await page.goto(url + (url.includes("?") ? "&" : "?") + "prueba=1", { waitUntil: "load" });
 try {
   // La plantilla quita #loading cuando Unity ha arrancado.
   await page.waitForSelector("#loading", { state: "detached", timeout: 240000 });

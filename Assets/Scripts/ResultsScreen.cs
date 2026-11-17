@@ -171,22 +171,24 @@ namespace Fase
             }
 
             // Botones.
-            var next = UiKit.Button(root, "Siguiente", Loc.Get("next"), new Vector2(0.5f, 0.5f), new Vector2(330f, -385f), new Vector2(380f, 110f), Next, 50);
-            UiKit.Button(root, "Repetir", Loc.Get("retry"), new Vector2(0.5f, 0.5f), new Vector2(-80f, -385f), new Vector2(360f, 110f), Retry, 46);
-            var share = UiKit.Button(root, "Compartir", Loc.Get("share"), new Vector2(0.5f, 0.5f), new Vector2(-470f, -385f), new Vector2(360f, 110f), null, 46);
+            // Fila principal un poco más alta y botones de las esquinas más bajos: antes «Compartir»
+            // tocaba «Código de fantasma» en la esquina.
+            var next = UiKit.Button(root, "Siguiente", Loc.Get("next"), new Vector2(0.5f, 0.5f), new Vector2(330f, -368f), new Vector2(380f, 110f), Next, 50);
+            UiKit.Button(root, "Repetir", Loc.Get("retry"), new Vector2(0.5f, 0.5f), new Vector2(-80f, -368f), new Vector2(360f, 110f), Retry, 46);
+            var share = UiKit.Button(root, "Compartir", Loc.Get("share"), new Vector2(0.5f, 0.5f), new Vector2(-470f, -368f), new Vector2(360f, 110f), null, 46);
             shareLabel = share.GetComponentInChildren<Text>();
             // Código del recorrido para que un amigo corra contra tu fantasma.
             if (Ghost.LastRun != null && Ghost.LastRun.Length > 10 && hud != null && !hud.Daily)
             {
                 var run = Ghost.LastRun;
-                var ghostButton = UiKit.Button(root, "CodigoFantasma", Loc.Pick("Código de fantasma", "Ghost code"), new Vector2(0f, 0f), new Vector2(40f, 30f), new Vector2(360f, 80f), null, 28);
+                var ghostButton = UiKit.Button(root, "CodigoFantasma", Loc.Pick("Código de fantasma", "Ghost code"), new Vector2(0f, 0f), new Vector2(40f, 30f), new Vector2(360f, 72f), null, 28);
                 ((RectTransform)ghostButton.transform).pivot = Vector2.zero;
                 var ghostLabel = ghostButton.GetComponentInChildren<Text>();
                 ghostButton.onClick.AddListener(() => ghostLabel.text = Loc.Get(Share.Text(FriendGhost.Encode(level, run))));
             }
             if (Ghost.LastRun != null && Ghost.LastRun.Length > 10)
 
-                UiKit.Button(root, "Repeticion", "▶ " + Loc.Get("replay"), new Vector2(1f, 0f), new Vector2(-40f, 30f), new Vector2(300f, 80f), () => StartCoroutine(Replay(canvas)), 32)
+                UiKit.Button(root, "Repeticion", "▶ " + Loc.Get("replay"), new Vector2(1f, 0f), new Vector2(-40f, 30f), new Vector2(300f, 72f), () => StartCoroutine(Replay(canvas)), 32)
                     .GetComponent<RectTransform>().pivot = new Vector2(1f, 0f);
             int shownMedal = medal;
             share.onClick.AddListener(() => shareLabel.text = Loc.Get(Share.Text(Share.LevelTime(level, name, time, shownMedal))));

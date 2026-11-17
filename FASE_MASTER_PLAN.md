@@ -60,7 +60,7 @@ Leyenda: ✅ hecho y comprobado · 🔧 hecho sin comprobar · ⏳ en curso · �
 | 16 | Tráiler, campaña y lanzamiento (92, 142) | ⬜ lo último, antes de enviar el juego |
 
 ## Reglas de trabajo
-- Una sola instancia de Unity; los agentes solo leen código o escriben documentos.
+- Una sola instancia de Unity abierta a la vez (nunca dos editores sobre el mismo proyecto).
 - Nada se marca ✅ sin haberlo visto funcionar.
 - Commits locales por bloque; **push y publicación en itch solo con permiso**.
 - Nunca se suben los scripts de prueba locales de `Assets/Editor` (no versionados).

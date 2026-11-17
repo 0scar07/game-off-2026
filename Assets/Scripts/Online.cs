@@ -133,6 +133,9 @@ namespace Fase
             set { PlayerPrefs.SetInt(OptKey, value ? 1 : 0); PlayerPrefs.Save(); }
         }
 
+        // Las pruebas automáticas de la web (Tools/prueba_web) abren el juego con ?prueba=1.
+        static bool AutomatedTest => Application.absoluteURL.Contains("prueba=1");
+
         static readonly List<string> pending = new List<string>();
         static int level;
         static float started;
@@ -161,7 +164,7 @@ namespace Fase
         static void Add(string kind)
         {
             // Las pruebas en el editor no cuentan: solo se analizan partidas de verdad.
-            if (level <= 0 || !Allowed || !Online.Enabled || Application.isEditor) return;
+            if (level <= 0 || !Allowed || !Online.Enabled || Application.isEditor || AutomatedTest) return;
             // "quit" solo cuenta si se sale sin terminar el nivel.
             if (kind == "quit" && finished) return;
             var player = UnityEngine.Object.FindAnyObjectByType<PlayerController>();

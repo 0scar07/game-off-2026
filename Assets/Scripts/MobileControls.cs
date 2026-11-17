@@ -16,5 +16,17 @@ namespace Fase
             bool touch = Application.isMobilePlatform || Touchscreen.current != null && Keyboard.current == null;
             gameObject.SetActive(alwaysVisible || touch);
         }
+
+        bool shown = true;
+
+        // Con los resultados en pantalla se esconden: tapaban los botones de abajo (Compartir,
+        // Código de fantasma, Repetición). Al ocultarse, cada botón se suelta solo (OnDisable).
+        void Update()
+        {
+            bool show = !ResultsScreen.Showing;
+            if (show == shown) return;
+            shown = show;
+            foreach (Transform child in transform) child.gameObject.SetActive(show);
+        }
     }
 }

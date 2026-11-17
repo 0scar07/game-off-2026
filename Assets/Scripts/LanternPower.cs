@@ -46,6 +46,8 @@ namespace Fase
 
         void Update()
         {
+            // Con los resultados en pantalla el botón se esconde: tapaba la tabla de récords en línea.
+            if (icon != null) icon.gameObject.SetActive(!ResultsScreen.Showing);
             Center = (Vector2)transform.position + Vector2.up * 0.8f;
             var kb = Keyboard.current;
             var pad = Settings.PlayerGamepad;
