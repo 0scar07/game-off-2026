@@ -136,5 +136,6 @@ Las herramientas de Python necesitan `numpy`, `scipy`, `Pillow` y `fontTools` (v
 - Rendimiento medido en Windows con `FASE.exe -medir -calidad N -nivel 05-criaturas -salir 32`.
 - Exportación: menú **Fase → Exportar las tres** (cola que cambia de plataforma antes de compilar).
 - Último estado estable: rama `fase` en GitHub; builds `web-20261117-2` y `build-20261117-2` en itch.
-- Siguiente acción concreta: probar el APK en un móvil y, con permiso, borrar los eventos de prueba
-  y la rama `main`. Ver `FASE_OMEGA_REPORT.md`.
+- Supabase limpio el 17 nov: 0 récords y 0 eventos (los de prueba, borrados con permiso del autor).
+- Siguiente acción concreta: probar el APK en un móvil y, con permiso, quitar la rama `main`.
+  Ver `FASE_OMEGA_REPORT.md`.

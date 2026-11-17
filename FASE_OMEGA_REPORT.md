@@ -66,8 +66,8 @@ Máxima 20–24 FPS** (escala 1,5 respetada), 0 excepciones, ~256 MB de memoria.
 
 ## Próximos pasos (en orden)
 
-1. Con permiso del autor: borrar los eventos de prueba y la rama `main` (commits, versiones nuevas y
-   SQL de Supabase ya aplicados el 17 nov).
+1. Con permiso del autor: quitar la rama `main` o su `build.yml` (commits, versiones nuevas, SQL de
+   Supabase y borrado de los 40 eventos de prueba ya hechos el 17 nov; la base queda a cero).
 2. Probar el APK en un móvil (USB con depuración) y jugar la build de Windows con teclado.
 3. Hacer pública la página de itch, cambiar el título a «FASE», borrar el `.exe` viejo y enviar a la
    jam antes del 1 de diciembre.
