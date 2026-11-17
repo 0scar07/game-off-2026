@@ -15,7 +15,7 @@ namespace Fase
         const float Duration = 0.55f;
 
         static SceneFader instance;
-        RectTransform curtain;
+        RectTransform curtain, block;
         Text tip;
 
         static readonly (string es, string en)[] Tips =
@@ -79,13 +79,27 @@ namespace Fase
                 left.sizeDelta = new Vector2(width, 0f);
                 left.gameObject.AddComponent<Image>().color = color;
             }
+            // Número, nombre, récord y consejo apilados en el centro. El bloque mide lo que mida el
+            // texto, así el consejo nunca se monta encima del nombre ni del récord en ninguna pantalla.
+            var block = new GameObject("Bloque", typeof(RectTransform)).GetComponent<RectTransform>();
+            block.SetParent(curtain, false);
+            block.anchorMin = new Vector2(0.05f, 0.5f);
+            block.anchorMax = new Vector2(0.95f, 0.5f);
+            block.pivot = new Vector2(0.5f, 0.5f);
+            block.anchoredPosition = Vector2.zero;
+            block.sizeDelta = Vector2.zero;
+            var stack = block.gameObject.AddComponent<VerticalLayoutGroup>();
+            stack.childAlignment = TextAnchor.MiddleCenter;
+            stack.spacing = 40f;
+            stack.childControlWidth = stack.childControlHeight = true;
+            stack.childForceExpandWidth = true;
+            stack.childForceExpandHeight = false;
+            block.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+            instance.block = block;
+
             // Número y nombre del nivel que viene.
             var title = new GameObject("Titulo", typeof(RectTransform)).GetComponent<RectTransform>();
-            title.SetParent(curtain, false);
-            title.anchorMin = new Vector2(0.05f, 0.5f);
-            title.anchorMax = new Vector2(0.95f, 0.5f);
-            title.sizeDelta = new Vector2(0f, 260f);
-            title.anchoredPosition = new Vector2(0f, 60f);
+            title.SetParent(block, false);
             instance.title = title.gameObject.AddComponent<Text>();
             instance.title.font = UiKit.Font;
             UiKit.SetSize(instance.title, 64);
@@ -96,11 +110,7 @@ namespace Fase
 
             // Consejo en la cortina mientras carga.
             var tip = new GameObject("Consejo", typeof(RectTransform)).GetComponent<RectTransform>();
-            tip.SetParent(curtain, false);
-            tip.anchorMin = new Vector2(0.1f, 0f);
-            tip.anchorMax = new Vector2(0.9f, 0f);
-            tip.sizeDelta = new Vector2(0f, 120f);
-            tip.anchoredPosition = new Vector2(0f, 110f);
+            tip.SetParent(block, false);
             instance.tip = tip.gameObject.AddComponent<Text>();
             instance.tip.font = UiKit.Font;
             UiKit.SetSize(instance.tip, 34);
@@ -147,6 +157,18 @@ namespace Fase
         public static string TitledScene { get; private set; } = "";
 
         /// <summary>"2 · Noche estrellada" si la escena es un nivel de la historia (★ si es secreto).</summary>
+        /// <summary>Si el título y el consejo no caben a lo alto (pantallas muy apaisadas), se encogen juntos.</summary>
+        void FitBlock()
+        {
+            if (block == null || curtain == null) return;
+            block.localScale = Vector3.one;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(block);
+            float room = curtain.rect.height * 0.86f;
+            float height = block.rect.height;
+            float scale = height > room && height > 0f ? room / height : 1f;
+            block.localScale = new Vector3(scale, scale, 1f);
+        }
+
         static string TitleFor(string scene)
         {
             var levels = LevelCatalog.Get.levels;
@@ -234,9 +256,12 @@ namespace Fase
             for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime / Duration)
             {
                 SetCover(Mathf.SmoothStep(-1f, 0f, t));
+                // Se mide con la cortina ya activa y escalada (apagada, el bloque mide 0).
+                FitBlock();
                 yield return null;
             }
             SetCover(0f);
+            FitBlock();
             float covered = Time.unscaledTime;
             var load = SceneManager.LoadSceneAsync(scene);
             while (!load.isDone) yield return null;
