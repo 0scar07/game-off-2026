@@ -18,7 +18,7 @@ Shift the line between day and night. Bridges live in the sun, ice lives in the 
 - Tags: `platformer`, `puzzle-platformer`, `day-night`, `game-off`, `3d`, `cute`, `mobile`, `short`, `atmospheric`, `unity`
 - Input: Keyboard, Mouse, Touchscreen, Gamepad (Xbox / PlayStation controller)
 - Accessibility: Subtitles, Configurable controls → NO (no marcar si no existe). Marcar solo "Subtitles" si la intro lleva subtítulos.
-- Languages: English, Spanish
+- Languages: English, Spanish, Portuguese, French
 - Average session: About a half-hour
 - Embed: Click to launch in fullscreen → desactivado; tamaño 960 × 540, marcar "Mobile friendly" (orientación Landscape) y "Fullscreen button".
 
@@ -31,12 +31,14 @@ Shift the line between day and night. Bridges live in the sun, ice lives in the 
 You are **Lumi**, a little lantern-bearer who can **shift** that line. Drag it, slide it, and decide which world is real at every step — a bridge only exists while the sun shines on it, a frozen lake only holds you while the moon is up.
 
 **Features**
-- 11 hand-made levels across 3 chapters: *Meadow*, *Forest* and *Summit*
-- One idea, many twists: worlds in reverse, Shadows that turn to stone by day, saws, springs and a final eclipse
-- Hidden moon fragments and secret chests in every level
-- Music that blends between a day theme and a night theme as you move the line
-- Plays in the browser on desktop **and on mobile** (landscape)
-- English and Spanish
+- **19 story levels** in 3 chapters (*Meadow*, *Forest*, *Summit*), **3 bosses** with phases, **3 secret levels**, two endings and a secret one
+- The line can be **tilted, horizontal, double or curved** — and sometimes it **chases you**
+- **5 worlds**, each by day and night, with music that blends between the day and night themes as you move the line
+- **18 extra levels**, **14 daily challenges**, medals, achievements, an adaptive **endless mode** and a **level workshop** with shareable codes
+- **Online records**, a **level of the week** and **Twitch voting** for streamers (the chat moves the line)
+- Plays in the browser on desktop **and on mobile**, and on **Windows** and **Android**
+- Graphics options up to **Maximum** quality, full accessibility options
+- **English, Spanish, Portuguese and French**
 
 **Controls**
 | | Keyboard | Mouse / Touch | Gamepad |
@@ -57,12 +59,14 @@ You are **Lumi**, a little lantern-bearer who can **shift** that line. Drag it, 
 Eres **Lumi**, una pequeña portadora de farol que puede **mover** esa línea. Arrástrala, deslízala y decide qué mundo es real en cada paso: un puente solo existe mientras le da el sol, un lago helado solo te sostiene mientras hay luna.
 
 **Qué tiene**
-- 11 niveles hechos a mano en 3 capítulos: *Pradera*, *Bosque* y *Cumbre*
-- Una idea con muchas vueltas: mundos al revés, Sombras que se vuelven piedra de día, sierras, muelles y un eclipse final
-- Fragmentos de luna y cofres secretos escondidos en cada nivel
-- Música que se mezcla entre el tema de día y el de noche según mueves la línea
-- Se juega en el navegador, en ordenador **y en el móvil** (en horizontal)
-- En español e inglés
+- **19 niveles de historia** en 3 capítulos (*Pradera*, *Bosque*, *Cumbre*), **3 jefes** por fases, **3 niveles secretos**, dos finales y uno secreto
+- La línea puede ser **inclinada, tumbada, doble o curva**, y a veces **te persigue**
+- **5 mundos**, cada uno de día y de noche, con música que se mezcla según mueves la línea
+- **18 niveles extra**, **14 desafíos diarios**, medallas, logros, **modo sin fin** y un **Taller de niveles** con códigos para compartir
+- **Récords en línea**, **nivel de la semana** y **votaciones de Twitch** (el chat mueve la línea)
+- En el navegador (ordenador **y móvil**), en **Windows** y en **Android**
+- Opciones gráficas hasta calidad **Máxima** y opciones de accesibilidad completas
+- **Español, inglés, portugués y francés**
 
 **Controles**: A/D o flechas para moverse · Espacio/W/↑ para saltar · Q/E o Shift para mover la línea (o arrástrala con el ratón o el dedo) · Esc/P para pausar.
 
