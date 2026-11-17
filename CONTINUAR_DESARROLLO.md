@@ -119,4 +119,13 @@ Las herramientas de Python necesitan `numpy`, `scipy`, `Pillow` y `fontTools` (v
 
 ## Registro de esta sesión
 
-<!-- El coordinador irá rellenando esta sección. -->
+### 16 de noviembre de 2026
+- Supabase: proyecto «fase» creado; tablas y reglas probadas desde fuera (subir y leer récords sí;
+  borrar o leer eventos no; tiempos imposibles rechazados). La analítica no envía nada desde el editor.
+- Arreglado y visto en Unity: nombre del nivel repetido; consejo encima del título en la cortinilla
+  (probado a 16:9, 4:3 y 21:9); panel de Opciones que no cabía; Controles pegado a «Volver».
+- Nuevo y visto en Unity: panel **Gráficos** (en español y francés). Los cambios de resolución,
+  suavizado y sombras solo se aplican fuera del editor: hay que verlos en la build de Windows o web.
+- Revisión de código (12 hallazgos): todos arreglados y compilando; vistos en Unity la meta, los
+  resultados y el cronómetro quieto bajo la cortinilla.
+- Sin probar en un móvil de verdad: botones táctiles y fotos en Android.

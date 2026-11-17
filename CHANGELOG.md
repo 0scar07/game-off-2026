@@ -15,6 +15,16 @@ Lo más importante de cada día. El detalle está en el historial de commits.
 - **README al máximo** (30 segundos, streamers, comunidad, privacidad, preguntas), `CONTRIBUTING.md`
   nuevo y «Para seguir sin Claude» en `docs/PULIDO.md`.
 - Guías nuevas: `BUILDING.md`, `ARCHITECTURE.md`, `ROADMAP.md` y `CONTINUAR_DESARROLLO.md`.
+- **Opciones → Gráficos:** calidad Auto, Baja, Media, Alta y Máxima (hasta supermuestreo 150 % en
+  el ordenador), pantalla completa, sincronización vertical, límite de FPS y brillo.
+- El **nombre del nivel** ya no sale dos veces al empezar, y en la cortinilla el consejo ya no se
+  monta encima del nombre y del récord (se apilan y se encogen si no caben).
+- **Arreglos de la revisión de código:** Enter en la celebración ya no salta los resultados (se
+  perdían medalla y retos); el fantasma del récord ocupa mucho menos (el guardado de la web tiene
+  1 MB) y un guardado lleno ya no deja a Lumi celebrando para siempre; el cronómetro no corre bajo
+  la cortinilla; no se cuentan caídas después de la meta; los mutadores no dan récord; el
+  contrarreloj de capítulo no empieza desde un punto de control; los botones táctiles agrandados
+  mantienen su tamaño; las fotos se guardan bien en Android y Windows (Imágenes/FASE).
 
 ## 10 de noviembre de 2026 · Pulido y tanda G
 

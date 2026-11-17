@@ -100,6 +100,8 @@ Si te atascas, una luciérnaga viene con una pista. Hay **modo relajado**, juego
   formas en las piezas (para no depender del color), menos destellos, texto grande, teclas
   configurables, brillo y vibración.
 - Se juega con teclado, ratón, pantalla táctil o mando, en cualquier pantalla (16:9, 21:9, 4:3 o móvil).
+- **Opciones → Gráficos:** calidad Auto, Baja, Media, Alta o Máxima (hasta supermuestreo 150 % en
+  el ordenador), pantalla completa, sincronización vertical y límite de FPS.
 - Cuatro idiomas completos: español, inglés, portugués y francés.
 
 ### Todos los controles

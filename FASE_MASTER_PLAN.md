@@ -25,9 +25,10 @@ Leyenda: ✅ hecho y comprobado · 🔧 hecho sin comprobar · ⏳ en curso · �
 ### Crítico
 | # | Tarea | Estado |
 |---|---|---|
-| 1 | El nombre del nivel salía dos veces al empezar | 🔧 arreglado en código, falta verlo en Unity |
-| 2 | Al salir de un nivel, la analítica creaba un objeto mientras se cerraba la escena (error en consola) | 🔧 arreglado en código |
-| 3 | Fin de nivel, medallas, guardado y desbloqueo | ⏳ revisión de código en curso (agente de QA) |
+| 1 | El nombre del nivel salía dos veces al empezar | ✅ visto en Unity |
+| 1b | En la cortinilla, el consejo se montaba encima del nombre y del récord | ✅ visto a 16:9, 4:3 y 21:9 |
+| 2 | Al salir de un nivel, la analítica creaba un objeto mientras se cerraba la escena (error en consola) | ✅ |
+| 3 | Fin de nivel, medallas, guardado y desbloqueo: 12 fallos de la revisión de código | ✅ arreglados; meta, resultados y cronómetro vistos en Unity |
 | 4 | Pantalla de resultados alineada en 4 idiomas y 3 proporciones | ✅ (día 2, capturas) |
 
 ### Alto
@@ -37,13 +38,13 @@ Leyenda: ✅ hecho y comprobado · 🔧 hecho sin comprobar · ⏳ en curso · �
 | 6 | Nivel de la semana (43) y encuesta (62) | ✅ |
 | 7 | Twitch (120): el chat vota con IRC anónimo, sin OAuth ni secretos | ✅ en el editor; 🔧 en la web |
 | 8 | Cooperativo en línea (84) | ⛔ necesita un servidor de juego en tiempo real (Supabase no lo sustituye). Hay cooperativo local |
-| 9 | Opción de calidad gráfica (Auto / Baja / Media / Alta / Máxima, pantalla completa, VSync, FPS) | ⬜ |
+| 9 | Opción de calidad gráfica (Auto / Baja / Media / Alta / Máxima, pantalla completa, VSync, FPS) | ✅ panel visto en Unity; 🔧 el efecto real se ve en la build |
 
 ### Medio
 | # | Tarea | Estado |
 |---|---|---|
-| 10 | Arreglos que encuentre la auditoría de código | ⬜ |
-| 11 | Documentación: BUILDING, ARCHITECTURE, ROADMAP, CHANGELOG, CONTINUAR_DESARROLLO | ⏳ (agente de documentación) |
+| 10 | Arreglos que encuentre la auditoría de código | ✅ |
+| 11 | Documentación: BUILDING, ARCHITECTURE, ROADMAP, CHANGELOG, CONTINUAR_DESARROLLO | ✅ |
 
 ### Distribución
 | # | Tarea | Estado |
