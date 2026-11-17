@@ -13,7 +13,7 @@ Lo más importante de cada día. El detalle está en el historial de commits.
 - **Bocadillos** de Lumi y Chispa que ya no se salen de la pantalla; en resultados ya no asoma la
   pista de la luciérnaga.
 - **README al máximo** (30 segundos, streamers, comunidad, privacidad, preguntas), `CONTRIBUTING.md`
-  nuevo y «Para seguir sin Claude» en `docs/PULIDO.md`.
+  nuevo y «Para seguir con el proyecto» en `docs/PULIDO.md`.
 - Guías nuevas: `BUILDING.md`, `ARCHITECTURE.md`, `ROADMAP.md` y `CONTINUAR_DESARROLLO.md`.
 - **Opciones → Gráficos:** calidad Auto, Baja, Media, Alta y Máxima (hasta supermuestreo 150 % en
   el ordenador), pantalla completa, sincronización vertical, límite de FPS y brillo.

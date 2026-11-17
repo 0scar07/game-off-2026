@@ -1,6 +1,6 @@
-# Continuar el desarrollo de FASE sin Claude
+# Continuar el desarrollo de FASE
 
-Guía para seguir manteniendo y publicando el juego a mano. Complementa a [docs/PULIDO.md](docs/PULIDO.md) (sección «Para seguir sin Claude»), sin repetirla entera.
+Guía para seguir manteniendo y publicando el juego a mano. Complementa a [docs/PULIDO.md](docs/PULIDO.md) (sección «Para seguir con el proyecto»), sin repetirla entera.
 
 Documentos hermanos: [ARCHITECTURE.md](ARCHITECTURE.md) · [ROADMAP.md](ROADMAP.md) · [BUILDING.md](BUILDING.md) · [CHANGELOG.md](CHANGELOG.md) · [CONTRIBUTING.md](CONTRIBUTING.md).
 

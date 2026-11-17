@@ -63,4 +63,4 @@ Leyenda: ✅ hecho y comprobado · 🔧 hecho sin comprobar · ⏳ en curso · �
 - Una sola instancia de Unity; los agentes solo leen código o escriben documentos.
 - Nada se marca ✅ sin haberlo visto funcionar.
 - Commits locales por bloque; **push y publicación en itch solo con permiso**.
-- Nunca se suben `Assets/Editor/ClaudePrueba*` ni `Assets/Editor/FaseReview*`.
+- Nunca se suben los scripts de prueba locales de `Assets/Editor` (no versionados).

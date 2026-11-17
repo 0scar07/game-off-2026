@@ -199,7 +199,7 @@ Todos cargan sin errores. Falta jugarlos de principio a fin y revisar cámara, p
 
 ---
 
-## Para seguir sin Claude
+## Para seguir con el proyecto
 
 Todo lo necesario para mantener y publicar FASE a mano.
 

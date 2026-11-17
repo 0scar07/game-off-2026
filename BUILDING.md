@@ -3,7 +3,7 @@
 Guía para generar las tres versiones del juego (web, Windows y Android) y publicar la web en itch.io.
 Todo sale del script [`Assets/Editor/WebBuild.cs`](Assets/Editor/WebBuild.cs), que añade tres entradas al menú **Fase** de Unity.
 
-Ver también: [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTINUAR_DESARROLLO.md](CONTINUAR_DESARROLLO.md) · [docs/PULIDO.md](docs/PULIDO.md) (sección «Para seguir sin Claude»).
+Ver también: [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTINUAR_DESARROLLO.md](CONTINUAR_DESARROLLO.md) · [docs/PULIDO.md](docs/PULIDO.md) (sección «Para seguir con el proyecto»).
 
 ## Requisitos
 
