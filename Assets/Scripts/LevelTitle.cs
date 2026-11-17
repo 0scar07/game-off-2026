@@ -14,6 +14,8 @@ namespace Fase
         {
             var hud = Hud.Instance;
             if (hud == null || hud.sandbox) yield break;
+            // Si la cortinilla acaba de enseñar el número y el nombre, no se repite.
+            if (SceneFader.TitledScene == UnityEngine.SceneManagement.SceneManager.GetActiveScene().name) yield break;
             string name = hud.Daily ? Loc.Get("daily") : Loc.Pick(hud.levelName, hud.levelNameEn);
             if (string.IsNullOrEmpty(name)) yield break;
             yield return new WaitForSeconds(0.5f);

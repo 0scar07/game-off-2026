@@ -28,10 +28,11 @@ namespace Fase
             line.SetSiblingIndex(0);
             UiKit.Box(line, "Halo", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(90f, 3000f), new Color(1f, 0.92f, 0.7f, 0.25f), false);
             UiKit.Box(line, "Nucleo", new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(8f, 3000f), Color.white, false);
-            var clock = UiKit.Rect(canvas, "Reloj", new Vector2(1f, 1f), new Vector2(-330f, -90f), new Vector2(300f, 140f));
-            UiKit.Text(clock, "Icono", "⏱", new Vector2(0.5f, 1f), new Vector2(0f, -30f), new Vector2(120f, 70f), 60, TextAnchor.MiddleCenter, UiKit.Gold);
-            today = UiKit.Text(clock, "Hoy", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -22f), new Vector2(300f, 44f), 32);
-            rest = UiKit.Text(clock, "Descanso", "", new Vector2(0.5f, 0f), new Vector2(0f, 6f), new Vector2(300f, 32f), 22, TextAnchor.MiddleCenter, UiKit.Soft);
+            // Icono, «Hoy: …» y el aviso de descanso, uno debajo de otro sin pisarse.
+            var clock = UiKit.Rect(canvas, "Reloj", new Vector2(1f, 1f), new Vector2(-330f, -90f), new Vector2(300f, 150f));
+            UiKit.Text(clock, "Icono", "⏱", new Vector2(0.5f, 1f), new Vector2(0f, -2f), new Vector2(120f, 56f), 50, TextAnchor.MiddleCenter, UiKit.Gold);
+            today = UiKit.Text(clock, "Hoy", "", new Vector2(0.5f, 0.5f), new Vector2(0f, -12f), new Vector2(300f, 40f), 32);
+            rest = UiKit.Text(clock, "Descanso", "", new Vector2(0.5f, 0f), new Vector2(0f, 4f), new Vector2(300f, 30f), 22, TextAnchor.MiddleCenter, UiKit.Soft);
             // En el móvil: editar dónde están los botones táctiles y su tamaño.
             if (FindObjectsByType<MobileButton>().Length > 0)
                 UiKit.Button(canvas, "EditarTactiles", Loc.Pick("Editar controles táctiles", "Edit touch controls"), new Vector2(0.5f, 0f), new Vector2(0f, 60f), new Vector2(560f, 90f), () => TouchEditor.Open(pause.panel), 32);

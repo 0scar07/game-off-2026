@@ -33,7 +33,14 @@ namespace Fase
             built = true;
             // Los botones a la izquierda; el mapa a la derecha.
             var column = panel.Find("Botones") as RectTransform;
-            if (column != null) column.anchoredPosition = new Vector2(-430f, 0f);
+            // La columna de los botones, del ancho de los botones: antes su fondo llegaba hasta el mapa.
+            if (column != null)
+            {
+                column.anchoredPosition = new Vector2(-430f, 0f);
+                var fitter = column.GetComponent<ContentSizeFitter>();
+                if (fitter != null) fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+                column.sizeDelta = new Vector2(660f, column.sizeDelta.y);
+            }
             UiKit.Button(panel, "Foto", Loc.Pick("Modo foto (F)", "Photo mode (F)"), new Vector2(0.5f, 0.5f), new Vector2(330f, -190f), new Vector2(420f, 90f), PhotoMode.Open, 36);
 
             // En el Taller y en Sin fin el nivel cambia mientras se juega: el mapa se quedaría viejo.

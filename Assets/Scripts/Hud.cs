@@ -117,7 +117,9 @@ namespace Fase
             string name = sandbox ? Loc.Pick(levelName, levelNameEn) : daily ? $"{Loc.Get("daily")} · {Loc.Pick(levelName, levelNameEn)}" : $"{number}. {Loc.Pick(levelName, levelNameEn)}";
             // Si la cortinilla ya enseñó el número y el nombre, no se repite en grande: queda solo la
             // esquina. Si no (Taller, desafío, primera carga), sale el título y luego la esquina.
-            bigTitle = SceneFader.TitledScene != UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            // El título grande de los niveles lo dibuja LevelTitle (con la línea de luz), y solo si la
+            // cortinilla no lo enseñó ya; este del HUD queda para el Taller, donde no hay otro.
+            bigTitle = sandbox && SceneFader.TitledScene != UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             title.text = bigTitle ? name : "";
             hintText.text = resumed ? Loc.Pick("Sigues desde el último punto de control.", "Picking up from your last checkpoint.") : InputGlyphs.Adapt(Loc.Pick(hint, hintEn));
 
@@ -251,7 +253,9 @@ namespace Fase
             // El fondo y el círculo del número aparecen a la vez que el nombre de la esquina.
             if (cornerGroup != null) cornerGroup.alpha = cornerAlpha;
             if (timer != null) timer.text = "⏱ " + FormatTime(elapsed);
-            if (hintGroup != null) hintGroup.alpha = Fade(age, 6f, 1f);
+            // En pausa la pista no se ve a través del panel.
+            if (hintGroup != null) hintGroup.alpha = PauseMenu.Paused ? 0f : Fade(age, 6f, 1f);
+            if (PauseMenu.Paused) SetAlpha(hintText, 0f);
             if (cheerLeft > 0f)
             {
                 cheerLeft -= Time.deltaTime;
